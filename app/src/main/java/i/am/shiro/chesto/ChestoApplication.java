@@ -1,0 +1,61 @@
+package i.am.shiro.chesto;
+
+import android.app.Application;
+import android.os.StrictMode;
+
+import i.am.shiro.chesto.models.Danbooru;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.moshi.MoshiConverterFactory;
+import timber.log.Timber;
+
+/**
+ * Created by Shiro on 5/3/2017.
+ */
+
+public class ChestoApplication extends Application {
+
+    private static Danbooru danbooru;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+
+            StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build();
+            StrictMode.setThreadPolicy(threadPolicy);
+
+            StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build();
+            StrictMode.setVmPolicy(vmPolicy);
+        }
+
+        initDanbooru();
+    }
+
+    private void initDanbooru() {
+        RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io());
+        MoshiConverterFactory converter = MoshiConverterFactory.create();
+
+        if (danbooru == null) {
+            danbooru = new Retrofit.Builder()
+                    .baseUrl("http://danbooru.donmai.us/")
+                    .addCallAdapterFactory(callAdapter)
+                    .addConverterFactory(converter)
+                    .build()
+                    .create(Danbooru.class);
+        }
+    }
+
+    public static Danbooru danbooru() {
+        return danbooru;
+    }
+}

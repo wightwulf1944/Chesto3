@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--main activity-->
+    <string name="snackbar_confirmexit">Tap back again to exit</string>
+
+
+    <!--post activity-->
+    <string name="information">Information</string>
+    <string name="download">Download</string>
+    <string name="open_in_browser">Open in Browser</string>
+    <string name="share">Share</string>
+</resources>
