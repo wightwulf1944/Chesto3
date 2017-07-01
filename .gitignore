@@ -34,3 +34,5 @@ captures/
 \.idea/
 
 Chesto3\.iml
+
+*.iml
