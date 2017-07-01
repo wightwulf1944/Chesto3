@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.engine;
 
 import i.am.shiro.chesto.ChestoApplication;
+import i.am.shiro.chesto.listeners.Listener0;
 import i.am.shiro.chesto.listeners.Listener1;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -16,6 +17,7 @@ public final class PostSearch {
     private final SearchResults searchResults;
 
     private Listener1<Boolean> onLoadingListener;
+    private Listener0 onErrorListener;
 
     private int currentPage = 1;
     private Disposable disposable;
@@ -55,10 +57,14 @@ public final class PostSearch {
 
     private void onLoadError(Throwable throwable) {
         Timber.e(throwable, "Error fetching posts");
-        // TODO: notify load error
+        onErrorListener.onEvent();
     }
 
     public void setOnLoadingListener(Listener1<Boolean> listener) {
         onLoadingListener = listener;
+    }
+
+    public void setOnErrorListener(Listener0 listener) {
+        onErrorListener = listener;
     }
 }

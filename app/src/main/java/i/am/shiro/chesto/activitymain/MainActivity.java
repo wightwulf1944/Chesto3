@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
 
         errorSnackbar = Snackbar.make(recyclerView, "Check your connection", Snackbar.LENGTH_INDEFINITE)
-                .setAction()
+                .setAction("Retry", v -> postSearch.refresh());
 
         if (savedInstanceState == null) {
             String action = getIntent().getAction();
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void onEmptyLaunch() {
         postSearch = new PostSearch("");
-
         bindSearchToView();
         postSearch.goLoad();
         SearchHistory.goForward(postSearch);
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSearchLaunch() {
         postSearch = new PostSearch(getIntent().getDataString());
-
         bindSearchToView();
         postSearch.goLoad();
         SearchHistory.goForward(postSearch);
@@ -94,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void onRotate() {
         postSearch = SearchHistory.current();
-
         bindSearchToView();
     }
 
     private void bindSearchToView() {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         postSearch.setOnLoadingListener(refreshLayout::setRefreshing);
+        postSearch.setOnErrorListener(errorSnackbar::show);
 
         toolbar.setSubtitle(postSearch.getSearchString());
 
@@ -116,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         postSearch.setOnLoadingListener(b -> { /* do nothing */ });
+        postSearch.setOnErrorListener(() -> { /* do nothing */ });
 
         SearchResults searchResults = postSearch.getSearchResults();
         searchResults.setOnPostAddedListener(i -> { /* do nothing */ });
