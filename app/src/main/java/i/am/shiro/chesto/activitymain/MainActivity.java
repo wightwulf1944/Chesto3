@@ -97,29 +97,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindSearchToView() {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
-        postSearch.setOnLoadingListener(refreshLayout::setRefreshing);
-        postSearch.setOnErrorListener(errorSnackbar::show);
-
         toolbar.setSubtitle(postSearch.getSearchString());
 
         SearchResults searchResults = postSearch.getSearchResults();
         delegate.setData(searchResults);
         adapter.setData(searchResults);
 
-        searchResults.setOnPostAddedListener(adapter::notifyItemInserted);
-        searchResults.setOnPostUpdatedListener(adapter::notifyItemChanged);
-        searchResults.setOnResultsClearedListener(adapter::notifyDataSetChanged);
+        postSearch.setOnLoadingListener(refreshLayout::setRefreshing);
+        postSearch.setOnErrorListener(errorSnackbar::show);
+        postSearch.setOnPostAddedListener(adapter::notifyItemInserted);
+        postSearch.setOnPostUpdatedListener(adapter::notifyItemChanged);
+        postSearch.setOnResultsClearedListener(adapter::notifyDataSetChanged);
     }
 
     @Override
     protected void onDestroy() {
         postSearch.setOnLoadingListener(b -> { /* do nothing */ });
         postSearch.setOnErrorListener(() -> { /* do nothing */ });
-
-        SearchResults searchResults = postSearch.getSearchResults();
-        searchResults.setOnPostAddedListener(i -> { /* do nothing */ });
-        searchResults.setOnPostUpdatedListener(i -> { /* do nothing */ });
-        searchResults.setOnResultsClearedListener(() -> { /* do nothing */ });
+        postSearch.setOnPostAddedListener(i -> { /* do nothing */ });
+        postSearch.setOnPostUpdatedListener(i -> { /* do nothing */ });
+        postSearch.setOnResultsClearedListener(() -> { /* do nothing */ });
 
         super.onDestroy();
     }

@@ -16,15 +16,18 @@ public final class PostSearch {
     private final String searchString;
     private final SearchResults searchResults;
 
-    private Listener1<Boolean> onLoadingListener;
-    private Listener0 onErrorListener;
-
     private int currentPage = 1;
     private Disposable disposable;
 
+    private Listener1<Boolean> onLoadingListener;
+    private Listener0 onErrorListener;
+    Listener1<Integer> onPostAddedListener;
+    Listener1<Integer> onPostUpdatedListener;
+    Listener0 onResultsClearedListener;
+
     public PostSearch(String searchString) {
         this.searchString = searchString;
-        searchResults = new SearchResults();
+        searchResults = new SearchResults(this);
     }
 
     public String getSearchString() {
@@ -66,5 +69,17 @@ public final class PostSearch {
 
     public void setOnErrorListener(Listener0 listener) {
         onErrorListener = listener;
+    }
+
+    public void setOnPostAddedListener(Listener1<Integer> listener) {
+        onPostAddedListener = listener;
+    }
+
+    public void setOnPostUpdatedListener(Listener1<Integer> listener) {
+        onPostUpdatedListener = listener;
+    }
+
+    public void setOnResultsClearedListener(Listener0 listener) {
+        onResultsClearedListener = listener;
     }
 }
