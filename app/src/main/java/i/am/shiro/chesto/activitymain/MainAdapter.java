@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.engine.SearchResults;
+import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.listeners.Listener1;
 import i.am.shiro.chesto.models.Post;
 
@@ -20,10 +20,10 @@ import i.am.shiro.chesto.models.Post;
 
 final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
-    private SearchResults searchResults;
+    private PostSearch searchResults;
     private Listener1<Integer> onItemClickedListener;
 
-    void setData(SearchResults searchResults) {
+    void setData(PostSearch searchResults) {
         this.searchResults = searchResults;
     }
 
@@ -42,7 +42,7 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Post post = searchResults.get(position);
+        Post post = searchResults.getPost(position);
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 

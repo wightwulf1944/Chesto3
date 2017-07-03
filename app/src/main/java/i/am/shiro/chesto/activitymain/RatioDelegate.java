@@ -2,7 +2,7 @@ package i.am.shiro.chesto.activitymain;
 
 import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator;
 
-import i.am.shiro.chesto.engine.SearchResults;
+import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.models.Post;
 
 /**
@@ -15,9 +15,9 @@ final class RatioDelegate implements GreedoLayoutSizeCalculator.SizeCalculatorDe
     private static final double RATIO_MAX = 5;
     private static final double RATIO_DEFAULT = 1.0;
 
-    private SearchResults searchResults;
+    private PostSearch searchResults;
 
-    void setData(SearchResults searchResults) {
+    void setData(PostSearch searchResults) {
         this.searchResults = searchResults;
     }
 
@@ -26,7 +26,7 @@ final class RatioDelegate implements GreedoLayoutSizeCalculator.SizeCalculatorDe
         if (i >= searchResults.size()) {
             return RATIO_DEFAULT;
         } else {
-            Post post = searchResults.get(i);
+            Post post = searchResults.getPost(i);
             double ratio = (double) post.getWidth() / post.getHeight();
 
             if (ratio < RATIO_MIN) return RATIO_MIN;

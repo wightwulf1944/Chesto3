@@ -16,9 +16,9 @@ import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.engine.Observable;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
-import i.am.shiro.chesto.engine.SearchResults;
 
 //TODO: implement load more
 public class MainActivity extends AppCompatActivity {
@@ -98,26 +98,20 @@ public class MainActivity extends AppCompatActivity {
     private void bindSearchToView() {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         toolbar.setSubtitle(postSearch.getSearchString());
+        delegate.setData(postSearch);
+        adapter.setData(postSearch);
 
-        SearchResults searchResults = postSearch.getSearchResults();
-        delegate.setData(searchResults);
-        adapter.setData(searchResults);
-
-        postSearch.setOnLoadingListener(refreshLayout::setRefreshing);
-        postSearch.setOnErrorListener(errorSnackbar::show);
-        postSearch.setOnPostAddedListener(adapter::notifyItemInserted);
-        postSearch.setOnPostUpdatedListener(adapter::notifyItemChanged);
-        postSearch.setOnResultsClearedListener(adapter::notifyDataSetChanged);
+        Observable observable = postSearch.getObservable();
+        observable.setOnLoadingListener(refreshLayout::setRefreshing);
+        observable.setOnErrorListener(errorSnackbar::show);
+        observable.setOnPostAddedListener(adapter::notifyItemInserted);
+        observable.setOnPostUpdatedListener(adapter::notifyItemChanged);
+        observable.setOnResultsClearedListener(adapter::notifyDataSetChanged);
     }
 
     @Override
     protected void onDestroy() {
-        postSearch.setOnLoadingListener(b -> { /* do nothing */ });
-        postSearch.setOnErrorListener(() -> { /* do nothing */ });
-        postSearch.setOnPostAddedListener(i -> { /* do nothing */ });
-        postSearch.setOnPostUpdatedListener(i -> { /* do nothing */ });
-        postSearch.setOnResultsClearedListener(() -> { /* do nothing */ });
-
+        postSearch.getObservable().unsubscribeAllListeners();
         super.onDestroy();
     }
 
