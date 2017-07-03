@@ -5,6 +5,8 @@ import i.am.shiro.chesto.listeners.Listener1;
 
 /**
  * Created by Subaru Tashiro on 7/3/2017.
+ *
+ * Observable class for PostSearch
  */
 
 final public class Observable {

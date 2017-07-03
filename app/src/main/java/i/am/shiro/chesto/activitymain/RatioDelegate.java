@@ -7,6 +7,8 @@ import i.am.shiro.chesto.models.Post;
 
 /**
  * Created by Shiro on 5/2/2017.
+ *
+ * Required by GreedoLayoutManager
  */
 
 final class RatioDelegate implements GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
