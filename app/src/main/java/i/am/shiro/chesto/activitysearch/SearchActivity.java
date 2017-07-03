@@ -20,6 +20,8 @@ import i.am.shiro.chesto.engine.SearchHistory;
 public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.editText) EditText editText;
+    private String currentQuery;
+    private TagStore tagStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,9 @@ public class SearchActivity extends AppCompatActivity {
         AfterTextChangedListener afterTextChangedListener = new AfterTextChangedListener();
         afterTextChangedListener.setAction(this::onTextChanged);
         editText.addTextChangedListener(afterTextChangedListener);
+
+        //TODO
+        tagStore = new TagStore(null);
 
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -79,6 +84,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void onTextChanged(String s) {
+        int spaceIndex = s.lastIndexOf(" ");
+        currentQuery = s.substring(spaceIndex + 1);
+        tagStore.searchTags(currentQuery);
     }
 
     private void invokeSearch() {

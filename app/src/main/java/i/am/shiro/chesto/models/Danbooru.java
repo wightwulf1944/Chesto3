@@ -1,7 +1,5 @@
 package i.am.shiro.chesto.models;
 
-import android.nfc.Tag;
-
 import java.util.List;
 
 import io.reactivex.Observable;
