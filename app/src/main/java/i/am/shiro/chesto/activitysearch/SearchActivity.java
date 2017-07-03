@@ -45,11 +45,14 @@ public class SearchActivity extends AppCompatActivity {
         afterTextChangedListener.setAction(this::onTextChanged);
         editText.addTextChangedListener(afterTextChangedListener);
 
-        //TODO
-        tagStore = new TagStore(null);
+        SearchAdapter adapter = new SearchAdapter();
+        adapter.setOnItemClickListener(this::onAdapterItemClicked);
+
+        tagStore = new TagStore(adapter);
 
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -87,6 +90,13 @@ public class SearchActivity extends AppCompatActivity {
         int spaceIndex = s.lastIndexOf(" ");
         currentQuery = s.substring(spaceIndex + 1);
         tagStore.searchTags(currentQuery);
+    }
+
+    private void onAdapterItemClicked(String itemName) {
+        String text = editText.getText()
+                .toString()
+                .replaceFirst(currentQuery, itemName);
+        editText.setText(text);
     }
 
     private void invokeSearch() {

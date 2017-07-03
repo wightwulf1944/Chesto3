@@ -1,7 +1,6 @@
 package i.am.shiro.chesto.activitysearch;
 
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
 
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.models.Tag;
@@ -16,16 +15,16 @@ import io.realm.Sort;
 
 final class TagStore {
 
-    private final RecyclerView.Adapter adapter;
+    private final SearchAdapter adapter;
     private RealmResults<Tag> cachedResults;
 
-    TagStore(RecyclerView.Adapter adapter) {
+    TagStore(SearchAdapter adapter) {
         this.adapter = adapter;
         cachedResults = Realm.getDefaultInstance()
                 .where(Tag.class)
                 .findAllSorted("postCount", Sort.DESCENDING);
-        //TODO
-//        adapter.setData(cachedResults);
+
+        adapter.setData(cachedResults);
     }
 
     void searchTags(String tagSearchString) {
@@ -55,8 +54,7 @@ final class TagStore {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(tagListDiffer, true);
 
         cachedResults = newResults;
-        //TODO
-//        adapter.setData(cachedResults);
+        adapter.setData(cachedResults);
         diffResult.dispatchUpdatesTo(adapter);
     }
 }
