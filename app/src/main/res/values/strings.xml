@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--main activity-->
-    <string name="snackbar_confirmexit">Tap back again to exit</string>
 
+    <!--main activity-->
+    <string name="main_snackbar_exit">Tap back again to exit</string>
+    <string name="main_action_search">Search</string>
+
+    <!--search activity-->
+    <string name="search_action_search">Search</string>
+    <string name="search_action_go">Go</string>
+    <string name="search_action_clear">Clear</string>
 
     <!--post activity-->
     <string name="information">Information</string>

@@ -9,6 +9,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.fivehundredpx.greedolayout.GreedoLayoutManager;
 import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
@@ -16,6 +18,7 @@ import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.Observable;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
@@ -141,6 +144,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (SearchHistory.canGoBack()) {
             SearchHistory.goBack();
@@ -148,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
-            Snackbar.make(recyclerView, R.string.snackbar_confirmexit, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, R.string.main_snackbar_exit, Snackbar.LENGTH_SHORT).show();
             lastTimeBackPressed = System.currentTimeMillis();
         }
     }
