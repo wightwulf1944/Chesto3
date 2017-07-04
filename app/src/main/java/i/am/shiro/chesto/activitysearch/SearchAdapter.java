@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import i.am.shiro.chesto.R;
@@ -23,7 +24,7 @@ final class SearchAdapter extends Adapter<ViewHolder> {
     private final int TAG = 1;
 
     private Listener1<String> onItemClickListener;
-    private List<Tag> items;
+    private List<Tag> items = Collections.emptyList();
 
     void setData(List<Tag> data) {
         items = data;

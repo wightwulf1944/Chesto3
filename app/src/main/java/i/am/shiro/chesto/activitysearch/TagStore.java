@@ -1,6 +1,6 @@
 package i.am.shiro.chesto.activitysearch;
 
-import android.support.v7.util.DiffUtil;
+import java.util.List;
 
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.models.Tag;
@@ -20,15 +20,12 @@ final class TagStore {
 
     TagStore(SearchAdapter adapter) {
         this.adapter = adapter;
-        cachedResults = Realm.getDefaultInstance()
-                .where(Tag.class)
-                .findAllSorted("postCount", Sort.DESCENDING);
-
-        adapter.setData(cachedResults);
     }
 
     void searchTags(String tagSearchString) {
-        cachedResults.removeAllChangeListeners();
+        if (cachedResults != null) {
+            cachedResults.removeAllChangeListeners();
+        }
 
         RealmResults<Tag> newResults = Realm.getDefaultInstance()
                 .where(Tag.class)
@@ -36,6 +33,8 @@ final class TagStore {
                 .findAllSorted("postCount", Sort.DESCENDING);
 
         applyToAdapter(newResults);
+        
+        cachedResults = newResults;
 
         newResults.addChangeListener(this::applyToAdapter);
 
@@ -49,12 +48,8 @@ final class TagStore {
                 });
     }
 
-    synchronized private void applyToAdapter(RealmResults<Tag> newResults) {
-        TagListDiffer tagListDiffer = new TagListDiffer(cachedResults, newResults);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(tagListDiffer, true);
-
-        cachedResults = newResults;
-        adapter.setData(cachedResults);
-        diffResult.dispatchUpdatesTo(adapter);
+    synchronized private void applyToAdapter(List<Tag> newResults) {
+        adapter.setData(newResults);
+        adapter.notifyDataSetChanged();
     }
 }

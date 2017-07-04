@@ -48,11 +48,11 @@ public class SearchActivity extends AppCompatActivity {
         SearchAdapter adapter = new SearchAdapter();
         adapter.setOnItemClickListener(this::onAdapterItemClicked);
 
-        tagStore = new TagStore(adapter);
-
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+
+        tagStore = new TagStore(adapter);
     }
 
     @Override
