@@ -82,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
     private void onEmptyLaunch() {
         postSearch = new PostSearch("");
         bindSearchToView();
-        postSearch.goLoad();
+        postSearch.load();
         SearchHistory.goForward(postSearch);
     }
 
     private void onSearchLaunch() {
         postSearch = new PostSearch(getIntent().getDataString());
         bindSearchToView();
-        postSearch.goLoad();
+        postSearch.load();
         SearchHistory.goForward(postSearch);
     }
 

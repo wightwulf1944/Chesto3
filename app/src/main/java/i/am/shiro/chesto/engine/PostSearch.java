@@ -50,10 +50,10 @@ public final class PostSearch {
         disposable.dispose();
         currentPage = 1;
         clear();
-        goLoad();
+        load();
     }
 
-    public void goLoad() {
+    public void load() {
         if (isLoading) {
             return;
         }

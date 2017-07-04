@@ -42,6 +42,10 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (position >= searchResults.size() - 15) {
+            searchResults.load();
+        }
+
         Post post = searchResults.getPost(position);
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
