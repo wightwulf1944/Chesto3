@@ -50,7 +50,7 @@ public class ChestoApplication extends Application {
 
         if (danbooru == null) {
             danbooru = new Retrofit.Builder()
-                    .baseUrl("http://danbooru.donmai.us/")
+                    .baseUrl("http://safebooru.donmai.us/")
                     .addCallAdapterFactory(callAdapter)
                     .addConverterFactory(converter)
                     .build()
