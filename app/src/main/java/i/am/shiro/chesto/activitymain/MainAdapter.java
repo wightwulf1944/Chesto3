@@ -13,6 +13,7 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.listeners.Listener1;
 import i.am.shiro.chesto.models.Post;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by Shiro on 5/2/2017.
@@ -50,10 +51,13 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
+        RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
+
         Glide.with(parentActivity)
                 .load(post.getSmallFileUrl())
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken)
+                .bitmapTransform(roundedCornersTransformation)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
     }
