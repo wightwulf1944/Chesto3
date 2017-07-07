@@ -17,6 +17,8 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain.MainActivity;
 import i.am.shiro.chesto.engine.SearchHistory;
 
+import static butterknife.ButterKnife.findById;
+
 public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.editText) EditText editText;
@@ -29,7 +31,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
+        Toolbar toolbar = findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -48,7 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         SearchAdapter adapter = new SearchAdapter();
         adapter.setOnItemClickListener(this::onAdapterItemClicked);
 
-        RecyclerView recyclerView = ButterKnife.findById(this, R.id.recyclerView);
+        RecyclerView recyclerView = findById(this, R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
