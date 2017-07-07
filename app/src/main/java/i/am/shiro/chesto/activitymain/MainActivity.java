@@ -12,8 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.fivehundredpx.greedolayout.GreedoLayoutManager;
-import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.refreshLayout) SwipeRefreshLayout refreshLayout;
     private PostSearch postSearch;
-    private RatioDelegate delegate;
     private MainAdapter adapter;
     private Snackbar errorSnackbar;
     private long lastTimeBackPressed;
@@ -42,18 +42,14 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        int spacingPx = (int) (8 * getResources().getDisplayMetrics().density);
-        GreedoSpacingItemDecoration spacer = new GreedoSpacingItemDecoration(spacingPx);
-
-        delegate = new RatioDelegate();
-        GreedoLayoutManager layoutManager = new GreedoLayoutManager(delegate);
-        layoutManager.setMaxRowHeight(300);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
         adapter = new MainAdapter();
         adapter.setOnItemClickedListener(this::onAdapterItemClicked);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(spacer);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -101,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
     private void bindSearchToView() {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         toolbar.setSubtitle(postSearch.getSearchString());
-        delegate.setData(postSearch);
         adapter.setData(postSearch);
 
         Observable observable = postSearch.getObservable();
@@ -116,24 +111,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         postSearch.getObservable().unsubscribeAllListeners();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        GreedoLayoutManager layoutManager = (GreedoLayoutManager) recyclerView.getLayoutManager();
-        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-        outState.putInt("firstVisibleItemPosition", firstVisibleItemPosition);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        int firstVisibleItemPosition = savedInstanceState.getInt("firstVisibleItemPosition");
-        GreedoLayoutManager layoutManager = (GreedoLayoutManager) recyclerView.getLayoutManager();
-        layoutManager.scrollToPosition(firstVisibleItemPosition);
     }
 
     private void onAdapterItemClicked(int index) {

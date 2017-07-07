@@ -1,13 +1,15 @@
 package i.am.shiro.chesto.activitymain;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.engine.PostSearch;
@@ -34,11 +36,10 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        ImageView view = new ImageView(context);
-        ViewHolder vh = new ViewHolder(view);
-        view.setOnClickListener(v -> onItemClickedListener.onEvent(vh.getAdapterPosition()));
-        return vh;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.main_recycler_item, parent, false);
+
+        return new ViewHolder(view);
     }
 
     @Override
@@ -50,6 +51,36 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         Post post = searchResults.getPost(position);
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
+
+        int maxHeight = 200;
+        int maxWidth = 200;
+        int original_height = post.getHeight();
+        int original_width = post.getWidth();
+        int thumb_height = original_height;
+        int thumb_width = original_width;
+        float flexGrow = 0.0f;
+
+        if (thumb_height > maxHeight) {
+            thumb_height = maxHeight;
+            thumb_width = (thumb_height * original_width) / original_height;
+        }
+
+        if (thumb_width > maxWidth) {
+            thumb_width = maxWidth;
+            thumb_height = (thumb_width * original_height) / original_width;
+        }
+
+        if (thumb_width > thumb_height) {
+            flexGrow = 1.0f;
+        }
+
+        FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
+        flexboxLp.setMinWidth(100);
+        flexboxLp.setMinHeight(100);
+        flexboxLp.setMaxWidth(300);
+        flexboxLp.width = thumb_width;
+        flexboxLp.height = thumb_height;
+        flexboxLp.setFlexGrow(flexGrow);
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 
@@ -71,9 +102,10 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
         private final ImageView imageView;
 
-        private ViewHolder(ImageView view) {
+        private ViewHolder(View view) {
             super(view);
-            imageView = view;
+            imageView = (ImageView) view;
+            imageView.setOnClickListener(v -> onItemClickedListener.onEvent(getAdapterPosition()));
         }
     }
 }
