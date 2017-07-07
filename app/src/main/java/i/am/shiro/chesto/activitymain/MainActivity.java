@@ -1,7 +1,6 @@
 package i.am.shiro.chesto.activitymain;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -19,6 +18,7 @@ import com.google.android.flexbox.JustifyContent;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.activitypost.PostActivity;
 import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.Observable;
 import i.am.shiro.chesto.engine.PostSearch;
@@ -114,9 +114,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onAdapterItemClicked(int index) {
-        // launch post activity
-        Uri dataUri = Uri.parse("contrapposto");
-        Intent intent = new Intent(Intent.ACTION_SEARCH, dataUri, this, MainActivity.class);
+        Intent intent = new Intent(this, PostActivity.class);
+        intent.putExtra("default", index);
         startActivity(intent);
     }
 

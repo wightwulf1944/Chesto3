@@ -24,6 +24,10 @@
             android:name=".activitysearch.SearchActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
+
+        <activity
+            android:name=".activitypost.PostActivity"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>
