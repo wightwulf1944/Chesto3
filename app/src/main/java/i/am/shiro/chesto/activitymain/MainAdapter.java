@@ -52,8 +52,8 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
-        int maxHeight = 200;
-        int maxWidth = 200;
+        int maxHeight = 220;
+        int maxWidth = 220;
         int original_height = post.getHeight();
         int original_width = post.getWidth();
         int thumb_height = original_height;
@@ -88,6 +88,7 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 .load(post.getSmallFileUrl())
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken)
+                .dontAnimate()
                 .bitmapTransform(roundedCornersTransformation)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
