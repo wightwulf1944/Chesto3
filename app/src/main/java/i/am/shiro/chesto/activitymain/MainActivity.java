@@ -24,7 +24,6 @@ import i.am.shiro.chesto.engine.Observable;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
 
-//TODO: implement load more
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
