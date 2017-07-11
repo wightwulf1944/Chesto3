@@ -11,20 +11,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
 import i.am.shiro.chesto.models.Post;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static butterknife.ButterKnife.findById;
@@ -32,15 +30,15 @@ import static butterknife.ButterKnife.findById;
 /**
  * Created by Subaru Tashiro on 7/7/2017.
  * TODO: share url or image option
+ * TODO: notify adapter of dataset changes
  */
 
 public class PostActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
 
-    @BindView(R.id.imageview) ImageView imageView;
-    int postIndex;
-    Post post;
+    @BindView(R.id.recyclerView) RecyclerView recyclerView;
+    private PostSearch currentSearch;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,22 +53,25 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-        postIndex = getIntent().getIntExtra("default", -1);
-        post = SearchHistory.current().getPost(postIndex);
+        currentSearch = SearchHistory.current();
 
-        BlurTransformation blurTransformation = new BlurTransformation(this, 1);
+        PostAdapter postAdapter = new PostAdapter();
+        postAdapter.setData(currentSearch);
 
-        DrawableRequestBuilder thumb = Glide.with(this)
-                .load(post.getSmallFileUrl())
-                .bitmapTransform(blurTransformation)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(postAdapter);
 
-        Glide.with(this)
-                .load(post.getLargeFileUrl())
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_broken)
-                .thumbnail(thumb)
-                .into(imageView);
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(recyclerView);
+
+        int postIndex = getIntent().getIntExtra("default", -1);
+        recyclerView.scrollToPosition(postIndex);
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 
     @Override
@@ -99,9 +100,14 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finishAndReturnResult();
+    }
+
     private void finishAndReturnResult() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("default", postIndex); //TODO
+        resultIntent.putExtra("default", getCurrentItemPosition()); //TODO
         setResult(RESULT_OK, resultIntent);
         finish();
     }
@@ -117,12 +123,14 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void openPostInBrowser() {
+        Post post = currentSearch.getPost(getCurrentItemPosition());
         Uri webUri = post.getWebUri();
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
 
     private void sharePost() {
+        Post post = currentSearch.getPost(getCurrentItemPosition());
         String webUrl = post.getWebUrl();
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -130,6 +138,7 @@ public class PostActivity extends AppCompatActivity {
         intent.setType("text/plain");
 
         Intent chooserIntent = Intent.createChooser(intent, "Share link - " + webUrl);
+
         startActivity(chooserIntent);
     }
 
@@ -142,7 +151,12 @@ public class PostActivity extends AppCompatActivity {
         if (grantResults[0] == PERMISSION_GRANTED) {
             downloadPost();
         } else {
-            Snackbar.make(imageView, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private int getCurrentItemPosition() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        return layoutManager.findFirstVisibleItemPosition();
     }
 }
