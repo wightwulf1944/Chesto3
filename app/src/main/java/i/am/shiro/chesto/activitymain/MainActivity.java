@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         toolbar.setSubtitle(postSearch.getSearchString());
         adapter.setData(postSearch);
-        errorSnackbar.setAction("Retry", v -> postSearch.refresh());
+        errorSnackbar.setAction("Retry", v -> postSearch.load());
 
         searchSubscriber = postSearch.makeSubscriber();
         searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
