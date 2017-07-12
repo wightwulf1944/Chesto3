@@ -4,26 +4,16 @@ import i.am.shiro.chesto.listeners.Listener0;
 import i.am.shiro.chesto.listeners.Listener1;
 
 /**
- * Created by Subaru Tashiro on 7/3/2017.
- *
- * Observable class for PostSearch
+ * Created by Subaru Tashiro on 7/12/2017.
  */
 
-final public class Observable {
+public final class SearchSubscriber {
 
     private Listener1<Boolean> onLoadingListener;
     private Listener0 onErrorListener;
     private Listener1<Integer> onPostAddedListener;
     private Listener1<Integer> onPostUpdatedListener;
     private Listener0 onResultsClearedListener;
-
-    public void unsubscribeAllListeners() {
-        onLoadingListener = null;
-        onErrorListener = null;
-        onPostAddedListener = null;
-        onPostUpdatedListener = null;
-        onResultsClearedListener = null;
-    }
 
     public void setOnLoadingListener(Listener1<Boolean> listener) {
         onLoadingListener = listener;

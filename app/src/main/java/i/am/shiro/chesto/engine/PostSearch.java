@@ -17,7 +17,7 @@ public final class PostSearch {
 
     private final String searchString;
     private final ArrayList<Post> list;
-    private final Observable observable;
+    private final SubscriberList subscribers;
 
     private int currentPage = 1;
     private boolean isLoading;
@@ -27,11 +27,17 @@ public final class PostSearch {
     public PostSearch(String searchString) {
         this.searchString = searchString;
         list = new ArrayList<>(100);
-        observable = new Observable();
+        subscribers = new SubscriberList();
     }
 
-    public Observable getObservable() {
-        return observable;
+    public SearchSubscriber getSubscriber() {
+        SearchSubscriber subscriber = new SearchSubscriber();
+        subscribers.addSubscriber(subscriber);
+        return subscriber;
+    }
+
+    public void unregisterSubscriber(SearchSubscriber subscriber) {
+        subscribers.removeSubscriber(subscriber);
     }
 
     public String getSearchString() {
@@ -71,13 +77,13 @@ public final class PostSearch {
     }
 
     private void onLoading(boolean isLoading) {
-        observable.notifyLoading(isLoading);
+        subscribers.notifyLoading(isLoading);
         this.isLoading = isLoading;
     }
 
     private void clear() {
         list.clear();
-        observable.notifyCleared();
+        subscribers.notifyCleared();
     }
 
     private void merge(List<Post> newResults) {
@@ -92,16 +98,16 @@ public final class PostSearch {
             int index = list.indexOf(newPost);
             if (index == -1) {
                 list.add(newPost);
-                observable.notifyPostAdded(list.size());
+                subscribers.notifyPostAdded(list.size());
             } else {
                 list.set(index, newPost);
-                observable.notifyPostUpdated(index);
+                subscribers.notifyPostUpdated(index);
             }
         }
     }
 
     private void onLoadError(Throwable throwable) {
         Timber.e(throwable, "Error fetching posts");
-        observable.notifyError();
+        subscribers.notifyError();
     }
 }

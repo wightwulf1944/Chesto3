@@ -20,15 +20,16 @@ import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitypost.PostActivity;
 import i.am.shiro.chesto.activitysearch.SearchActivity;
-import i.am.shiro.chesto.engine.Observable;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
+import i.am.shiro.chesto.engine.SearchSubscriber;
 
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.refreshLayout) SwipeRefreshLayout refreshLayout;
+    private SearchSubscriber searchSubscriber;
     private PostSearch postSearch;
     private MainAdapter adapter;
     private Snackbar errorSnackbar;
@@ -98,17 +99,18 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setSubtitle(postSearch.getSearchString());
         adapter.setData(postSearch);
 
-        Observable observable = postSearch.getObservable();
-        observable.setOnLoadingListener(refreshLayout::setRefreshing);
-        observable.setOnErrorListener(errorSnackbar::show);
-        observable.setOnPostAddedListener(adapter::notifyItemInserted);
-        observable.setOnPostUpdatedListener(adapter::notifyItemChanged);
-        observable.setOnResultsClearedListener(adapter::notifyDataSetChanged);
+        searchSubscriber = postSearch.getSubscriber();
+        searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
+        searchSubscriber.setOnErrorListener(errorSnackbar::show);
+        searchSubscriber.setOnPostAddedListener(adapter::notifyItemInserted);
+        searchSubscriber.setOnPostUpdatedListener(adapter::notifyItemChanged);
+        searchSubscriber.setOnResultsClearedListener(adapter::notifyDataSetChanged);
+
     }
 
     @Override
     protected void onDestroy() {
-        postSearch.getObservable().unsubscribeAllListeners();
+        postSearch.unregisterSubscriber(searchSubscriber);
         super.onDestroy();
     }
 
