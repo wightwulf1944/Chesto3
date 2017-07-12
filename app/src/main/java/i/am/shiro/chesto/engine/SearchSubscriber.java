@@ -9,11 +9,21 @@ import i.am.shiro.chesto.listeners.Listener1;
 
 public final class SearchSubscriber {
 
+    private SubscriberList parent;
     private Listener1<Boolean> onLoadingListener;
     private Listener0 onErrorListener;
     private Listener1<Integer> onPostAddedListener;
     private Listener1<Integer> onPostUpdatedListener;
     private Listener0 onResultsClearedListener;
+
+    SearchSubscriber(SubscriberList subscriberList) {
+        parent = subscriberList;
+        parent.addSubscriber(this);
+    }
+
+    public void unsubscribe() {
+        parent.removeSubscriber(this);
+    }
 
     public void setOnLoadingListener(Listener1<Boolean> listener) {
         onLoadingListener = listener;

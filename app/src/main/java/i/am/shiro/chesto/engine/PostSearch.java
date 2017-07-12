@@ -16,8 +16,8 @@ import timber.log.Timber;
 public final class PostSearch {
 
     private final String searchString;
-    private final ArrayList<Post> list;
-    private final SubscriberList subscribers;
+    private final ArrayList<Post> list = new ArrayList<>(100);
+    private final SubscriberList subscriberList = new SubscriberList();
 
     private int currentPage = 1;
     private boolean isLoading;
@@ -26,18 +26,10 @@ public final class PostSearch {
 
     public PostSearch(String searchString) {
         this.searchString = searchString;
-        list = new ArrayList<>(100);
-        subscribers = new SubscriberList();
     }
 
     public SearchSubscriber getSubscriber() {
-        SearchSubscriber subscriber = new SearchSubscriber();
-        subscribers.addSubscriber(subscriber);
-        return subscriber;
-    }
-
-    public void unregisterSubscriber(SearchSubscriber subscriber) {
-        subscribers.removeSubscriber(subscriber);
+        return new SearchSubscriber(subscriberList);
     }
 
     public String getSearchString() {
@@ -77,13 +69,13 @@ public final class PostSearch {
     }
 
     private void onLoading(boolean isLoading) {
-        subscribers.notifyLoading(isLoading);
+        subscriberList.notifyLoading(isLoading);
         this.isLoading = isLoading;
     }
 
     private void clear() {
         list.clear();
-        subscribers.notifyCleared();
+        subscriberList.notifyCleared();
     }
 
     private void merge(List<Post> newResults) {
@@ -98,16 +90,16 @@ public final class PostSearch {
             int index = list.indexOf(newPost);
             if (index == -1) {
                 list.add(newPost);
-                subscribers.notifyPostAdded(list.size());
+                subscriberList.notifyPostAdded(list.size());
             } else {
                 list.set(index, newPost);
-                subscribers.notifyPostUpdated(index);
+                subscriberList.notifyPostUpdated(index);
             }
         }
     }
 
     private void onLoadError(Throwable throwable) {
         Timber.e(throwable, "Error fetching posts");
-        subscribers.notifyError();
+        subscriberList.notifyError();
     }
 }

@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.refreshLayout) SwipeRefreshLayout refreshLayout;
     private SearchSubscriber searchSubscriber;
-    private PostSearch postSearch;
     private MainAdapter adapter;
     private Snackbar errorSnackbar;
     private long lastTimeBackPressed;
@@ -55,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
 
-        errorSnackbar = Snackbar.make(recyclerView, "Check your connection", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Retry", v -> postSearch.refresh());
+        errorSnackbar = Snackbar.make(recyclerView, "Check your connection", Snackbar.LENGTH_INDEFINITE);
 
         if (savedInstanceState == null) {
             String action = getIntent().getAction();
@@ -76,28 +74,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onEmptyLaunch() {
-        postSearch = new PostSearch("");
-        bindSearchToView();
+        PostSearch postSearch = new PostSearch("");
+        bindSearchToView(postSearch);
         postSearch.load();
         SearchHistory.goForward(postSearch);
     }
 
     private void onSearchLaunch() {
-        postSearch = new PostSearch(getIntent().getDataString());
-        bindSearchToView();
+        PostSearch postSearch = new PostSearch(getIntent().getDataString());
+        bindSearchToView(postSearch);
         postSearch.load();
         SearchHistory.goForward(postSearch);
     }
 
     private void onRotate() {
-        postSearch = SearchHistory.current();
-        bindSearchToView();
+        PostSearch postSearch = SearchHistory.current();
+        bindSearchToView(postSearch);
     }
 
-    private void bindSearchToView() {
+    private void bindSearchToView(PostSearch postSearch) {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         toolbar.setSubtitle(postSearch.getSearchString());
         adapter.setData(postSearch);
+        errorSnackbar.setAction("Retry", v -> postSearch.refresh());
 
         searchSubscriber = postSearch.getSubscriber();
         searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        postSearch.unregisterSubscriber(searchSubscriber);
+        searchSubscriber.unsubscribe();
         super.onDestroy();
     }
 
