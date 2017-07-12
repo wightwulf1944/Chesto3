@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
+import i.am.shiro.chesto.engine.SearchSubscriber;
 import i.am.shiro.chesto.models.Post;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -39,6 +40,7 @@ public class PostActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     private PostSearch currentSearch;
+    private SearchSubscriber searchSubscriber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,10 +55,7 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-        currentSearch = SearchHistory.current();
-
         PostAdapter postAdapter = new PostAdapter();
-        postAdapter.setData(currentSearch);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(postAdapter);
@@ -64,13 +63,26 @@ public class PostActivity extends AppCompatActivity {
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(recyclerView);
 
+        Snackbar errorSnackbar = Snackbar.make(recyclerView, "Could not load more posts", Snackbar.LENGTH_INDEFINITE);
+
         int postIndex = getIntent().getIntExtra("default", -1);
         recyclerView.scrollToPosition(postIndex);
+
+        // bind search to activity
+        currentSearch = SearchHistory.current();
+        postAdapter.setData(currentSearch);
+        errorSnackbar.setAction("Retry", v -> currentSearch.load());
+
+        searchSubscriber = currentSearch.makeSubscriber();
+        searchSubscriber.setOnPostAddedListener(postAdapter::notifyItemInserted);
+        searchSubscriber.setOnPostUpdatedListener(postAdapter::notifyItemChanged);
+        searchSubscriber.setOnResultsClearedListener(postAdapter::notifyDataSetChanged);
+        searchSubscriber.setOnErrorListener(errorSnackbar::show);
     }
 
     @Override
     protected void onDestroy() {
-
+        searchSubscriber.unsubscribe();
         super.onDestroy();
     }
 
