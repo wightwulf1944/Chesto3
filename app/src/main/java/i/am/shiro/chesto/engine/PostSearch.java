@@ -28,7 +28,7 @@ public final class PostSearch {
         this.searchString = searchString;
     }
 
-    public SearchSubscriber getSubscriber() {
+    public SearchSubscriber makeSubscriber() {
         return new SearchSubscriber(subscriberList);
     }
 
