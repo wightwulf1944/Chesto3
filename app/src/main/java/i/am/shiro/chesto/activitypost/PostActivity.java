@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,8 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,8 @@ public class PostActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 0;
 
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.infoButton) ImageButton infoButton;
+    @BindView(R.id.bottomSheet) View bottomSheet;
     private PostSearch currentSearch;
     private SearchSubscriber searchSubscriber;
 
@@ -54,6 +59,16 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
+
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+
+        infoButton.setOnClickListener(v -> {
+            if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
 
         PostAdapter postAdapter = new PostAdapter();
 
