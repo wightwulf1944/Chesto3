@@ -43,6 +43,7 @@ public class PostActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.infoButton) ImageButton infoButton;
+    @BindView(R.id.hideButton) ImageButton hideButton;
     @BindView(R.id.bottomSheet) View bottomSheet;
     private PostSearch currentSearch;
     private SearchSubscriber searchSubscriber;
@@ -61,14 +62,21 @@ public class PostActivity extends AppCompatActivity {
         }
 
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
 
-        infoButton.setOnClickListener(v -> {
-            if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            } else {
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+                bottomSheet.setAlpha(v);
             }
         });
+
+        infoButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_EXPANDED));
+
+        hideButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED));
 
         PostAdapter postAdapter = new PostAdapter();
 

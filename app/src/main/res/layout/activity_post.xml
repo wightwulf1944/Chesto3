@@ -15,14 +15,10 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_dodgeInsetEdges="bottom"/>
 
-    <View
-        android:id="@+id/bottomSheet"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@android:color/white"
-        app:behavior_peekHeight="0dp"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:layout_insetEdge="bottom"/>
+        android:layout_height="?actionBarSize"/>
 
     <ImageButton
         android:id="@+id/infoButton"
@@ -30,9 +26,19 @@
         android:layout_gravity="bottom|start"
         android:src="@drawable/ic_nav_info"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:layout_insetEdge="bottom">
 
+        <ImageButton
+            android:id="@+id/hideButton"
+            style="@style/NavButton"
+            android:layout_gravity="top|start"
+            android:src="@drawable/ic_nav_arrow_hide"/>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>
