@@ -62,20 +62,7 @@ public class PostActivity extends AppCompatActivity {
         }
 
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-                bottomSheet.setAlpha(v);
-            }
-        });
-
         infoButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_EXPANDED));
-
         hideButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED));
 
         PostAdapter postAdapter = new PostAdapter();
