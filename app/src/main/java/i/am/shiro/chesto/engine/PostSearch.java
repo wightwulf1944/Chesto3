@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.engine;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import i.am.shiro.chesto.ChestoApplication;
@@ -82,18 +83,20 @@ public final class PostSearch {
         int newCapacity = list.size() + newResults.size();
         list.ensureCapacity(newCapacity);
 
+        HashSet<Post> postsSet = new HashSet<>(list);
+
         for (Post newPost : newResults) {
             if (!newPost.hasFileUrl()) {
                 continue;
             }
 
-            int index = list.indexOf(newPost);
-            if (index == -1) {
-                list.add(newPost);
-                subscriberList.notifyPostAdded(list.size());
-            } else {
+            if (postsSet.contains(newPost)) {
+                int index = list.lastIndexOf(newPost);
                 list.set(index, newPost);
                 subscriberList.notifyPostUpdated(index);
+            } else {
+                list.add(newPost);
+                subscriberList.notifyPostAdded(list.size());
             }
         }
     }
