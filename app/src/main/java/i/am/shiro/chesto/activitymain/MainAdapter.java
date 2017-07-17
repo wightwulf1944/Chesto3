@@ -23,6 +23,11 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
+    private static int MAX_THUMB_HEIGHT = 220;
+    private static int MAX_THUMB_WIDTH = 220;
+    private static int MIN_THUMB_HEIGHT = 100;
+    private static int MIN_THUMB_WIDTH = 100;
+
     private PostSearch searchResults;
     private Listener1<Integer> onItemClickedListener;
 
@@ -52,35 +57,19 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
-        int maxHeight = 220;
-        int maxWidth = 220;
-        int original_height = post.getHeight();
-        int original_width = post.getWidth();
-        int thumb_height = original_height;
-        int thumb_width = original_width;
-        float flexGrow = 0.0f;
-
-        if (thumb_height > maxHeight) {
-            thumb_height = maxHeight;
-            thumb_width = (thumb_height * original_width) / original_height;
-        }
-
-        if (thumb_width > maxWidth) {
-            thumb_width = maxWidth;
-            thumb_height = (thumb_width * original_height) / original_width;
-        }
-
-        if (thumb_width > thumb_height) {
-            flexGrow = 1.0f;
-        }
+        int originalHeight = post.getHeight();
+        int originalWidth = post.getWidth();
 
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
-        flexboxLp.setMinWidth(100);
-        flexboxLp.setMinHeight(100);
-        flexboxLp.setMaxWidth(300);
-        flexboxLp.width = thumb_width;
-        flexboxLp.height = thumb_height;
-        flexboxLp.setFlexGrow(flexGrow);
+        if (originalWidth > originalHeight) {
+            flexboxLp.width = MAX_THUMB_WIDTH;
+            flexboxLp.height = Math.max(MIN_THUMB_HEIGHT, (flexboxLp.width * originalHeight) / originalWidth);
+            flexboxLp.setFlexGrow(1.0f);
+            flexboxLp.setMaxWidth(300);
+        } else {
+            flexboxLp.height = MAX_THUMB_HEIGHT;
+            flexboxLp.width = Math.max(MIN_THUMB_WIDTH, (flexboxLp.height * originalWidth) / originalHeight);
+        }
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 
