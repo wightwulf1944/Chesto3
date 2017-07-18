@@ -146,7 +146,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void openPostInBrowser() {
         Post post = currentSearch.getPost(getCurrentItemPosition());
-        Uri webUri = post.getWebUri();
+        Uri webUri = Uri.parse(post.getWebUrl());
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
