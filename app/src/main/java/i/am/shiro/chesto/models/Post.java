@@ -1,57 +1,64 @@
 package i.am.shiro.chesto.models;
 
-import com.squareup.moshi.Json;
+import com.squareup.moshi.FromJson;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Shiro on 5/2/2017.
+ * Created by Subaru Tashiro on 7/18/2017.
  */
 
 public class Post extends RealmObject {
 
     @PrimaryKey
-    @Json(name = "id")
     private int id;
 
-    @Json(name = "image_width")
     private int width;
-    @Json(name = "image_height")
     private int height;
-    @Json(name = "file_ext")
-    private String fileExt;
+    private int thumbWidth;
+    private int thumbHeight;
 
-    @Json(name = "tag_string_artist")
+    private String fileName;
+
     private String tagStringArtist;
-    @Json(name = "tag_string_character")
     private String tagStringCharacter;
-    @Json(name = "tag_string_copyright")
     private String tagStringCopyright;
-    @Json(name = "tag_string_general")
     private String tagStringGeneral;
 
-    @Json(name = "has_large")
-    private boolean hasLarge;
-    @Json(name = "preview_file_url")
-    private String smallFileUrl;
-    @Json(name = "large_file_url")
-    private String largeFileUrl;
-    @Json(name = "file_url")
+    private String webUrl;
+    private String thumbFileUrl;
+    private String previewFileUrl;
     private String originalFileUrl;
 
-    private static final String BASE_URL = "http://danbooru.donmai.us";
+    private boolean isPreviewDownsized;
 
-    public boolean hasFileUrl() {
-        return smallFileUrl != null && largeFileUrl != null;
-    }
+    public Post(PostJson postJson, String baseUrl) {
+        id = postJson.id;
+        width = postJson.width;
+        height = postJson.height;
+        fileName = postJson.id + '.' + postJson.fileExt;
+        tagStringArtist = postJson.tagStringArtist;
+        tagStringCharacter = postJson.tagStringCharacter;
+        tagStringCopyright = postJson.tagStringCopyright;
+        tagStringGeneral = postJson.tagStringGeneral;
+        webUrl = baseUrl + "/posts/" + postJson.id;
+        thumbFileUrl = baseUrl + postJson.previewFileUrl;
+        previewFileUrl = baseUrl + postJson.largeFileUrl;
+        originalFileUrl = baseUrl + postJson.fileUrl;
+        isPreviewDownsized = postJson.hasLarge;
 
-    public String getWebUrl() {
-        return BASE_URL + "/posts/" + id;
-    }
-
-    public String getFileName() {
-        return String.format("%s.%s", id, fileExt);
+        final int maxThumbWidth = 220;
+        final int maxThumbHeight = 220;
+        final int minThumbWidth = 100;
+        final int minThumbHeight = 100;
+        if (isLandscape()) {
+            thumbWidth = maxThumbWidth;
+            thumbHeight = Math.max(minThumbHeight, (thumbWidth * height) / width);
+        } else {
+            thumbHeight = maxThumbHeight;
+            thumbWidth = Math.max(minThumbWidth, (thumbHeight * width) / height);
+        }
     }
 
     public int getId() {
@@ -64,6 +71,18 @@ public class Post extends RealmObject {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getThumbWidth() {
+        return thumbWidth;
+    }
+
+    public int getThumbHeight() {
+        return thumbHeight;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public String getTagStringArtist() {
@@ -82,20 +101,32 @@ public class Post extends RealmObject {
         return tagStringGeneral;
     }
 
-    public boolean hasLargeFileUrl() {
-        return hasLarge;
+    public String getWebUrl() {
+        return webUrl;
     }
 
-    public String getSmallFileUrl() {
-        return BASE_URL + smallFileUrl;
+    public String getThumbFileUrl() {
+        return thumbFileUrl;
     }
 
-    public String getLargeFileUrl() {
-        return BASE_URL + largeFileUrl;
+    public String getPreviewFileUrl() {
+        return previewFileUrl;
     }
 
     public String getOriginalFileUrl() {
-        return BASE_URL + originalFileUrl;
+        return originalFileUrl;
+    }
+
+    public boolean isPreviewDownsized() {
+        return isPreviewDownsized;
+    }
+
+    public boolean isLandscape() {
+        return width > height;
+    }
+
+    public boolean hasFileUrl() {
+        return thumbFileUrl != null && previewFileUrl != null;
     }
 
     @Override
@@ -106,12 +137,26 @@ public class Post extends RealmObject {
             return false;
         } else {
             Post post = (Post) o;
-            return id == post.getId();
+            return id == post.id;
         }
     }
 
     @Override
     public int hashCode() {
-        return getId();
+        return id;
+    }
+
+    public static class MoshiAdapter {
+
+        private String baseUrl;
+
+        public MoshiAdapter(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+
+        @FromJson
+        Post fromJson(PostJson postJson) {
+            return new Post(postJson, baseUrl);
+        }
     }
 }

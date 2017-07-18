@@ -57,24 +57,18 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         ImageView imageView = holder.imageView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
-        int originalHeight = post.getHeight();
-        int originalWidth = post.getWidth();
-
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
-        if (originalWidth > originalHeight) {
-            flexboxLp.width = MAX_THUMB_WIDTH;
-            flexboxLp.height = Math.max(MIN_THUMB_HEIGHT, (flexboxLp.width * originalHeight) / originalWidth);
+        flexboxLp.width = post.getThumbWidth();
+        flexboxLp.height = post.getThumbHeight();
+        if (post.isLandscape()) {
             flexboxLp.setFlexGrow(1.0f);
             flexboxLp.setMaxWidth(300);
-        } else {
-            flexboxLp.height = MAX_THUMB_HEIGHT;
-            flexboxLp.width = Math.max(MIN_THUMB_WIDTH, (flexboxLp.height * originalWidth) / originalHeight);
         }
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 
         Glide.with(parentActivity)
-                .load(post.getSmallFileUrl())
+                .load(post.getThumbFileUrl())
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken)
                 .dontAnimate()

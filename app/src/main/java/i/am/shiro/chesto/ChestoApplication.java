@@ -3,7 +3,11 @@ package i.am.shiro.chesto;
 import android.app.Application;
 import android.os.StrictMode;
 
+import com.squareup.moshi.Moshi;
+
 import i.am.shiro.chesto.models.Danbooru;
+import i.am.shiro.chesto.models.Post;
+import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import retrofit2.Retrofit;
@@ -45,17 +49,24 @@ public class ChestoApplication extends Application {
     }
 
     private void initDanbooru() {
-        RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io());
-        MoshiConverterFactory converter = MoshiConverterFactory.create();
+        String baseUrl = "http://safebooru.donmai.us/";
 
-        if (danbooru == null) {
-            danbooru = new Retrofit.Builder()
-                    .baseUrl("http://safebooru.donmai.us/")
-                    .addCallAdapterFactory(callAdapter)
-                    .addConverterFactory(converter)
-                    .build()
-                    .create(Danbooru.class);
-        }
+        Scheduler ioScheduler = Schedulers.io();
+        RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);
+
+        Post.MoshiAdapter postMoshiAdapter = new Post.MoshiAdapter(baseUrl);
+        Moshi moshi = new Moshi.Builder()
+                .add(postMoshiAdapter)
+                .build();
+
+        MoshiConverterFactory converter = MoshiConverterFactory.create(moshi);
+
+        danbooru = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addCallAdapterFactory(callAdapter)
+                .addConverterFactory(converter)
+                .build()
+                .create(Danbooru.class);
     }
 
     public static Danbooru danbooru() {

@@ -67,12 +67,12 @@ final class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             BlurTransformation blurTransformation = new BlurTransformation(parentActivity, 1);
 
             DrawableRequestBuilder thumb = Glide.with(parentActivity)
-                    .load(post.getSmallFileUrl())
+                    .load(post.getThumbFileUrl())
                     .bitmapTransform(blurTransformation)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE);
 
             Glide.with(parentActivity)
-                    .load(post.getLargeFileUrl())
+                    .load(post.getPreviewFileUrl())
                     .error(R.drawable.image_broken)
                     .thumbnail(thumb)
                     .into((ImageView) itemView);
