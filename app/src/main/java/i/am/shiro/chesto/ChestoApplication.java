@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi;
 
 import i.am.shiro.chesto.models.Danbooru;
 import i.am.shiro.chesto.models.Post;
+import i.am.shiro.chesto.models.Tag;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
@@ -55,8 +56,10 @@ public class ChestoApplication extends Application {
         RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);
 
         Post.MoshiAdapter postMoshiAdapter = new Post.MoshiAdapter(baseUrl);
+        Tag.MoshiAdapter tagMoshiAdapter = new Tag.MoshiAdapter();
         Moshi moshi = new Moshi.Builder()
                 .add(postMoshiAdapter)
+                .add(tagMoshiAdapter)
                 .build();
 
         MoshiConverterFactory converter = MoshiConverterFactory.create(moshi);

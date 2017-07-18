@@ -33,6 +33,10 @@ public class Post extends RealmObject {
 
     private boolean isPreviewDownsized;
 
+    public Post() {
+        // no arg constructor required by Realm
+    }
+
     public Post(PostJson postJson, String baseUrl) {
         id = postJson.id;
         width = postJson.width;
