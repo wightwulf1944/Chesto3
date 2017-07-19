@@ -22,7 +22,7 @@ import timber.log.Timber;
  * Created by Subaru Tashiro on 7/11/2017.
  */
 
-final class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewHolder> {
 
     private PostSearch searchResults;
 

@@ -40,7 +40,7 @@ public class PostActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
 
-    @BindView(R.id.recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.imageRecyclerView) RecyclerView imageRecycler;
     @BindView(R.id.infoButton) ImageButton infoButton;
     @BindView(R.id.hideButton) ImageButton hideButton;
     @BindView(R.id.bottomSheet) View bottomSheet;
@@ -64,28 +64,28 @@ public class PostActivity extends AppCompatActivity {
         infoButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_EXPANDED));
         hideButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED));
 
-        PostAdapter postAdapter = new PostAdapter();
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(postAdapter);
 
+        PostImageAdapter postImageAdapter = new PostImageAdapter();
+        imageRecycler.setHasFixedSize(true);
+        imageRecycler.setAdapter(postImageAdapter);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(recyclerView);
+        pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
-        Snackbar errorSnackbar = Snackbar.make(recyclerView, "Could not load more posts", Snackbar.LENGTH_INDEFINITE);
+        Snackbar errorSnackbar = Snackbar.make(imageRecycler, "Could not load more posts", Snackbar.LENGTH_INDEFINITE);
 
         int postIndex = getIntent().getIntExtra("default", -1);
-        recyclerView.scrollToPosition(postIndex);
+        imageRecycler.scrollToPosition(postIndex);
 
         // bind search to activity
         currentSearch = SearchHistory.current();
-        postAdapter.setData(currentSearch);
+        postImageAdapter.setData(currentSearch);
         errorSnackbar.setAction("Retry", v -> currentSearch.load());
 
         searchSubscriber = currentSearch.makeSubscriber();
-        searchSubscriber.setOnPostAddedListener(postAdapter::notifyItemInserted);
-        searchSubscriber.setOnPostUpdatedListener(postAdapter::notifyItemChanged);
-        searchSubscriber.setOnResultsClearedListener(postAdapter::notifyDataSetChanged);
+        searchSubscriber.setOnPostAddedListener(postImageAdapter::notifyItemInserted);
+        searchSubscriber.setOnPostUpdatedListener(postImageAdapter::notifyItemChanged);
+        searchSubscriber.setOnResultsClearedListener(postImageAdapter::notifyDataSetChanged);
         searchSubscriber.setOnErrorListener(errorSnackbar::show);
     }
 
@@ -172,12 +172,12 @@ public class PostActivity extends AppCompatActivity {
         if (grantResults[0] == PERMISSION_GRANTED) {
             downloadPost();
         } else {
-            Snackbar.make(recyclerView, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(imageRecycler, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
         }
     }
 
     private int getCurrentItemPosition() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        LinearLayoutManager layoutManager = (LinearLayoutManager) imageRecycler.getLayoutManager();
         return layoutManager.findFirstVisibleItemPosition();
     }
 }
