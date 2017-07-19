@@ -29,6 +29,8 @@ import i.am.shiro.chesto.engine.SearchSubscriber;
 import i.am.shiro.chesto.models.Post;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
+import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 import static butterknife.ButterKnife.findById;
 
 /**
@@ -61,10 +63,9 @@ public class PostActivity extends AppCompatActivity {
         }
 
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-        infoButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_EXPANDED));
-        hideButton.setOnClickListener(v -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED));
-
-
+        behavior.setState(STATE_HIDDEN);
+        infoButton.setOnClickListener(v -> behavior.setState(STATE_COLLAPSED));
+        hideButton.setOnClickListener(v -> behavior.setState(STATE_HIDDEN));
 
         PostImageAdapter postImageAdapter = new PostImageAdapter();
         imageRecycler.setHasFixedSize(true);
