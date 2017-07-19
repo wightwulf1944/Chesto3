@@ -128,7 +128,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void finishAndReturnResult() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("default", getCurrentItemPosition()); //TODO
+        resultIntent.putExtra("default", getCurrentItemPosition());
         setResult(RESULT_OK, resultIntent);
         finish();
     }

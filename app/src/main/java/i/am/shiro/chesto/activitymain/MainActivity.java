@@ -26,6 +26,8 @@ import i.am.shiro.chesto.engine.SearchSubscriber;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int POST_ACTIVITY_REQUEST = 1;
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
     @BindView(R.id.refreshLayout) SwipeRefreshLayout refreshLayout;
@@ -116,7 +118,21 @@ public class MainActivity extends AppCompatActivity {
     private void onAdapterItemClicked(int index) {
         Intent intent = new Intent(this, PostActivity.class);
         intent.putExtra("default", index);
-        startActivity(intent);
+        startActivityForResult(intent, POST_ACTIVITY_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != POST_ACTIVITY_REQUEST) {
+            return;
+        }
+
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        int currentIndex = data.getIntExtra("default", -1);
+        recyclerView.scrollToPosition(currentIndex);
     }
 
     @Override
