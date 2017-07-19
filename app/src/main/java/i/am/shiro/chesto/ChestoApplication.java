@@ -6,8 +6,8 @@ import android.os.StrictMode;
 import com.squareup.moshi.Moshi;
 
 import i.am.shiro.chesto.models.Danbooru;
-import i.am.shiro.chesto.models.Post;
-import i.am.shiro.chesto.models.Tag;
+import i.am.shiro.chesto.moshi.PostMoshiAdapter;
+import i.am.shiro.chesto.moshi.TagMoshiAdapter;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
@@ -55,8 +55,8 @@ public class ChestoApplication extends Application {
         Scheduler ioScheduler = Schedulers.io();
         RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);
 
-        Post.MoshiAdapter postMoshiAdapter = new Post.MoshiAdapter(baseUrl);
-        Tag.MoshiAdapter tagMoshiAdapter = new Tag.MoshiAdapter();
+        PostMoshiAdapter postMoshiAdapter = new PostMoshiAdapter(baseUrl);
+        TagMoshiAdapter tagMoshiAdapter = new TagMoshiAdapter();
         Moshi moshi = new Moshi.Builder()
                 .add(postMoshiAdapter)
                 .add(tagMoshiAdapter)

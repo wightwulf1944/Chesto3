@@ -21,7 +21,7 @@ public class Tag extends RealmObject {
         // no arg constructor required by Realm
     }
 
-    private Tag(TagJson tagJson) {
+    public Tag(TagJson tagJson) {
         id = tagJson.id;
         name = tagJson.name;
         postCount = tagJson.postCount;

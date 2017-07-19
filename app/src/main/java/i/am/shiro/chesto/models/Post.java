@@ -1,7 +1,5 @@
 package i.am.shiro.chesto.models;
 
-import com.squareup.moshi.FromJson;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -148,19 +146,5 @@ public class Post extends RealmObject {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    public static class MoshiAdapter {
-
-        private String baseUrl;
-
-        public MoshiAdapter(String baseUrl) {
-            this.baseUrl = baseUrl;
-        }
-
-        @FromJson
-        Post fromJson(PostJson postJson) {
-            return new Post(postJson, baseUrl);
-        }
     }
 }
