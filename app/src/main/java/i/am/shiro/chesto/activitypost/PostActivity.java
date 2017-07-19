@@ -20,6 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
@@ -43,6 +47,7 @@ public class PostActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 0;
 
     @BindView(R.id.imageRecyclerView) RecyclerView imageRecycler;
+    @BindView(R.id.tagRecyclerView) RecyclerView tagRecycler;
     @BindView(R.id.infoButton) ImageButton infoButton;
     @BindView(R.id.hideButton) ImageButton hideButton;
     @BindView(R.id.bottomSheet) View bottomSheet;
@@ -66,6 +71,11 @@ public class PostActivity extends AppCompatActivity {
         behavior.setState(STATE_HIDDEN);
         infoButton.setOnClickListener(v -> behavior.setState(STATE_COLLAPSED));
         hideButton.setOnClickListener(v -> behavior.setState(STATE_HIDDEN));
+
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
+        tagRecycler.setLayoutManager(layoutManager);
 
         PostImageAdapter postImageAdapter = new PostImageAdapter();
         imageRecycler.setHasFixedSize(true);

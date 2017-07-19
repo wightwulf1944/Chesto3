@@ -44,5 +44,11 @@
             android:layout_alignParentTop="true"
             android:src="@drawable/ic_nav_arrow_hide"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/tagRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/hideButton"/>
+
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
