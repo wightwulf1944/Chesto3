@@ -34,7 +34,6 @@ import static butterknife.ButterKnife.findById;
 /**
  * Created by Subaru Tashiro on 7/7/2017.
  * TODO: share url or image option
- * TODO: notify adapter of dataset changes
  */
 
 public class PostActivity extends AppCompatActivity {

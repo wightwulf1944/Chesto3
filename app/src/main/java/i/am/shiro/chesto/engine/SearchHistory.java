@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 /**
  * Created by Subaru Tashiro on 6/14/2017.
+ * TODO: this is buggy. When android kills the process and restarts it, state here is lost
  */
 
 public class SearchHistory {
