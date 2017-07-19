@@ -75,7 +75,9 @@ public class PostActivity extends AppCompatActivity {
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
+        PostTagAdapter postTagAdapter = new PostTagAdapter();
         tagRecycler.setLayoutManager(layoutManager);
+        tagRecycler.setAdapter(postTagAdapter);
 
         PostImageAdapter postImageAdapter = new PostImageAdapter();
         imageRecycler.setHasFixedSize(true);
