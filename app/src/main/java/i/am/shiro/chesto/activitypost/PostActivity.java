@@ -39,6 +39,7 @@ import static butterknife.ButterKnife.findById;
 
 /**
  * Created by Subaru Tashiro on 7/7/2017.
+ * TODO: clearly outline view setup and data binding to view in onCreate()
  * TODO: share url or image option
  */
 
@@ -67,6 +68,8 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
+        Snackbar errorSnackbar = Snackbar.make(imageRecycler, "Could not load more posts", Snackbar.LENGTH_INDEFINITE);
+
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
         behavior.setState(STATE_HIDDEN);
         infoButton.setOnClickListener(v -> behavior.setState(STATE_COLLAPSED));
@@ -85,14 +88,14 @@ public class PostActivity extends AppCompatActivity {
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
-        Snackbar errorSnackbar = Snackbar.make(imageRecycler, "Could not load more posts", Snackbar.LENGTH_INDEFINITE);
-
-        int postIndex = getIntent().getIntExtra("default", -1);
-        imageRecycler.scrollToPosition(postIndex);
-
         // bind search to activity
         currentSearch = SearchHistory.current();
+        int postIndex = getIntent().getIntExtra("default", -1);
+        Post post = currentSearch.getPost(postIndex);
+
         postImageAdapter.setData(currentSearch);
+        imageRecycler.scrollToPosition(postIndex);
+        postTagAdapter.setData(post);
         errorSnackbar.setAction("Retry", v -> currentSearch.load());
 
         searchSubscriber = currentSearch.makeSubscriber();
