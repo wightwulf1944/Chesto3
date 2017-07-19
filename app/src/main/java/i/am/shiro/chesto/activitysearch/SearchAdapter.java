@@ -58,11 +58,11 @@ final class SearchAdapter extends Adapter<ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         if (viewType == HEADER) {
-            View view = inflater.inflate(R.layout.search_item_header, parent, false);
+            View view = inflater.inflate(R.layout.item_search_header, parent, false);
             return new HeaderViewHolder(view);
 
         } else if (viewType == TAG) {
-            View view = inflater.inflate(R.layout.search_item_tag, parent, false);
+            View view = inflater.inflate(R.layout.item_search_tag, parent, false);
             return new TagViewHolder(view);
 
         }
