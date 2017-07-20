@@ -26,11 +26,12 @@
         android:layout_gravity="bottom|start"
         android:src="@drawable/ic_nav_info"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
+        android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="300dp"
         app:layout_behavior="@string/bottom_sheet_behavior"
@@ -39,17 +40,12 @@
         <ImageButton
             android:id="@+id/hideButton"
             style="@style/NavButton"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:src="@drawable/ic_nav_arrow_hide"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/tagRecyclerView"
-            android:background="@android:color/black"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/hideButton"/>
+            android:layout_height="match_parent"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
