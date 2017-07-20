@@ -22,7 +22,6 @@ import android.widget.ImageButton;
 
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
