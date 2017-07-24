@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        app:layoutManager="LinearLayoutManager"
-        app:layout_dodgeInsetEdges="bottom"/>
+        app:layoutManager="LinearLayoutManager"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -34,8 +33,7 @@
         android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="300dp"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:layout_insetEdge="bottom">
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
         <ImageButton
             android:id="@+id/hideButton"
