@@ -26,6 +26,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.activitymain.MainActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
 import i.am.shiro.chesto.engine.SearchSubscriber;
@@ -77,6 +78,7 @@ public class PostActivity extends AppCompatActivity {
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         PostTagAdapter postTagAdapter = new PostTagAdapter();
+        postTagAdapter.setOnItemClickListener(this::onTagClicked);
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setAdapter(postTagAdapter);
 
@@ -145,6 +147,17 @@ public class PostActivity extends AppCompatActivity {
         resultIntent.putExtra("default", getCurrentItemPosition());
         setResult(RESULT_OK, resultIntent);
         finish();
+    }
+
+    private void onTagClicked(String tagString) {
+        Uri uri = Uri.parse(tagString);
+        Intent intent = new Intent(
+                Intent.ACTION_SEARCH,
+                uri,
+                this,
+                MainActivity.class
+        );
+        startActivity(intent);
     }
 
     private void downloadPost() {

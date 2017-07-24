@@ -14,7 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.listeners.Listener1;
 import i.am.shiro.chesto.models.Post;
+import timber.log.Timber;
 
 /**
  * Created by Subaru Tashiro on 7/19/2017.
@@ -24,6 +26,7 @@ import i.am.shiro.chesto.models.Post;
 final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolder> {
 
     private List<String> data = new ArrayList<>();
+    private Listener1<String> onItemClickListener;
     private int copyrightIndex;
     private int characterIndex;
     private int artistIndex;
@@ -36,6 +39,9 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
         generalIndex = setCategoryTags("Tags:", post.getTagStringGeneral());
     }
 
+    void setOnItemClickListener(Listener1<String> listener) {
+        onItemClickListener = listener;
+    }
 
     private int setCategoryTags(String categoryLabel, String tags) {
         int index;
@@ -82,9 +88,14 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
             FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
             layoutParams.setWrapBefore(true);
         } else {
+            view.setOnClickListener(v -> {
+                int adapterPosition = vh.getAdapterPosition();
+                String tagString = data.get(adapterPosition);
+                onItemClickListener.onEvent(tagString);
+            });
         }
 
-        return new ViewHolder(view);
+        return vh;
     }
 
     @Override
