@@ -1,7 +1,6 @@
 package i.am.shiro.chesto.activitysearch;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -103,13 +102,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private void invokeSearch() {
         String searchString = editText.getText().toString();
-        Uri uri = Uri.parse(searchString);
-        Intent intent = new Intent(
-                Intent.ACTION_SEARCH,
-                uri,
-                this,
-                MainActivity.class
-        );
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra("default", searchString);
         startActivity(intent);
         finish();
     }

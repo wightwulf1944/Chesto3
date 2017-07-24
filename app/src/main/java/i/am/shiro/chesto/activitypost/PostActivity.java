@@ -150,13 +150,9 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void onTagClicked(String tagString) {
-        Uri uri = Uri.parse(tagString);
-        Intent intent = new Intent(
-                Intent.ACTION_SEARCH,
-                uri,
-                this,
-                MainActivity.class
-        );
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra("default", tagString);
         startActivity(intent);
     }
 

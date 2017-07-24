@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSearchLaunch() {
-        PostSearch postSearch = new PostSearch(getIntent().getDataString());
+        String searchString = getIntent().getStringExtra("default");
+        PostSearch postSearch = new PostSearch(searchString);
         bindSearchToView(postSearch);
         postSearch.load();
         SearchHistory.goForward(postSearch);
