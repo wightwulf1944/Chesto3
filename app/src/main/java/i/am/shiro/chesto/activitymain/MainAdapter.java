@@ -62,7 +62,7 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         flexboxLp.height = post.getThumbHeight();
         if (post.isLandscape()) {
             flexboxLp.setFlexGrow(1.0f);
-            flexboxLp.setMaxWidth(300);
+            flexboxLp.setMaxWidth(350);
         }
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
