@@ -23,56 +23,65 @@ import i.am.shiro.chesto.models.Post;
 
 final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolder> {
 
-    private static final int TYPE_LABEL = 0;
-    private static final int TYPE_TAG = 1;
-
     private List<String> data = new ArrayList<>();
     private int copyrightIndex;
     private int characterIndex;
     private int artistIndex;
-    private int tagIndex;
+    private int generalIndex;
 
     void setData(Post post) {
-        copyrightIndex = 0;
-        data.add("Copyrights:");
-        Collections.addAll(data, post.getTagStringCopyright().split(" "));
+        copyrightIndex = setCategoryTags("Copyrights:", post.getTagStringCopyright());
+        characterIndex = setCategoryTags("Characters:", post.getTagStringCharacter());
+        artistIndex = setCategoryTags("Artist:", post.getTagStringArtist());
+        generalIndex = setCategoryTags("Tags:", post.getTagStringGeneral());
+    }
 
-        characterIndex = data.size();
-        data.add("Characters:");
-        Collections.addAll(data, post.getTagStringCharacter().split(" "));
 
-        artistIndex = data.size();
-        data.add("Artist:");
-        Collections.addAll(data, post.getTagStringArtist().split(" "));
-
-        tagIndex = data.size();
-        data.add("Tags:");
-        Collections.addAll(data, post.getTagStringGeneral().split(" "));
-
+    private int setCategoryTags(String categoryLabel, String tags) {
+        int index;
+        Timber.d(tags);
+        if (tags.trim().isEmpty()) {
+            index = -1;
+        } else {
+            index = data.size();
+            data.add(categoryLabel);
+            Collections.addAll(data, tags.split(" "));
+        }
+        return index;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == copyrightIndex ||
-                position == characterIndex ||
-                position == artistIndex ||
-                position == tagIndex ? TYPE_LABEL : TYPE_TAG;
+        if (position == copyrightIndex) {
+            return R.layout.item_post_label;
+        } else if (position < characterIndex) {
+            return R.layout.item_post_tag_copyright;
+        } else if (position == characterIndex) {
+            return R.layout.item_post_label;
+        } else if (position < artistIndex) {
+            return R.layout.item_post_tag_character;
+        } else if (position == artistIndex) {
+            return R.layout.item_post_label;
+        } else if (position < generalIndex) {
+            return R.layout.item_post_tag_artist;
+        } else if (position == generalIndex) {
+            return R.layout.item_post_label;
+        } else {
+            return R.layout.item_post_tag_general;
+        }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view;
+        View view = inflater.inflate(viewType, parent, false);
+        ViewHolder vh = new ViewHolder(view);
 
-        if (viewType == TYPE_LABEL) {
-            view = inflater.inflate(R.layout.item_post_label, parent, false);
+        if (viewType == R.layout.item_post_label) {
             FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
             layoutParams.setWrapBefore(true);
-        } else if (viewType == TYPE_TAG) {
-            view = inflater.inflate(R.layout.item_post_tag, parent, false);
         } else {
-            throw new RuntimeException("invalid view type");
         }
 
         return new ViewHolder(view);
