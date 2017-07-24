@@ -33,6 +33,7 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
     private int generalIndex;
 
     void setData(Post post) {
+        data.clear();
         copyrightIndex = setCategoryTags("Copyrights:", post.getTagStringCopyright());
         characterIndex = setCategoryTags("Characters:", post.getTagStringCharacter());
         artistIndex = setCategoryTags("Artist:", post.getTagStringArtist());

@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -52,8 +51,10 @@ public class PostActivity extends AppCompatActivity {
     @BindView(R.id.infoButton) ImageButton infoButton;
     @BindView(R.id.hideButton) ImageButton hideButton;
     @BindView(R.id.bottomSheet) View bottomSheet;
+    private int currentPage;
     private PostSearch currentSearch;
     private SearchSubscriber searchSubscriber;
+    private PostTagAdapter postTagAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,26 +78,28 @@ public class PostActivity extends AppCompatActivity {
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
-        PostTagAdapter postTagAdapter = new PostTagAdapter();
+        postTagAdapter = new PostTagAdapter();
         postTagAdapter.setOnItemClickListener(this::onTagClicked);
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setAdapter(postTagAdapter);
 
         PostImageAdapter postImageAdapter = new PostImageAdapter();
-        imageRecycler.setHasFixedSize(true);
+        ScrollToPageListener scrollToPageListener = new ScrollToPageListener();
+        scrollToPageListener.setOnScrollToPageListener(this::onScrollToImagePage);
         imageRecycler.setAdapter(postImageAdapter);
+        imageRecycler.addOnScrollListener(scrollToPageListener);
+        imageRecycler.setHasFixedSize(true);
+
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
         // bind search to activity
         currentSearch = SearchHistory.current();
-        int postIndex = getIntent().getIntExtra("default", -1);
-        Post post = currentSearch.getPost(postIndex);
-
         postImageAdapter.setData(currentSearch);
-        imageRecycler.scrollToPosition(postIndex);
-        postTagAdapter.setData(post);
         errorSnackbar.setAction("Retry", v -> currentSearch.load());
+
+        int postIndex = getIntent().getIntExtra("default", -1);
+        imageRecycler.scrollToPosition(postIndex);
 
         searchSubscriber = currentSearch.makeSubscriber();
         searchSubscriber.setOnPostAddedListener(postImageAdapter::notifyItemInserted);
@@ -144,9 +147,16 @@ public class PostActivity extends AppCompatActivity {
 
     private void finishAndReturnResult() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("default", getCurrentItemPosition());
+        resultIntent.putExtra("default", currentPage);
         setResult(RESULT_OK, resultIntent);
         finish();
+    }
+
+    private void onScrollToImagePage(int position) {
+        currentPage = position;
+        Post post = currentSearch.getPost(position);
+        postTagAdapter.setData(post);
+        postTagAdapter.notifyDataSetChanged();
     }
 
     private void onTagClicked(String tagString) {
@@ -167,14 +177,14 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void openPostInBrowser() {
-        Post post = currentSearch.getPost(getCurrentItemPosition());
+        Post post = currentSearch.getPost(currentPage);
         Uri webUri = Uri.parse(post.getWebUrl());
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
 
     private void sharePost() {
-        Post post = currentSearch.getPost(getCurrentItemPosition());
+        Post post = currentSearch.getPost(currentPage);
         String webUrl = post.getWebUrl();
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -197,10 +207,5 @@ public class PostActivity extends AppCompatActivity {
         } else {
             Snackbar.make(imageRecycler, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
         }
-    }
-
-    private int getCurrentItemPosition() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) imageRecycler.getLayoutManager();
-        return layoutManager.findFirstVisibleItemPosition();
     }
 }
