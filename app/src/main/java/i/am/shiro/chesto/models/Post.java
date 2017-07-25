@@ -39,7 +39,7 @@ public class Post extends RealmObject {
         id = postJson.id;
         width = postJson.width;
         height = postJson.height;
-        fileName = postJson.id + '.' + postJson.fileExt;
+        fileName = postJson.id + "." + postJson.fileExt;
         tagStringArtist = postJson.tagStringArtist;
         tagStringCharacter = postJson.tagStringCharacter;
         tagStringCopyright = postJson.tagStringCopyright;
