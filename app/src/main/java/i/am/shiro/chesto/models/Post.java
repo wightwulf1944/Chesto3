@@ -53,7 +53,7 @@ public class Post extends RealmObject {
         final int maxThumbWidth = 220;
         final int maxThumbHeight = 220;
         final int minThumbWidth = 100;
-        final int minThumbHeight = 100;
+        final int minThumbHeight = 180;
         if (isLandscape()) {
             thumbWidth = maxThumbWidth;
             thumbHeight = Math.max(minThumbHeight, (thumbWidth * height) / width);
