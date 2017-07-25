@@ -21,4 +21,8 @@ public class PostJson {
     @Json(name = "preview_file_url") String previewFileUrl;
     @Json(name = "large_file_url") String largeFileUrl;
     @Json(name = "file_url") String fileUrl;
+
+    public static boolean hasImageUrls(PostJson postJson) {
+        return postJson.previewFileUrl != null;
+    }
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.models.Post;
+import i.am.shiro.chesto.models.PostJson;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -57,15 +59,20 @@ public final class PostSearch {
             return;
         }
 
+        String baseUrl = "http://safebooru.donmai.us";
+
         disposable = ChestoApplication.danbooru()
                 .getPosts(searchString, currentPage)
+                .flatMap(Observable::fromIterable)
+                .filter(PostJson::hasImageUrls)
+                .map(postJson -> new Post(postJson, baseUrl))
+                .toList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> onLoading(true))
                 .doFinally(() -> onLoading(false))
                 .subscribe(
-                        this::merge,
-                        this::onLoadError,
-                        () -> currentPage++
+                        this::onLoadSuccess,
+                        this::onLoadError
                 );
     }
 
@@ -79,17 +86,15 @@ public final class PostSearch {
         subscriberList.notifyCleared();
     }
 
-    private void merge(List<Post> newResults) {
+    private void onLoadSuccess(List<Post> newResults) {
+        currentPage++;
+
         int newCapacity = list.size() + newResults.size();
         list.ensureCapacity(newCapacity);
 
         HashSet<Post> postsSet = new HashSet<>(list);
 
         for (Post newPost : newResults) {
-            if (!newPost.hasFileUrl()) {
-                continue;
-            }
-
             if (postsSet.contains(newPost)) {
                 int index = list.lastIndexOf(newPost);
                 list.set(index, newPost);
