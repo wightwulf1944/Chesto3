@@ -4,7 +4,7 @@ apply plugin: 'realm-android'
 apply plugin: 'com.jakewharton.hugo'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "26.0.0"
 
     compileOptions {
@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "i.am.shiro.chesto"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 3
         versionName "3.0"
     }
@@ -34,8 +34,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:appcompat-v7:26.0.0'
+    compile 'com.android.support:design:26.0.0'
 
 //    https://github.com/JakeWharton/timber
     compile 'com.jakewharton.timber:timber:4.5.1'
