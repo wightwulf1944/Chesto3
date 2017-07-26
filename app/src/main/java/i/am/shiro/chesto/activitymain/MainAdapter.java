@@ -23,11 +23,6 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
-    private static int MAX_THUMB_HEIGHT = 220;
-    private static int MAX_THUMB_WIDTH = 220;
-    private static int MIN_THUMB_HEIGHT = 100;
-    private static int MIN_THUMB_WIDTH = 100;
-
     private PostSearch searchResults;
     private Listener1<Integer> onItemClickedListener;
 
@@ -43,6 +38,11 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_main_thumbs, parent, false);
+
+        FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
+        layoutParams.setMinWidth(100);
+        layoutParams.setMinHeight(150);
+        layoutParams.setFlexGrow(1.0f);
 
         return new ViewHolder(view);
     }
@@ -60,13 +60,7 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
         flexboxLp.height = post.getThumbHeight();
-        if (post.isLandscape()) {
-            flexboxLp.setFlexGrow(1.0f);
-            flexboxLp.setMaxWidth(350);
-        } else {
-            flexboxLp.setFlexGrow(0.0f);
-            flexboxLp.setMaxWidth(Integer.MAX_VALUE);
-        }
+        flexboxLp.setMaxWidth((220 * post.getWidth()) / post.getHeight());
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 

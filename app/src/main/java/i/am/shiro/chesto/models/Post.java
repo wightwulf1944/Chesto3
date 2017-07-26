@@ -50,16 +50,13 @@ public class Post extends RealmObject {
         originalFileUrl = baseUrl + postJson.fileUrl;
         isPreviewDownsized = postJson.hasLarge;
 
-        final int maxThumbWidth = 220;
-        final int maxThumbHeight = 220;
-        final int minThumbWidth = 100;
-        final int minThumbHeight = 180;
+        final int maxMeasure = 220;
         if (isLandscape()) {
-            thumbWidth = maxThumbWidth;
-            thumbHeight = Math.max(minThumbHeight, (thumbWidth * height) / width);
+            thumbWidth = maxMeasure;
+            thumbHeight = (thumbWidth * height) / width;
         } else {
-            thumbHeight = maxThumbHeight;
-            thumbWidth = Math.max(minThumbWidth, (thumbHeight * width) / height);
+            thumbHeight = maxMeasure;
+            thumbWidth = (thumbHeight * width) / height;
         }
     }
 
