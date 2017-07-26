@@ -63,6 +63,9 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         if (post.isLandscape()) {
             flexboxLp.setFlexGrow(1.0f);
             flexboxLp.setMaxWidth(350);
+        } else {
+            flexboxLp.setFlexGrow(0.0f);
+            flexboxLp.setMaxWidth(Integer.MAX_VALUE);
         }
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
