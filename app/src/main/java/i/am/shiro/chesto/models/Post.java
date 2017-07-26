@@ -16,6 +16,7 @@ public class Post extends RealmObject {
     private int height;
     private int thumbWidth;
     private int thumbHeight;
+    private int thumbMaxWidth;
 
     private String fileName;
 
@@ -58,6 +59,7 @@ public class Post extends RealmObject {
             thumbHeight = maxMeasure;
             thumbWidth = (thumbHeight * width) / height;
         }
+        thumbMaxWidth = (maxMeasure * width) / height;
     }
 
     public int getId() {
@@ -78,6 +80,10 @@ public class Post extends RealmObject {
 
     public int getThumbHeight() {
         return thumbHeight;
+    }
+
+    public int getThumbMaxWidth() {
+        return thumbMaxWidth;
     }
 
     public String getFileName() {

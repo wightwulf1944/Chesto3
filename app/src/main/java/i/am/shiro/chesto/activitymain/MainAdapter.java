@@ -60,7 +60,7 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
         flexboxLp.height = post.getThumbHeight();
-        flexboxLp.setMaxWidth((220 * post.getWidth()) / post.getHeight());
+        flexboxLp.setMaxWidth(post.getThumbMaxWidth());
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 
