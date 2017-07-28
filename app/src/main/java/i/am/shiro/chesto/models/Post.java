@@ -16,6 +16,7 @@ public class Post extends RealmObject {
     private int height;
     private int thumbWidth;
     private int thumbHeight;
+    private int thumbMaxWidth;
 
     private String fileName;
 
@@ -50,14 +51,15 @@ public class Post extends RealmObject {
         originalFileUrl = baseUrl + postJson.fileUrl;
         isPreviewDownsized = postJson.hasLarge;
 
-        final int maxMeasure = 220;
-        if (isLandscape()) {
+        final int maxMeasure = 200;
+        if (width > height) {
             thumbWidth = maxMeasure;
             thumbHeight = (thumbWidth * height) / width;
         } else {
             thumbHeight = maxMeasure;
             thumbWidth = (thumbHeight * width) / height;
         }
+        thumbMaxWidth = (maxMeasure * width) / height;
     }
 
     public int getId() {
@@ -78,6 +80,10 @@ public class Post extends RealmObject {
 
     public int getThumbHeight() {
         return thumbHeight;
+    }
+
+    public int getThumbMaxWidth() {
+        return thumbMaxWidth;
     }
 
     public String getFileName() {
@@ -118,10 +124,6 @@ public class Post extends RealmObject {
 
     public boolean isPreviewDownsized() {
         return isPreviewDownsized;
-    }
-
-    public boolean isLandscape() {
-        return width > height;
     }
 
     public boolean hasFileUrl() {

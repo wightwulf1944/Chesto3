@@ -54,13 +54,13 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         }
 
         Post post = searchResults.getPost(position);
-        ImageView imageView = holder.imageView;
+        ImageView imageView = (ImageView) holder.itemView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
         flexboxLp.height = post.getThumbHeight();
-        flexboxLp.setMaxWidth((220 * post.getWidth()) / post.getHeight());
+        flexboxLp.setMaxWidth(post.getThumbMaxWidth());
 
         RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(parentActivity, 4, 0);
 
@@ -81,12 +81,9 @@ final class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView imageView;
-
         private ViewHolder(View view) {
             super(view);
-            imageView = (ImageView) view;
-            imageView.setOnClickListener(v -> onItemClickedListener.onEvent(getAdapterPosition()));
+            view.setOnClickListener(v -> onItemClickedListener.onEvent(getAdapterPosition()));
         }
     }
 }

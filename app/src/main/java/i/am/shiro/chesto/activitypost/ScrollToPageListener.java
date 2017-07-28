@@ -11,7 +11,7 @@ import static android.support.v7.widget.RecyclerView.NO_POSITION;
  * Created by Subaru Tashiro on 7/24/2017.
  */
 
-public class ScrollToPageListener extends RecyclerView.OnScrollListener {
+class ScrollToPageListener extends RecyclerView.OnScrollListener {
 
     private Listener1<Integer> onScrollToPageListener;
 
