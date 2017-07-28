@@ -4,7 +4,7 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import i.am.shiro.chesto.listeners.Listener0;
+import i.am.shiro.chesto.listeners.Listener1;
 
 /**
  * Created by Subaru Tashiro on 7/3/2017.
@@ -12,16 +12,17 @@ import i.am.shiro.chesto.listeners.Listener0;
 
 final class EditorSearchListener implements TextView.OnEditorActionListener {
 
-    private Listener0 onEditorSearchListener;
+    private Listener1<String> onEditorSearchListener;
 
-    void setAction(Listener0 listener) {
+    void setAction(Listener1<String> listener) {
         onEditorSearchListener = listener;
     }
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            onEditorSearchListener.onEvent();
+            String searchString = v.getText().toString();
+            onEditorSearchListener.onEvent(searchString);
             return true;
         } else {
             return false;
