@@ -52,7 +52,7 @@ public class Post extends RealmObject {
         isPreviewDownsized = postJson.hasLarge;
 
         final int maxMeasure = 200;
-        if (isLandscape()) {
+        if (width > height) {
             thumbWidth = maxMeasure;
             thumbHeight = (thumbWidth * height) / width;
         } else {
@@ -124,10 +124,6 @@ public class Post extends RealmObject {
 
     public boolean isPreviewDownsized() {
         return isPreviewDownsized;
-    }
-
-    public boolean isLandscape() {
-        return width > height;
     }
 
     public boolean hasFileUrl() {
