@@ -26,7 +26,6 @@ public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.editText) EditText editText;
     @BindView(R.id.clearButton) ImageButton clearButton;
-    private String currentQuery;
     private TagStore tagStore;
 
     @Override
@@ -54,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
         editText.addTextChangedListener(afterTextChangedListener);
 
         SearchAdapter adapter = new SearchAdapter();
-        adapter.setOnItemClickListener(this::onAdapterItemClicked);
+        adapter.setOnItemClickListener(this::invokeSearch);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -89,21 +88,11 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         int spaceIndex = s.lastIndexOf(" ");
-        currentQuery = s.substring(spaceIndex + 1);
+        String currentQuery = s.substring(spaceIndex + 1);
         tagStore.searchTags(currentQuery);
     }
 
-
-    private void onAdapterItemClicked(String itemName) {
-        String text = editText.getText()
-                .toString()
-                .replaceFirst(currentQuery, itemName);
-        editText.setText(text);
-        invokeSearch();
-    }
-
-    private void invokeSearch() {
-        String searchString = editText.getText().toString();
+    private void invokeSearch(String searchString) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", searchString);
