@@ -30,6 +30,8 @@
             android:name=".activitypost.PostActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Fullscreen"/>
+
+        <service android:name=".servicedownload.DownloadService" />
     </application>
 
 </manifest>
