@@ -28,6 +28,7 @@ public final class DownloadService extends IntentService {
 
     public static void queue(Context context, Post post) {
         Intent starter = new Intent(context, DownloadService.class);
+        starter.putExtra("id", post.getId());
         starter.putExtra("url", post.getOriginalFileUrl());
         starter.putExtra("filename", post.getFileName());
         starter.putExtra("width", post.getWidth());

@@ -22,6 +22,7 @@ import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 /**
  * Created by Subaru Tashiro on 8/1/2017.
+ * TODO progress notification may be designed better
  */
 
 final class NotificationHelper {
