@@ -46,12 +46,6 @@ public final class DownloadService extends IntentService {
     }
 
     @Override
-    public void onDestroy() {
-        notificationHelper.notifyQueueFinished();
-        super.onDestroy();
-    }
-
-    @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         notificationHelper.notifyDownloadQueued();
         return super.onStartCommand(intent, flags, startId);
@@ -70,11 +64,13 @@ public final class DownloadService extends IntentService {
             Intent newImageIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri);
             sendBroadcast(newImageIntent);
 
-            notificationHelper.notifyDownloadSuccess(targetFile);
+            notificationHelper.notifyDownloadSuccess(downloadInfo, targetFile);
         } catch (Exception e) {
             notificationHelper.notifyDownloadFailed(downloadInfo);
             Timber.e(e, "Download error: %s", downloadInfo.url);
         }
+
+        notificationHelper.notifyDownloadDone();
     }
 
     private File getSourceFile(DownloadInfo dlInfo) throws Exception {

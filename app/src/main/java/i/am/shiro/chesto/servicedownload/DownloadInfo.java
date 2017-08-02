@@ -8,12 +8,14 @@ import android.content.Intent;
 
 final class DownloadInfo {
 
+    final int id;
     final String url;
     final String filename;
     final int width;
     final int height;
 
     DownloadInfo(Intent intent) {
+        id = intent.getIntExtra("id", -1);
         url = intent.getStringExtra("url");
         filename = intent.getStringExtra("filename");
         width = intent.getIntExtra("width", -1);

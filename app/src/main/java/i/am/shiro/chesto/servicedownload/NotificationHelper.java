@@ -32,8 +32,6 @@ final class NotificationHelper {
     private final NotificationManager manager;
     private int downloadsQueued;
     private int downloadsDone;
-    private int downloadsSuccessful;
-    private File latestDownloadedFile;
 
     NotificationHelper(Service service) {
         parentService = service;
@@ -46,27 +44,17 @@ final class NotificationHelper {
         manager.notify(NOTIFICATION_ID, makeProgressNotification());
     }
 
-    void notifyDownloadSuccess(File file) {
+    void notifyDownloadDone() {
         downloadsDone++;
         manager.notify(NOTIFICATION_ID, makeProgressNotification());
+    }
 
-        downloadsSuccessful++;
-        latestDownloadedFile = file;
+    void notifyDownloadSuccess(DownloadInfo downloadInfo, File file) {
+        manager.notify(downloadInfo.id, makeSuccessNotification(file));
     }
 
     void notifyDownloadFailed(DownloadInfo downloadInfo) {
-        downloadsDone++;
-        manager.notify(NOTIFICATION_ID, makeProgressNotification());
-
-        // TODO show failed notification with random id
-    }
-
-    void notifyQueueFinished() {
-        if (downloadsSuccessful == 1) {
-            manager.notify(NOTIFICATION_ID, makeSingleSuccessNotification());
-        } else if (downloadsSuccessful > 1) {
-            manager.notify(NOTIFICATION_ID, makeMultipleSuccessNotification());
-        }
+        manager.notify(downloadInfo.id, makeFailedNotification());
     }
 
     private Notification makeProgressNotification() {
@@ -86,8 +74,8 @@ final class NotificationHelper {
                 .build();
     }
 
-    private Notification makeSingleSuccessNotification() {
-        Uri uri = Uri.fromFile(latestDownloadedFile);
+    private Notification makeSuccessNotification(File file) {
+        Uri uri = Uri.fromFile(file);
         Intent viewIntent = new Intent(Intent.ACTION_VIEW);
         viewIntent.setDataAndType(uri, "image/*");
         viewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -100,7 +88,7 @@ final class NotificationHelper {
 
         String contentText = "Image saved. Tap to View.";
 
-        String absolutePath = latestDownloadedFile.getAbsolutePath();
+        String absolutePath = file.getAbsolutePath();
         Bitmap bitmap = BitmapFactory.decodeFile(absolutePath);
         BigPictureStyle bigPictureStyle = new BigPictureStyle()
                 .setSummaryText(contentText)
@@ -114,9 +102,9 @@ final class NotificationHelper {
                 .build();
     }
 
-    private Notification makeMultipleSuccessNotification() {
+    private Notification makeFailedNotification() {
         return makeBaseNotification()
-                .setContentText("Images Saved")
+                .setContentText("Failed to save image. Tap to retry.")
                 .setAutoCancel(true)
                 .build();
     }
