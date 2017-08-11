@@ -47,6 +47,10 @@ public final class PostSearch {
         return list.size();
     }
 
+    public boolean isLoading() {
+        return isLoading;
+    }
+
     public void refresh() {
         disposable.dispose();
         currentPage = 1;
