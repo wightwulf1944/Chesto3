@@ -30,6 +30,7 @@ import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import i.am.shiro.chesto.models.Post;
+import i.am.shiro.chesto.servicedownload.DownloadService;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
@@ -169,7 +170,8 @@ public class PostActivity extends AppCompatActivity {
     private void downloadPost() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck == PERMISSION_GRANTED) {
-            // TODO; launch download
+            Post post = currentSearch.getPost(currentPage);
+            DownloadService.queue(this, post);
         } else {
             String[] permissionStrings = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
             ActivityCompat.requestPermissions(this, permissionStrings, PERMISSION_REQUEST_CODE);
