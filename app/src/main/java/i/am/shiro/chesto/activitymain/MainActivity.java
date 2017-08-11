@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.refreshLayout) SwipeRefreshLayout refreshLayout;
     private SearchSubscriber searchSubscriber;
     private MainAdapter adapter;
-    private Snackbar errorSnackbar;
     private long lastTimeBackPressed;
 
     @Override
@@ -55,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
-
-        errorSnackbar = Snackbar.make(recyclerView, "Check your connection", Snackbar.LENGTH_INDEFINITE);
 
         if (savedInstanceState == null) {
             String action = getIntent().getAction();
@@ -99,15 +96,20 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(postSearch::refresh);
         toolbar.setSubtitle(postSearch.getSearchString());
         adapter.setData(postSearch);
-        errorSnackbar.setAction("Retry", v -> postSearch.load());
 
         searchSubscriber = postSearch.makeSubscriber();
         searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
-        searchSubscriber.setOnErrorListener(errorSnackbar::show);
+        searchSubscriber.setOnErrorListener(() -> onError(postSearch));
         searchSubscriber.setOnPostAddedListener(adapter::notifyItemInserted);
         searchSubscriber.setOnPostUpdatedListener(adapter::notifyItemChanged);
         searchSubscriber.setOnResultsClearedListener(adapter::notifyDataSetChanged);
 
+    }
+
+    private void onError(PostSearch postSearch) {
+        Snackbar.make(recyclerView, "Check your connection", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry", v -> postSearch.load())
+                .show();
     }
 
     @Override
