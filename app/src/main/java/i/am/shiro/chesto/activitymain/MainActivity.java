@@ -56,40 +56,27 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
 
         if (savedInstanceState == null) {
-            String action = getIntent().getAction();
-            switch (action) {
-                case Intent.ACTION_MAIN:
-                    onEmptyLaunch();
-                    break;
-                case Intent.ACTION_SEARCH:
-                    onSearchLaunch();
-                    break;
-                default:
-                    throw new RuntimeException("Unhandled intent action: " + action);
-            }
+            String searchString = getSearchString();
+            PostSearch postSearch = new PostSearch(searchString);
+            bindSearchToView(postSearch);
+            postSearch.load();
+            SearchHistory.goForward(postSearch);
         } else {
-            onRotate();
+            PostSearch postSearch = SearchHistory.current();
+            bindSearchToView(postSearch);
         }
     }
 
-    private void onEmptyLaunch() {
-        PostSearch postSearch = new PostSearch("");
-        bindSearchToView(postSearch);
-        postSearch.load();
-        SearchHistory.goForward(postSearch);
-    }
-
-    private void onSearchLaunch() {
-        String searchString = getIntent().getStringExtra("default");
-        PostSearch postSearch = new PostSearch(searchString);
-        bindSearchToView(postSearch);
-        postSearch.load();
-        SearchHistory.goForward(postSearch);
-    }
-
-    private void onRotate() {
-        PostSearch postSearch = SearchHistory.current();
-        bindSearchToView(postSearch);
+    private String getSearchString() {
+        String action = getIntent().getAction();
+        switch (action) {
+            case Intent.ACTION_MAIN:
+                return "";
+            case Intent.ACTION_SEARCH:
+                return getIntent().getStringExtra("default");
+            default:
+                throw new RuntimeException("Unhandled intent action: " + action);
+        }
     }
 
     private void bindSearchToView(PostSearch postSearch) {
