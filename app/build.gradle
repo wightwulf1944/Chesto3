@@ -34,8 +34,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.0.0'
-    compile 'com.android.support:design:26.0.0'
+    compile 'com.android.support:appcompat-v7:26.0.1'
+    compile 'com.android.support:design:26.0.1'
 
 //    https://github.com/JakeWharton/timber
     compile 'com.jakewharton.timber:timber:4.5.1'
