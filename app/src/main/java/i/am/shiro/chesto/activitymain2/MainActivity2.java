@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.activitymain.MainActivity;
+import i.am.shiro.chesto.activitymain2.fragmentdetail.DetailFragment;
 import i.am.shiro.chesto.activitymain2.fragmentmaster.MasterFragment;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
@@ -57,6 +59,21 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     public void onMasterItemClicked(int index) {
+        Bundle args = new Bundle();
+        args.putInt("index", index);
 
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(args);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, detailFragment)
+                .commit();
+    }
+
+    public void onDetailTagClicked(String tagString) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra("default", tagString);
+        startActivity(intent);
     }
 }
