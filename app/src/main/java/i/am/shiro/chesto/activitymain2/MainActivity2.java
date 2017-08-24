@@ -36,6 +36,15 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private String getSearchString() {
         String action = getIntent().getAction();
         switch (action) {
@@ -67,6 +76,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, detailFragment)
+                .addToBackStack(null)
                 .commit();
     }
 
