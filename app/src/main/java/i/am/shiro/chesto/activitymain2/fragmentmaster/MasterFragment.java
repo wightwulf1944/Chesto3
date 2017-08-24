@@ -19,6 +19,7 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain2.MainActivity2;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
+import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 
@@ -69,6 +70,8 @@ public class MasterFragment extends Fragment {
         searchSubscriber.setOnPostUpdatedListener(adapter::notifyItemChanged);
         searchSubscriber.setOnResultsClearedListener(adapter::notifyDataSetChanged);
 
+        Timber.d("MASTER FRAGMENT CREATED");
+
         return view;
     }
 
@@ -76,5 +79,7 @@ public class MasterFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         searchSubscriber.unsubscribe();
+
+        Timber.d("MASTER FRAGMENT DESTROYED");
     }
 }
