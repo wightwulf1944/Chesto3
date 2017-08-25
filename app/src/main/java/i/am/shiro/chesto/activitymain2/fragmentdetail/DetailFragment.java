@@ -9,6 +9,7 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -42,7 +43,11 @@ public class DetailFragment extends Fragment {
         PostSearch postSearch = parentActivity.getPostSearch();
         int postIndex = getArguments().getInt("index", -1);
 
+        // TODO: 8/26/2017 add navigation back button 
         Toolbar toolbar = findById(view, R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar.inflateMenu(R.menu.activity_post);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
         View bottomSheet = findById(view, R.id.bottomSheet);
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
@@ -83,14 +88,13 @@ public class DetailFragment extends Fragment {
         Snackbar errorSnackbar = Snackbar.make(imageRecycler, "Could not load more posts", Snackbar.LENGTH_INDEFINITE)
                 .setAction("Retry", v -> postSearch.load());
 
-        parentActivity.setSupportActionBar(toolbar);
         searchSubscriber = postSearch.makeSubscriber();
         searchSubscriber.setOnPostAddedListener(postImageAdapter::notifyItemInserted);
         searchSubscriber.setOnPostUpdatedListener(postImageAdapter::notifyItemChanged);
         searchSubscriber.setOnResultsClearedListener(postImageAdapter::notifyDataSetChanged);
         searchSubscriber.setOnErrorListener(errorSnackbar::show);
 
-        Timber.d("MASTER FRAGMENT CREATED");
+        Timber.d("DETAIL FRAGMENT CREATED");
 
         return view;
     }
@@ -100,6 +104,14 @@ public class DetailFragment extends Fragment {
         super.onDestroyView();
         searchSubscriber.unsubscribe();
 
-        Timber.d("MASTER FRAGMENT DESTROYED");
+        Timber.d("DETAIL FRAGMENT DESTROYED");
+    }
+
+    private boolean onMenuItemClicked(MenuItem item) {
+        switch (item.getItemId()) {
+            // TODO: 8/26/2017  
+            default:
+                return false;
+        }
     }
 }

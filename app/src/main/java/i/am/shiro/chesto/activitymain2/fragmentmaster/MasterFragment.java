@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.activitymain2.fragmentmaster;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +19,7 @@ import com.google.android.flexbox.JustifyContent;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain2.MainActivity2;
+import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import timber.log.Timber;
@@ -40,6 +43,8 @@ public class MasterFragment extends Fragment {
 
         Toolbar toolbar = findById(view, R.id.toolbar);
         toolbar.setSubtitle(postSearch.getSearchString());
+        toolbar.inflateMenu(R.menu.activity_main);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -62,7 +67,6 @@ public class MasterFragment extends Fragment {
         Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", Snackbar.LENGTH_INDEFINITE)
                 .setAction("Retry", v -> postSearch.load());
 
-        parentActivity.setSupportActionBar(toolbar);
         searchSubscriber = postSearch.makeSubscriber();
         searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
         searchSubscriber.setOnErrorListener(errorSnackbar::show);
@@ -81,5 +85,16 @@ public class MasterFragment extends Fragment {
         searchSubscriber.unsubscribe();
 
         Timber.d("MASTER FRAGMENT DESTROYED");
+    }
+
+    private boolean onMenuItemClicked(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return false;
+        }
     }
 }
