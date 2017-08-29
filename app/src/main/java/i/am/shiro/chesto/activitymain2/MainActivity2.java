@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain.MainActivity;
@@ -79,6 +80,10 @@ public class MainActivity2 extends AppCompatActivity {
                 .replace(R.id.fragmentContainer, detailFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void onDetailBackClicked(View view) {
+        getFragmentManager().popBackStack();
     }
 
     public void onDetailTagClicked(String tagString) {
