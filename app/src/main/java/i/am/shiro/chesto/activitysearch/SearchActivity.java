@@ -17,7 +17,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain.MainActivity;
+import i.am.shiro.chesto.activitymain2.MainActivity2;
 import i.am.shiro.chesto.engine.SearchHistory;
 
 import static butterknife.ButterKnife.findById;
@@ -93,7 +93,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void invokeSearch(String searchString) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity2.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", searchString);
         startActivity(intent);
