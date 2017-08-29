@@ -42,6 +42,7 @@ public class MasterFragment extends Fragment {
         PostSearch postSearch = parentActivity.getPostSearch();
 
         Toolbar toolbar = findById(view, R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
         toolbar.setSubtitle(postSearch.getSearchString());
         toolbar.inflateMenu(R.menu.activity_main);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
