@@ -46,12 +46,13 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     private String getSearchString() {
-        String action = getIntent().getAction();
+        Intent intent = getIntent();
+        String action = intent.getAction();
         switch (action) {
             case Intent.ACTION_MAIN:
                 return "";
             case Intent.ACTION_SEARCH:
-                return getIntent().getStringExtra("default");
+                return intent.getStringExtra("default");
             default:
                 throw new RuntimeException("Unhandled intent action: " + action);
         }
