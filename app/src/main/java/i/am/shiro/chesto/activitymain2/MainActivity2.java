@@ -87,7 +87,7 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     public void onDetailTagClicked(String tagString) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity2.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", tagString);
         startActivity(intent);

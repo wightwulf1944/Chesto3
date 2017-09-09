@@ -43,7 +43,6 @@ public class DetailFragment extends Fragment {
         PostSearch postSearch = parentActivity.getPostSearch();
         int postIndex = getArguments().getInt("index", -1);
 
-        // TODO: 8/26/2017 add navigation back button 
         Toolbar toolbar = findById(view, R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
         toolbar.setNavigationOnClickListener(parentActivity::onDetailBackClicked);
