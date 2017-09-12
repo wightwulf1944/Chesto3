@@ -3,11 +3,11 @@ package i.am.shiro.chesto.activitymain2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain.MainActivity;
 import i.am.shiro.chesto.activitymain2.fragmentdetail.DetailFragment;
 import i.am.shiro.chesto.activitymain2.fragmentmaster.MasterFragment;
 import i.am.shiro.chesto.engine.PostSearch;
@@ -20,11 +20,14 @@ import i.am.shiro.chesto.engine.SearchHistory;
 public class MainActivity2 extends AppCompatActivity {
 
     private PostSearch postSearch;
+    private View contentView;
+    private long lastTimeBackPressed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        contentView = findViewById(android.R.id.content);
 
         if (savedInstanceState == null) {
             String searchString = getSearchString();
@@ -41,8 +44,11 @@ public class MainActivity2 extends AppCompatActivity {
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
-        } else {
+        } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
+        } else {
+            Snackbar.make(contentView, R.string.main_snackbar_exit, Snackbar.LENGTH_SHORT).show();
+            lastTimeBackPressed = System.currentTimeMillis();
         }
     }
 
