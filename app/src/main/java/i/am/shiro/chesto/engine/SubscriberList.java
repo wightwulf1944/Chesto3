@@ -26,9 +26,7 @@ final class SubscriberList {
     }
 
     void notifyError() {
-        for (SearchSubscriber subscriber : subscribers) {
-            subscriber.notifyError();
-        }
+        subscribers.forEach(SearchSubscriber::notifyError);
     }
 
     void notifyPostAdded(int index) {
@@ -44,8 +42,6 @@ final class SubscriberList {
     }
 
     void notifyCleared() {
-        for (SearchSubscriber subscriber : subscribers) {
-            subscriber.notifyCleared();
-        }
+        subscribers.forEach(SearchSubscriber::notifyCleared);
     }
 }
