@@ -25,7 +25,6 @@ import timber.log.Timber;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
-import static butterknife.ButterKnife.findById;
 
 /**
  * Created by Subaru Tashiro on 8/24/2017.
@@ -43,20 +42,20 @@ public class DetailFragment extends Fragment {
         PostSearch postSearch = parentActivity.getPostSearch();
         int postIndex = getArguments().getInt("index", -1);
 
-        Toolbar toolbar = findById(view, R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
         toolbar.setNavigationOnClickListener(parentActivity::onDetailBackClicked);
         toolbar.inflateMenu(R.menu.activity_post);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
-        View bottomSheet = findById(view, R.id.bottomSheet);
+        View bottomSheet = view.findViewById(R.id.bottomSheet);
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
         behavior.setState(STATE_HIDDEN);
 
-        ImageButton infoButton = findById(view, R.id.infoButton);
+        ImageButton infoButton = view.findViewById(R.id.infoButton);
         infoButton.setOnClickListener(v -> behavior.setState(STATE_COLLAPSED));
 
-        ImageButton hideButton = findById(view, R.id.hideButton);
+        ImageButton hideButton = view.findViewById(R.id.hideButton);
         hideButton.setOnClickListener(v -> behavior.setState(STATE_HIDDEN));
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
@@ -66,7 +65,7 @@ public class DetailFragment extends Fragment {
         postTagAdapter.setData(postSearch);
         postTagAdapter.setOnItemClickListener(parentActivity::onDetailTagClicked);
 
-        RecyclerView tagRecycler = findById(view, R.id.tagRecyclerView);
+        RecyclerView tagRecycler = view.findViewById(R.id.tagRecyclerView);
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setAdapter(postTagAdapter);
 
@@ -76,7 +75,7 @@ public class DetailFragment extends Fragment {
         ScrollToPageListener scrollToPageListener = new ScrollToPageListener();
         scrollToPageListener.setOnScrollToPageListener(postTagAdapter::setCurrentIndex);
 
-        RecyclerView imageRecycler = findById(view, R.id.imageRecyclerView);
+        RecyclerView imageRecycler = view.findViewById(R.id.imageRecyclerView);
         imageRecycler.setHasFixedSize(true);
         imageRecycler.setAdapter(postImageAdapter);
         imageRecycler.addOnScrollListener(scrollToPageListener);

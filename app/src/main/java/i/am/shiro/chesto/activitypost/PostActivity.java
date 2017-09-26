@@ -35,7 +35,6 @@ import i.am.shiro.chesto.servicedownload.DownloadService;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
-import static butterknife.ButterKnife.findById;
 
 /**
  * Created by Subaru Tashiro on 7/7/2017.
@@ -63,7 +62,7 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
 
-        setSupportActionBar(findById(this, R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

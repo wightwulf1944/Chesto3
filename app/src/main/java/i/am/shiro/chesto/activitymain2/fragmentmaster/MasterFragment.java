@@ -24,8 +24,6 @@ import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import timber.log.Timber;
 
-import static butterknife.ButterKnife.findById;
-
 /**
  * Created by Subaru Tashiro on 8/11/2017.
  */
@@ -41,7 +39,7 @@ public class MasterFragment extends Fragment {
         MainActivity2 parentActivity = (MainActivity2) getActivity();
         PostSearch postSearch = parentActivity.getPostSearch();
 
-        Toolbar toolbar = findById(view, R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.setSubtitle(postSearch.getSearchString());
         toolbar.inflateMenu(R.menu.activity_main);
@@ -55,12 +53,12 @@ public class MasterFragment extends Fragment {
         adapter.setData(postSearch);
         adapter.setOnItemClickedListener(parentActivity::onMasterItemClicked);
 
-        RecyclerView recyclerView = findById(view, R.id.recyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        SwipeRefreshLayout refreshLayout = findById(view, R.id.refreshLayout);
+        SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
         refreshLayout.setRefreshing(postSearch.isLoading());
         refreshLayout.setOnRefreshListener(postSearch::refresh);
