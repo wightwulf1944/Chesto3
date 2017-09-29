@@ -21,6 +21,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     private PostSearch postSearch;
     private long lastTimeBackPressed;
+    private int currentIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +35,14 @@ public class MainActivity2 extends AppCompatActivity {
             attachMasterFragment();
         } else {
             postSearch = SearchHistory.current();
+            currentIndex = savedInstanceState.getInt("currentIndex");
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentIndex", currentIndex);
     }
 
     @Override
@@ -52,6 +60,14 @@ public class MainActivity2 extends AppCompatActivity {
 
     public PostSearch getPostSearch() {
         return postSearch;
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    public void setCurrentIndex(int i) {
+        currentIndex = i;
     }
 
     public void goToMaster(View view) {
