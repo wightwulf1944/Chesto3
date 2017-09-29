@@ -41,7 +41,7 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_post, container, false);
         MainActivity2 parentActivity = (MainActivity2) getActivity();
         PostSearch postSearch = parentActivity.getPostSearch();
-        int postIndex = getArguments().getInt("index", -1);
+        int currentIndex = parentActivity.getCurrentIndex();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
@@ -73,14 +73,18 @@ public class DetailFragment extends Fragment {
         PostImageAdapter postImageAdapter = new PostImageAdapter();
         postImageAdapter.setData(postSearch);
 
-        ScrollToPageListener scrollToPageListener = new ScrollToPageListener();
-        scrollToPageListener.setOnScrollToPageListener(postTagAdapter::setCurrentIndex);
+        ScrollToPageListener listener1 = new ScrollToPageListener();
+        listener1.setOnScrollToPageListener(postTagAdapter::setCurrentIndex);
+
+        ScrollToPageListener listener2 = new ScrollToPageListener();
+        listener2.setOnScrollToPageListener(parentActivity::setCurrentIndex);
 
         RecyclerView imageRecycler = view.findViewById(R.id.imageRecyclerView);
         imageRecycler.setHasFixedSize(true);
         imageRecycler.setAdapter(postImageAdapter);
-        imageRecycler.addOnScrollListener(scrollToPageListener);
-        imageRecycler.scrollToPosition(postIndex);
+        imageRecycler.addOnScrollListener(listener1);
+        imageRecycler.addOnScrollListener(listener2);
+        imageRecycler.scrollToPosition(currentIndex);
 
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
