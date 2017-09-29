@@ -75,14 +75,10 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     public void goToDetail(int index) {
-        Bundle args = new Bundle();
-        args.putInt("index", index);
-
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.setArguments(args);
+        currentIndex = index;
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, detailFragment)
+                .replace(R.id.fragmentContainer, new DetailFragment())
                 .addToBackStack(null)
                 .commit();
     }

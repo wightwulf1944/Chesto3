@@ -38,6 +38,7 @@ public class MasterFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_main, container, false);
         MainActivity2 parentActivity = (MainActivity2) getActivity();
         PostSearch postSearch = parentActivity.getPostSearch();
+        int currentIndex = parentActivity.getCurrentIndex();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -57,6 +58,7 @@ public class MasterFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(currentIndex);
 
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
