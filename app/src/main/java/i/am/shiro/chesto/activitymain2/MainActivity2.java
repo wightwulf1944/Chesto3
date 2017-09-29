@@ -83,13 +83,6 @@ public class MainActivity2 extends AppCompatActivity {
                 .commit();
     }
 
-    public void onDetailTagClicked(String tagString) {
-        Intent intent = new Intent(this, MainActivity2.class);
-        intent.setAction(Intent.ACTION_SEARCH);
-        intent.putExtra("default", tagString);
-        startActivity(intent);
-    }
-
     private void attachMasterFragment() {
         getFragmentManager().beginTransaction()
                 .add(R.id.fragmentContainer, new MasterFragment())

@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.activitymain2.fragmentdetail;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -63,7 +64,7 @@ public class DetailFragment extends Fragment {
 
         PostTagAdapter postTagAdapter = new PostTagAdapter();
         postTagAdapter.setData(postSearch);
-        postTagAdapter.setOnItemClickListener(parentActivity::onDetailTagClicked);
+        postTagAdapter.setOnItemClickListener(this::onTagClicked);
 
         RecyclerView tagRecycler = view.findViewById(R.id.tagRecyclerView);
         tagRecycler.setLayoutManager(layoutManager);
@@ -112,5 +113,12 @@ public class DetailFragment extends Fragment {
             default:
                 return false;
         }
+    }
+
+    private void onTagClicked(String tagString) {
+        Intent intent = new Intent(getActivity(), MainActivity2.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra("default", tagString);
+        startActivity(intent);
     }
 }
