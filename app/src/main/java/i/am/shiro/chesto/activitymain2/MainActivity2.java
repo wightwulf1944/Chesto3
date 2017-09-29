@@ -20,14 +20,12 @@ import i.am.shiro.chesto.engine.SearchHistory;
 public class MainActivity2 extends AppCompatActivity {
 
     private PostSearch postSearch;
-    private View contentView;
     private long lastTimeBackPressed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        contentView = findViewById(android.R.id.content);
 
         if (savedInstanceState == null) {
             String searchString = getSearchString();
@@ -47,6 +45,7 @@ public class MainActivity2 extends AppCompatActivity {
         } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
+            View contentView = findViewById(android.R.id.content);
             Snackbar.make(contentView, R.string.main_snackbar_exit, Snackbar.LENGTH_SHORT).show();
             lastTimeBackPressed = System.currentTimeMillis();
         }
