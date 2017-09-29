@@ -28,8 +28,7 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         if (savedInstanceState == null) {
-            String searchString = getSearchString();
-            postSearch = new PostSearch(searchString);
+            postSearch = new PostSearch(getSearchString());
             postSearch.load();
             SearchHistory.goForward(postSearch);
             attachMasterFragment();
