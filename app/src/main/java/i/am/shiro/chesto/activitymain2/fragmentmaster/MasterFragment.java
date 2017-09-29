@@ -58,7 +58,7 @@ public class MasterFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(currentIndex);
+        recyclerView.post(() -> recyclerView.scrollToPosition(currentIndex));
 
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
