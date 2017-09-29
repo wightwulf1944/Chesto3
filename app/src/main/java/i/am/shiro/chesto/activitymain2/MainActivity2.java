@@ -50,30 +50,15 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
-    private String getSearchString() {
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        switch (action) {
-            case Intent.ACTION_MAIN:
-                return "";
-            case Intent.ACTION_SEARCH:
-                return intent.getStringExtra("default");
-            default:
-                throw new RuntimeException("Unhandled intent action: " + action);
-        }
-    }
-
-    private void attachMasterFragment() {
-        getFragmentManager().beginTransaction()
-                .add(R.id.fragmentContainer, new MasterFragment())
-                .commit();
-    }
-
     public PostSearch getPostSearch() {
         return postSearch;
     }
 
-    public void onMasterItemClicked(int index) {
+    public void goToMaster(View view) {
+        getFragmentManager().popBackStack();
+    }
+
+    public void goToDetail(int index) {
         Bundle args = new Bundle();
         args.putInt("index", index);
 
@@ -86,14 +71,29 @@ public class MainActivity2 extends AppCompatActivity {
                 .commit();
     }
 
-    public void onDetailBackClicked(View view) {
-        getFragmentManager().popBackStack();
-    }
-
     public void onDetailTagClicked(String tagString) {
         Intent intent = new Intent(this, MainActivity2.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", tagString);
         startActivity(intent);
+    }
+
+    private void attachMasterFragment() {
+        getFragmentManager().beginTransaction()
+                .add(R.id.fragmentContainer, new MasterFragment())
+                .commit();
+    }
+
+    private String getSearchString() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        switch (action) {
+            case Intent.ACTION_MAIN:
+                return "";
+            case Intent.ACTION_SEARCH:
+                return intent.getStringExtra("default");
+            default:
+                throw new RuntimeException("Unhandled intent action: " + action);
+        }
     }
 }

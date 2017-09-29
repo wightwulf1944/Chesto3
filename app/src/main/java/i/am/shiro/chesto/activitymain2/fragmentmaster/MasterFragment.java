@@ -51,7 +51,7 @@ public class MasterFragment extends Fragment {
 
         MasterAdapter adapter = new MasterAdapter();
         adapter.setData(postSearch);
-        adapter.setOnItemClickedListener(parentActivity::onMasterItemClicked);
+        adapter.setOnItemClickedListener(parentActivity::goToDetail);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

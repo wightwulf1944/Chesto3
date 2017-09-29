@@ -44,7 +44,7 @@ public class DetailFragment extends Fragment {
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
-        toolbar.setNavigationOnClickListener(parentActivity::onDetailBackClicked);
+        toolbar.setNavigationOnClickListener(parentActivity::goToMaster);
         toolbar.inflateMenu(R.menu.activity_post);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
