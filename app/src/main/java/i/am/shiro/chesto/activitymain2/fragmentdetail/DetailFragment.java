@@ -2,6 +2,7 @@ package i.am.shiro.chesto.activitymain2.fragmentdetail;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -22,6 +23,7 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain2.MainActivity2;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
+import i.am.shiro.chesto.models.Post;
 import timber.log.Timber;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
@@ -113,7 +115,12 @@ public class DetailFragment extends Fragment {
 
     private boolean onMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
-            // TODO: 8/26/2017  
+            case R.id.action_open_browser:
+                actionOpenInBrowser();
+                return true;
+            case R.id.action_share:
+                actionShare();
+                return true;
             default:
                 return false;
         }
@@ -124,5 +131,31 @@ public class DetailFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", tagString);
         startActivity(intent);
+    }
+
+    private void actionOpenInBrowser() {
+        String webUrl = getCurrentPost().getWebUrl();
+        Uri webUri = Uri.parse(webUrl);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
+        startActivity(intent);
+    }
+
+    private void actionShare() {
+        String webUrl = getCurrentPost().getWebUrl();
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, webUrl);
+        intent.setType("text/plain");
+
+        Intent chooserIntent = Intent.createChooser(intent, "Share link - " + webUrl);
+
+        startActivity(chooserIntent);
+    }
+
+    private Post getCurrentPost() {
+        MainActivity2 parentActivity = (MainActivity2) getActivity();
+        PostSearch postSearch = parentActivity.getPostSearch();
+        int currentIndex = parentActivity.getCurrentIndex();
+        return postSearch.getPost(currentIndex);
     }
 }
