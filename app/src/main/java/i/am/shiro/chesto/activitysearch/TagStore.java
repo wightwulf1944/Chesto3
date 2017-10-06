@@ -1,7 +1,5 @@
 package i.am.shiro.chesto.activitysearch;
 
-import java.util.List;
-
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.models.Tag;
 import io.realm.Case;
@@ -16,27 +14,26 @@ import io.realm.Sort;
 final class TagStore {
 
     private final SearchAdapter adapter;
-    private RealmResults<Tag> cachedResults;
+    private RealmResults<Tag> results;
 
     TagStore(SearchAdapter adapter) {
         this.adapter = adapter;
+        results = Realm.getDefaultInstance()
+                .where(Tag.class)
+                .findAllSorted("postCount", Sort.DESCENDING);
     }
 
     void searchTags(String tagSearchString) {
-        if (cachedResults != null) {
-            cachedResults.removeAllChangeListeners();
-        }
 
-        RealmResults<Tag> newResults = Realm.getDefaultInstance()
+        results.removeAllChangeListeners();
+        results = Realm.getDefaultInstance()
                 .where(Tag.class)
                 .contains("name", tagSearchString, Case.INSENSITIVE)
                 .findAllSorted("postCount", Sort.DESCENDING);
+        results.addChangeListener(tags -> adapter.notifyDataSetChanged());
 
-        applyToAdapter(newResults);
-        
-        cachedResults = newResults;
-
-        newResults.addChangeListener(this::applyToAdapter);
+        adapter.setData(results);
+        adapter.notifyDataSetChanged();
 
         ChestoApplication.danbooru()
                 .searchTags('*' + tagSearchString + '*')
@@ -45,11 +42,7 @@ final class TagStore {
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(tags);
                     realm.commitTransaction();
+                    realm.close();
                 });
-    }
-
-    synchronized private void applyToAdapter(List<Tag> newResults) {
-        adapter.setData(newResults);
-        adapter.notifyDataSetChanged();
     }
 }

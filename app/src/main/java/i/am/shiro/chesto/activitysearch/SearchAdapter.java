@@ -1,7 +1,6 @@
 package i.am.shiro.chesto.activitysearch;
 
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,10 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.listeners.Listener1;
 import i.am.shiro.chesto.models.Tag;
 
-
 /**
  * Created by Shiro on 3/20/2017.
  */
-final class SearchAdapter extends Adapter<ViewHolder> {
+class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
     private Listener1<String> onItemClickListener;
     private List<Tag> items;
@@ -39,23 +37,22 @@ final class SearchAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_search_tag, parent, false);
-        return new TagViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Tag tag = items.get(position);
-        TagViewHolder tagViewHolder = (TagViewHolder) holder;
-        tagViewHolder.postCount.setText(tag.getPostCountStr());
-        tagViewHolder.name.setText(tag.getName());
+        viewHolder.postCount.setText(tag.getPostCountStr());
+        viewHolder.name.setText(tag.getName());
     }
 
-    private final class TagViewHolder extends ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView postCount;
         private final TextView name;
 
-        TagViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             postCount = view.findViewById(R.id.postCount);
             name = view.findViewById(R.id.name);

@@ -42,7 +42,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setLayoutManager(layoutManager);
 
         tagStore = new TagStore(adapter);
-        tagStore.searchTags("");
     }
 
     @Override
