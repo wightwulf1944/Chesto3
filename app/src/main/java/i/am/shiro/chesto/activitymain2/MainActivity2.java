@@ -19,23 +19,27 @@ import i.am.shiro.chesto.engine.SearchHistory;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    private static int activityCount;
+
     private PostSearch postSearch;
     private long lastTimeBackPressed;
     private int currentIndex;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(@Nullable Bundle savedState) {
+        super.onCreate(savedState);
         setContentView(R.layout.activity_main2);
 
-        if (savedInstanceState == null) {
+        if (savedState == null) {
             postSearch = new PostSearch(getSearchString());
             postSearch.load();
             SearchHistory.goForward(postSearch);
             attachMasterFragment();
+            activityCount++;
         } else {
             postSearch = SearchHistory.current();
-            currentIndex = savedInstanceState.getInt("currentIndex");
+            currentIndex = savedState.getInt("currentIndex");
+            activityCount = savedState.getInt("activityCount");
         }
     }
 
@@ -43,12 +47,21 @@ public class MainActivity2 extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentIndex", currentIndex);
+        outState.putInt("activityCount", activityCount);
+    }
+
+    @Override
+    protected void onDestroy() {
+        activityCount--;
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             goToMaster(null);
+        } else if (activityCount > 1) {
+            super.onBackPressed();
         } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
