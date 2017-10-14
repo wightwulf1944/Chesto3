@@ -21,6 +21,7 @@ final class TagStore {
         results = Realm.getDefaultInstance()
                 .where(Tag.class)
                 .findAllSorted("postCount", Sort.DESCENDING);
+        adapter.setData(results);
     }
 
     void searchTags(String tagSearchString) {
