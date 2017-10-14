@@ -76,8 +76,8 @@ public final class DownloadService extends IntentService {
 
     private File getSourceFile(DownloadInfo dlInfo) throws Exception {
         return Glide.with(this)
-                .load(dlInfo.url)
-                .downloadOnly(dlInfo.width, dlInfo.height)
+                .download(dlInfo.url)
+                .submit()
                 .get();
     }
 

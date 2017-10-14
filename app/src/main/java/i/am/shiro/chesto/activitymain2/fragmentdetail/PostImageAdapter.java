@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.activitymain2.fragmentdetail;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,9 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.engine.PostSearch;
@@ -64,16 +66,15 @@ final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewH
         private void bind(Post post) {
             AppCompatActivity parentActivity = (AppCompatActivity) itemView.getContext();
 
-            BlurTransformation blurTransformation = new BlurTransformation(parentActivity, 1);
-
-            DrawableRequestBuilder thumb = Glide.with(parentActivity)
+            RequestBuilder<Drawable> thumb = Glide.with(parentActivity)
                     .load(post.getThumbFileUrl())
-                    .bitmapTransform(blurTransformation)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+                    .apply(RequestOptions
+                            .bitmapTransform(new BlurTransformation(1))
+                            .diskCacheStrategy(DiskCacheStrategy.DATA));
 
             Glide.with(parentActivity)
                     .load(post.getPreviewFileUrl())
-                    .error(R.drawable.image_broken)
+                    .apply(RequestOptions.errorOf(R.drawable.image_broken))
                     .thumbnail(thumb)
                     .into((ImageView) itemView);
         }
