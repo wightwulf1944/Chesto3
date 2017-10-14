@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import i.am.shiro.chesto.R;
@@ -27,12 +26,8 @@ import timber.log.Timber;
 final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolder> {
 
     private PostSearch postSearch;
-    private List<String> tagList = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     private Listener1<String> onItemClickListener;
-    private int copyrightIndex;
-    private int characterIndex;
-    private int artistIndex;
-    private int generalIndex;
 
     void setData(PostSearch postSearch) {
         this.postSearch = postSearch;
@@ -44,46 +39,29 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
 
     void setCurrentIndex(int index) {
         Post post = postSearch.getPost(index);
-        tagList.clear();
-        copyrightIndex = setCategoryTags("Copyrights:", post.getTagStringCopyright());
-        characterIndex = setCategoryTags("Characters:", post.getTagStringCharacter());
-        artistIndex = setCategoryTags("Artist:", post.getTagStringArtist());
-        generalIndex = setCategoryTags("Tags:", post.getTagStringGeneral());
+        items.clear();
+        setCategoryTags("Copyrights:", R.layout.item_post_tag_copyright, post.getTagStringCopyright());
+        setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());
+        setCategoryTags("Artist:", R.layout.item_post_tag_artist, post.getTagStringArtist());
+        setCategoryTags("Tags:", R.layout.item_post_tag_general, post.getTagStringGeneral());
         notifyDataSetChanged();
     }
 
-    private int setCategoryTags(String categoryLabel, String tags) {
-        int index;
+    private void setCategoryTags(String categoryLabel, int layout, String tags) {
         Timber.d(tags);
         if (tags.trim().isEmpty()) {
-            index = -1;
-        } else {
-            index = tagList.size();
-            tagList.add(categoryLabel);
-            Collections.addAll(tagList, tags.split(" "));
+            return;
         }
-        return index;
+
+        items.add(new Item(R.layout.item_post_label, categoryLabel));
+        for (String tag : tags.split(" ")) {
+            items.add(new Item(layout, tag));
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == copyrightIndex) {
-            return R.layout.item_post_label;
-        } else if (position < characterIndex) {
-            return R.layout.item_post_tag_copyright;
-        } else if (position == characterIndex) {
-            return R.layout.item_post_label;
-        } else if (position < artistIndex) {
-            return R.layout.item_post_tag_character;
-        } else if (position == artistIndex) {
-            return R.layout.item_post_label;
-        } else if (position < generalIndex) {
-            return R.layout.item_post_tag_artist;
-        } else if (position == generalIndex) {
-            return R.layout.item_post_label;
-        } else {
-            return R.layout.item_post_tag_general;
-        }
+        return items.get(position).viewType;
     }
 
     @Override
@@ -99,7 +77,7 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
         } else {
             view.setOnClickListener(v -> {
                 int adapterPosition = vh.getAdapterPosition();
-                String tagString = tagList.get(adapterPosition);
+                String tagString = items.get(adapterPosition).text;
                 onItemClickListener.onEvent(tagString);
             });
         }
@@ -109,20 +87,30 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String itemString = tagList.get(position);
+        String itemString = items.get(position).text;
         TextView textView = (TextView) holder.itemView;
         textView.setText(itemString);
     }
 
     @Override
     public int getItemCount() {
-        return tagList.size();
+        return items.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ViewHolder(View itemView) {
             super(itemView);
+        }
+    }
+
+    private static class Item {
+        private int viewType;
+        private String text;
+
+        private Item(int viewType, String text) {
+            this.viewType = viewType;
+            this.text = text;
         }
     }
 }
