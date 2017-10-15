@@ -71,7 +71,7 @@ public class MainActivity2 extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
-            goToMaster(null);
+            goToMaster();
         } else if (activityCount > 1) {
             super.onBackPressed();
         } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
@@ -90,7 +90,7 @@ public class MainActivity2 extends AppCompatActivity {
                 invokeSearch();
                 return true;
             case android.R.id.home:
-                goToMaster(null);
+                goToMaster();
                 return true;
             case R.id.action_download:
                 invokeDownload();
@@ -132,7 +132,7 @@ public class MainActivity2 extends AppCompatActivity {
         currentIndex = i;
     }
 
-    public void goToMaster(View view) {
+    public void goToMaster() {
         getFragmentManager().popBackStack();
     }
 
