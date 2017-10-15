@@ -1,10 +1,14 @@
 package i.am.shiro.chesto.activitymain2;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +19,10 @@ import i.am.shiro.chesto.activitymain2.fragmentmaster.MasterFragment;
 import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
+import i.am.shiro.chesto.models.Post;
+import i.am.shiro.chesto.servicedownload.DownloadService;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -22,6 +30,7 @@ import i.am.shiro.chesto.engine.SearchHistory;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 0;
     private static int activityCount;
 
     private PostSearch postSearch;
@@ -83,6 +92,9 @@ public class MainActivity2 extends AppCompatActivity {
             case android.R.id.home:
                 goToMaster(null);
                 return true;
+            case R.id.action_download:
+                invokeDownload();
+                return true;
             case R.id.action_open_browser:
                 invokeOpenInBrowser();
                 return true;
@@ -91,6 +103,20 @@ public class MainActivity2 extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != PERMISSION_REQUEST_CODE || grantResults.length == 0) {
+            return;
+        }
+
+        if (grantResults[0] == PERMISSION_GRANTED) {
+            invokeDownload();
+        } else {
+            View contentView = findViewById(android.R.id.content);
+            Snackbar.make(contentView, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -128,6 +154,17 @@ public class MainActivity2 extends AppCompatActivity {
     private void invokeSearch() {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
+    }
+
+    private void invokeDownload() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck == PERMISSION_GRANTED) {
+            Post post = postSearch.getPost(currentIndex);
+            DownloadService.queue(this, post);
+        } else {
+            String[] permissionStrings = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            ActivityCompat.requestPermissions(this, permissionStrings, PERMISSION_REQUEST_CODE);
+        }
     }
 
     private void invokeOpenInBrowser() {
