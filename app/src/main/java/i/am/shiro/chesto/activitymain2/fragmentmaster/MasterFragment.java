@@ -1,7 +1,6 @@
 package i.am.shiro.chesto.activitymain2.fragmentmaster;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,7 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,7 +19,6 @@ import com.google.android.flexbox.JustifyContent;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain2.MainActivity2;
-import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import timber.log.Timber;
@@ -32,6 +31,12 @@ public class MasterFragment extends Fragment {
 
     private SearchSubscriber searchSubscriber;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -41,10 +46,8 @@ public class MasterFragment extends Fragment {
         int currentIndex = parentActivity.getCurrentIndex();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
         toolbar.setSubtitle(postSearch.getSearchString());
-        toolbar.inflateMenu(R.menu.activity_main);
-        toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
+        parentActivity.setSupportActionBar(toolbar);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -88,14 +91,9 @@ public class MasterFragment extends Fragment {
         Timber.d("MASTER FRAGMENT DESTROYED");
     }
 
-    private boolean onMenuItemClicked(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return false;
-        }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.activity_main, menu);
     }
 }

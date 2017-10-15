@@ -1,15 +1,18 @@
 package i.am.shiro.chesto.activitymain2;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain2.fragmentdetail.DetailFragment;
 import i.am.shiro.chesto.activitymain2.fragmentmaster.MasterFragment;
+import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
 
@@ -71,6 +74,26 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                invokeSearch();
+                return true;
+            case android.R.id.home:
+                goToMaster(null);
+                return true;
+            case R.id.action_open_browser:
+                invokeOpenInBrowser();
+                return true;
+            case R.id.action_share:
+                invokeShare();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public PostSearch getPostSearch() {
         return postSearch;
     }
@@ -100,6 +123,27 @@ public class MainActivity2 extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .add(R.id.fragmentContainer, new MasterFragment())
                 .commit();
+    }
+
+    private void invokeSearch() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
+
+    private void invokeOpenInBrowser() {
+        String webUrl = postSearch.getPost(currentIndex).getWebUrl();
+        Uri webUri = Uri.parse(webUrl);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
+        startActivity(intent);
+    }
+
+    private void invokeShare() {
+        String webUrl = postSearch.getPost(currentIndex).getWebUrl();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, webUrl);
+        intent.setType("text/plain");
+        Intent chooserIntent = Intent.createChooser(intent, "Share link - " + webUrl);
+        startActivity(chooserIntent);
     }
 
     private String getSearchString() {
