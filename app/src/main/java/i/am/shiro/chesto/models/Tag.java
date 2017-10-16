@@ -24,26 +24,26 @@ public class Tag extends RealmObject {
         name = tagJson.name;
         postCount = tagJson.postCount;
         category = tagJson.category;
+        postCountString = "(" + getNumber() + getSuffix() + ")";
+    }
 
-        String number;
-        String suffix;
+    private String getNumber() {
+        String s = String.valueOf(postCount);
         if (postCount < 1_000) {
-            number = String.valueOf(postCount);
-            suffix = "";
+            return s;
         } else {
-            String tempStr = String.valueOf(postCount);
-            char first = tempStr.charAt(0);
-            char second = tempStr.charAt(1);
-            number = first + "." + second;
-
-            if (postCount < 1_000_000) {
-                suffix = "k";
-            } else {
-                suffix = "m";
-            }
+            return s.charAt(0) + "." + s.charAt(1);
         }
+    }
 
-        postCountString = "(" + number + suffix + ")";
+    private String getSuffix() {
+        if (postCount < 1_000) {
+            return "";
+        } else if (postCount < 1_000_000) {
+            return "k";
+        } else {
+            return "m";
+        }
     }
 
     public int getId() {
