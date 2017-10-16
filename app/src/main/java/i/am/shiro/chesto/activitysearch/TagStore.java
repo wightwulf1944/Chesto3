@@ -42,12 +42,11 @@ final class TagStore {
                 .flatMap(Observable::fromIterable)
                 .map(Tag::new)
                 .toList()
-                .subscribe(tags -> {
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.copyToRealmOrUpdate(tags);
-                    realm.commitTransaction();
-                    realm.close();
-                });
+                .subscribe(
+                        tags -> Realm.getDefaultInstance().executeTransaction(
+                                realm -> realm.insertOrUpdate(tags)
+                        ),
+                        Throwable::printStackTrace
+                );
     }
 }
