@@ -3,10 +3,7 @@ package i.am.shiro.chesto;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.squareup.moshi.Moshi;
-
 import i.am.shiro.chesto.models.Danbooru;
-import i.am.shiro.chesto.moshi.TagMoshiAdapter;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
@@ -54,12 +51,7 @@ public class ChestoApplication extends Application {
         Scheduler ioScheduler = Schedulers.io();
         RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);
 
-        TagMoshiAdapter tagMoshiAdapter = new TagMoshiAdapter();
-        Moshi moshi = new Moshi.Builder()
-                .add(tagMoshiAdapter)
-                .build();
-
-        MoshiConverterFactory converter = MoshiConverterFactory.create(moshi);
+        MoshiConverterFactory converter = MoshiConverterFactory.create();
 
         danbooru = new Retrofit.Builder()
                 .baseUrl(baseUrl)

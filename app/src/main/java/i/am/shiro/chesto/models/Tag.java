@@ -1,7 +1,5 @@
 package i.am.shiro.chesto.models;
 
-import com.squareup.moshi.FromJson;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -66,13 +64,5 @@ public class Tag extends RealmObject {
 
     public int getCategory() {
         return category;
-    }
-
-    public static class MoshiAdapter {
-
-        @FromJson
-        Tag fromJson(TagJson tagJson) {
-            return new Tag(tagJson);
-        }
     }
 }

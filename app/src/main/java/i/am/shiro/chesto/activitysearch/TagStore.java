@@ -2,6 +2,7 @@ package i.am.shiro.chesto.activitysearch;
 
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.models.Tag;
+import io.reactivex.Observable;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,6 +39,9 @@ final class TagStore {
 
         ChestoApplication.danbooru()
                 .searchTags('*' + tagSearchString + '*')
+                .flatMap(Observable::fromIterable)
+                .map(Tag::new)
+                .toList()
                 .subscribe(tags -> {
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
