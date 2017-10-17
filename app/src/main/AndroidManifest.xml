@@ -26,11 +26,6 @@
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
-        <activity
-            android:name=".activitypost.PostActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.Fullscreen"/>
-
         <service android:name=".servicedownload.DownloadService"/>
     </application>
 
