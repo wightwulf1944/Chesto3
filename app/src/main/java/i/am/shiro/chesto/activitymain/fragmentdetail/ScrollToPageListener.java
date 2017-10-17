@@ -1,4 +1,4 @@
-package i.am.shiro.chesto.activitymain2.fragmentdetail;
+package i.am.shiro.chesto.activitymain.fragmentdetail;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

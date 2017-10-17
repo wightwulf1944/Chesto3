@@ -1,4 +1,4 @@
-package i.am.shiro.chesto.activitymain2.fragmentdetail;
+package i.am.shiro.chesto.activitymain.fragmentdetail;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain2.MainActivity2;
+import i.am.shiro.chesto.activitymain.MainActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import timber.log.Timber;
@@ -46,7 +46,7 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_post, container, false);
-        MainActivity2 parentActivity = (MainActivity2) getActivity();
+        MainActivity parentActivity = (MainActivity) getActivity();
         PostSearch postSearch = parentActivity.getPostSearch();
         int currentIndex = parentActivity.getCurrentIndex();
 
@@ -124,7 +124,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void onTagClicked(String tagString) {
-        Intent intent = new Intent(getActivity(), MainActivity2.class);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", tagString);
         startActivity(intent);

@@ -1,4 +1,4 @@
-package i.am.shiro.chesto.activitymain2.fragmentmaster;
+package i.am.shiro.chesto.activitymain.fragmentmaster;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain2.MainActivity2;
+import i.am.shiro.chesto.activitymain.MainActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchSubscriber;
 import timber.log.Timber;
@@ -41,7 +41,7 @@ public class MasterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main, container, false);
-        MainActivity2 parentActivity = (MainActivity2) getActivity();
+        MainActivity parentActivity = (MainActivity) getActivity();
         PostSearch postSearch = parentActivity.getPostSearch();
         int currentIndex = parentActivity.getCurrentIndex();
 

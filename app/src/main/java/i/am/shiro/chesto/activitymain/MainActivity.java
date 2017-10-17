@@ -1,4 +1,4 @@
-package i.am.shiro.chesto.activitymain2;
+package i.am.shiro.chesto.activitymain;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain2.fragmentdetail.DetailFragment;
-import i.am.shiro.chesto.activitymain2.fragmentmaster.MasterFragment;
+import i.am.shiro.chesto.activitymain.fragmentdetail.DetailFragment;
+import i.am.shiro.chesto.activitymain.fragmentmaster.MasterFragment;
 import i.am.shiro.chesto.activitysearch.SearchActivity;
 import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.engine.SearchHistory;
@@ -28,7 +28,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * Created by Subaru Tashiro on 8/11/2017.
  */
 
-public class MainActivity2 extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
     private static int activityCount;

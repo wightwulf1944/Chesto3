@@ -11,7 +11,7 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.activitymain2.MainActivity2;
+import i.am.shiro.chesto.activitymain.MainActivity;
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -46,7 +46,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        Intent intent = new Intent(this, MainActivity2.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", s);
         startActivity(intent);

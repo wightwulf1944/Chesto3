@@ -1,4 +1,4 @@
-package i.am.shiro.chesto.activitymain2.fragmentmaster;
+package i.am.shiro.chesto.activitymain.fragmentmaster;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
