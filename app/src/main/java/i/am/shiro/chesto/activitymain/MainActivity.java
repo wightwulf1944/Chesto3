@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
         if (savedState == null) {
             postSearch = new PostSearch(getSearchString());
