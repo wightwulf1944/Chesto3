@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
@@ -66,8 +65,7 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
         RequestOptions requestOptions = RequestOptions
                 .bitmapTransform(new RoundedCornersTransformation(4, 0))
                 .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_broken)
-                .diskCacheStrategy(DiskCacheStrategy.DATA);
+                .error(R.drawable.image_broken);
 
         Glide.with(parentActivity)
                 .load(post.getThumbFileUrl())
