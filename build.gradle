@@ -5,8 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         classpath "io.realm:realm-gradle-plugin:4.1.0"
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
 
@@ -18,7 +17,7 @@ buildscript {
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
-        maven { url "https://maven.google.com" }
+        google()
     }
 }
 
