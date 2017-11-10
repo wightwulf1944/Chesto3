@@ -1,9 +1,10 @@
-package i.am.shiro.chesto.listeners;
+package i.am.shiro.chesto.subscription;
 
+import i.am.shiro.chesto.listeners.Listener;
 import i.am.shiro.chesto.notifiers.AbstractNotifier;
 
 /**
- * Created by Shiro on 11/5/2017.
+ * Created by Shiro on 11/11/2017.
  */
 
 public class Subscription {
@@ -19,5 +20,8 @@ public class Subscription {
 
     public void unsubscribe() {
         notifier.removeListener(listener);
+        notifier = null;
+        listener = null;
     }
+
 }
