@@ -78,7 +78,7 @@ public class DetailFragment extends Fragment {
         tagRecycler.setLayoutManager(layoutManager);
         tagRecycler.setAdapter(postTagAdapter);
 
-        PostImageAdapter postImageAdapter = new PostImageAdapter();
+        PostImageAdapter postImageAdapter = new PostImageAdapter(this);
         postImageAdapter.setData(searchLoader);
 
         ScrollToPageListener listener1 = new ScrollToPageListener();

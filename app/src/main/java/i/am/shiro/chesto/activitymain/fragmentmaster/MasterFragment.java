@@ -56,7 +56,7 @@ public class MasterFragment extends Fragment {
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
-        MasterAdapter adapter = new MasterAdapter();
+        MasterAdapter adapter = new MasterAdapter(this);
         adapter.setData(searchLoader);
         adapter.setOnItemClickedListener(parentActivity::goToDetail);
 

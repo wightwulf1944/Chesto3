@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.activitymain.fragmentmaster;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Fragment;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,15 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
+    private Fragment parentFragment;
+
     private DanbooruSearchLoader searchLoader;
+
     private Listener1<Integer> onItemClickedListener;
+
+    public MasterAdapter(Fragment parentFragment) {
+        this.parentFragment = parentFragment;
+    }
 
     void setData(DanbooruSearchLoader searchLoader) {
         this.searchLoader = searchLoader;
@@ -36,8 +44,9 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_main_thumbs, parent, false);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.item_main_thumbs, parent, false);
 
         FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
         layoutParams.setMinWidth(100);
@@ -55,7 +64,6 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
         Post post = searchLoader.getResult(position);
         ImageView imageView = (ImageView) holder.itemView;
-        AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
@@ -67,7 +75,7 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken);
 
-        Glide.with(parentActivity)
+        Glide.with(parentFragment)
                 .load(post.getThumbFileUrl())
                 .apply(requestOptions)
                 .into(imageView);

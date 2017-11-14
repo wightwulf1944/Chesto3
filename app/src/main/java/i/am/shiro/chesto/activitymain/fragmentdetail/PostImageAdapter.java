@@ -1,8 +1,8 @@
 package i.am.shiro.chesto.activitymain.fragmentdetail;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +26,13 @@ import timber.log.Timber;
 
 final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewHolder> {
 
+    Fragment parentFragment;
+
     private DanbooruSearchLoader searchLoader;
+
+    public PostImageAdapter(Fragment parentFragment) {
+        this.parentFragment = parentFragment;
+    }
 
     void setData(DanbooruSearchLoader searchLoader) {
         this.searchLoader = searchLoader;
@@ -64,15 +70,13 @@ final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewH
         }
 
         private void bind(Post post) {
-            AppCompatActivity parentActivity = (AppCompatActivity) itemView.getContext();
-
-            RequestBuilder<Drawable> thumb = Glide.with(parentActivity)
+            RequestBuilder<Drawable> thumb = Glide.with(parentFragment)
                     .load(post.getThumbFileUrl())
                     .apply(RequestOptions
                             .bitmapTransform(new BlurTransformation(1))
                             .diskCacheStrategy(DiskCacheStrategy.DATA));
 
-            Glide.with(parentActivity)
+            Glide.with(parentFragment)
                     .load(post.getPreviewFileUrl())
                     .apply(RequestOptions.errorOf(R.drawable.image_broken))
                     .thumbnail(thumb)
