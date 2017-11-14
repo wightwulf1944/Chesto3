@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
 
-    private static int activityCount;
-
     private Realm realm;
 
     private DanbooruSearchLoader danbooruSearchLoader;
@@ -61,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
             danbooruSearchLoader.load();
 
             attachMasterFragment();
-
-            activityCount++;
         } else {
             // Load searchResult
             String searchResultId = savedState.getString("searchResultId");
@@ -73,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             danbooruSearchLoader = new DanbooruSearchLoader(searchResult);
 
             currentIndex = savedState.getInt("currentIndex");
-            activityCount = savedState.getInt("activityCount");
         }
     }
 
@@ -82,12 +77,10 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putString("searchResultId", danbooruSearchLoader.getResultId());
         outState.putInt("currentIndex", currentIndex);
-        outState.putInt("activityCount", activityCount);
     }
 
     @Override
     protected void onDestroy() {
-        activityCount--;
         realm.close();
         super.onDestroy();
     }
@@ -96,9 +89,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             goToMaster();
-        } else if (activityCount > 1) {
-            super.onBackPressed();
-        } else if (System.currentTimeMillis() < lastTimeBackPressed + 1500) {
+        } else if (!isTaskRoot() || System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
             View contentView = findViewById(android.R.id.content);
