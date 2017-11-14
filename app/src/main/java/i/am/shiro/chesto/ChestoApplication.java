@@ -52,7 +52,7 @@ public class ChestoApplication extends Application {
     }
 
     private void initDanbooru() {
-        String baseUrl = "http://safebooru.donmai.us";
+        String baseUrl = "http://danbooru.donmai.us";
 
         Scheduler ioScheduler = Schedulers.io();
         RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);

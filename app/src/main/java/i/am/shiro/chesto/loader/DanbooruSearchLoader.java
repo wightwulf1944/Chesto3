@@ -115,7 +115,6 @@ public class DanbooruSearchLoader {
         }
         setLoading(true);
 
-        String baseUrl = "http://safebooru.donmai.us";
         String query = searchResult.getQuery();
         int page = searchResult.getPagesLoaded() + 1;
 
@@ -123,7 +122,7 @@ public class DanbooruSearchLoader {
                 .getPosts(query, page)
                 .flatMap(Observable::fromIterable)
                 .filter(PostJson::hasImageUrls)
-                .map(postJson -> new Post(postJson, baseUrl))
+                .map(Post::new)
                 .toList()
                 .observeOn(mainThread())
                 .doFinally(() -> setLoading(false))

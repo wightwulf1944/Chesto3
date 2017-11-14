@@ -9,6 +9,8 @@ import io.realm.annotations.PrimaryKey;
 
 public class Post extends RealmObject {
 
+    private static final String baseUrl = "http://danbooru.donmai.us";
+
     @PrimaryKey
     private int id;
 
@@ -36,7 +38,7 @@ public class Post extends RealmObject {
         // no arg constructor required by Realm
     }
 
-    public Post(PostJson postJson, String baseUrl) {
+    public Post(PostJson postJson) {
         id = postJson.id;
         width = postJson.width;
         height = postJson.height;
