@@ -17,10 +17,11 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain.fragmentdetail.DetailFragment;
 import i.am.shiro.chesto.activitymain.fragmentmaster.MasterFragment;
 import i.am.shiro.chesto.activitysearch.SearchActivity;
-import i.am.shiro.chesto.engine.PostSearch;
-import i.am.shiro.chesto.engine.SearchHistory;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.models.Post;
+import i.am.shiro.chesto.models.SearchResult;
 import i.am.shiro.chesto.servicedownload.DownloadService;
+import io.realm.Realm;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -31,25 +32,46 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
+
     private static int activityCount;
 
-    private PostSearch postSearch;
+    private Realm realm;
+
+    private DanbooruSearchLoader danbooruSearchLoader;
+
     private long lastTimeBackPressed;
+
     private int currentIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
+        realm = Realm.getDefaultInstance();
+
         setContentView(R.layout.activity_main);
 
         if (savedState == null) {
-            postSearch = new PostSearch(getSearchString());
-            postSearch.load();
-            SearchHistory.goForward(postSearch);
+            // Create searchResult
+            realm.beginTransaction();
+            SearchResult searchResult = realm.createObject(SearchResult.class);
+            searchResult.setQuery(getSearchString());
+            realm.commitTransaction();
+
+            danbooruSearchLoader = new DanbooruSearchLoader(searchResult);
+            danbooruSearchLoader.load();
+
             attachMasterFragment();
+
             activityCount++;
         } else {
-            postSearch = SearchHistory.current();
+            // Load searchResult
+            String searchResultId = savedState.getString("searchResultId");
+            SearchResult searchResult = realm.where(SearchResult.class)
+                    .equalTo("id", searchResultId)
+                    .findFirst();
+
+            danbooruSearchLoader = new DanbooruSearchLoader(searchResult);
+
             currentIndex = savedState.getInt("currentIndex");
             activityCount = savedState.getInt("activityCount");
         }
@@ -58,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString("searchResultId", danbooruSearchLoader.getResultId());
         outState.putInt("currentIndex", currentIndex);
         outState.putInt("activityCount", activityCount);
     }
@@ -65,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         activityCount--;
+        realm.close();
         super.onDestroy();
     }
 
@@ -120,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public PostSearch getPostSearch() {
-        return postSearch;
+    public DanbooruSearchLoader getSearchLoader() {
+        return danbooruSearchLoader;
     }
 
     public int getCurrentIndex() {
@@ -159,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     private void invokeDownload() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck == PERMISSION_GRANTED) {
-            Post post = postSearch.getPost(currentIndex);
+            Post post = danbooruSearchLoader.getResult(currentIndex);
             DownloadService.queue(this, post);
         } else {
             String[] permissionStrings = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -168,14 +192,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void invokeOpenInBrowser() {
-        String webUrl = postSearch.getPost(currentIndex).getWebUrl();
+        String webUrl = danbooruSearchLoader.getResult(currentIndex).getWebUrl();
         Uri webUri = Uri.parse(webUrl);
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
 
     private void invokeShare() {
-        String webUrl = postSearch.getPost(currentIndex).getWebUrl();
+        String webUrl = danbooruSearchLoader.getResult(currentIndex).getWebUrl();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, webUrl);
         intent.setType("text/plain");

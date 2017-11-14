@@ -21,12 +21,14 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain.MainActivity;
-import i.am.shiro.chesto.engine.PostSearch;
-import i.am.shiro.chesto.engine.SearchSubscriber;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
+import i.am.shiro.chesto.subscription.SubscriptionGroup;
 import timber.log.Timber;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
+import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
+import static android.support.design.widget.Snackbar.make;
 
 /**
  * Created by Subaru Tashiro on 8/24/2017.
@@ -34,7 +36,7 @@ import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 
 public class DetailFragment extends Fragment {
 
-    private SearchSubscriber searchSubscriber;
+    SubscriptionGroup subscriptions;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        PostSearch postSearch = parentActivity.getPostSearch();
+        DanbooruSearchLoader searchLoader = parentActivity.getSearchLoader();
         int currentIndex = parentActivity.getCurrentIndex();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
@@ -69,7 +71,7 @@ public class DetailFragment extends Fragment {
         layoutManager.setFlexWrap(FlexWrap.WRAP);
 
         PostTagAdapter postTagAdapter = new PostTagAdapter();
-        postTagAdapter.setData(postSearch);
+        postTagAdapter.setData(searchLoader);
         postTagAdapter.setOnItemClickListener(this::onTagClicked);
 
         RecyclerView tagRecycler = view.findViewById(R.id.tagRecyclerView);
@@ -77,7 +79,7 @@ public class DetailFragment extends Fragment {
         tagRecycler.setAdapter(postTagAdapter);
 
         PostImageAdapter postImageAdapter = new PostImageAdapter();
-        postImageAdapter.setData(postSearch);
+        postImageAdapter.setData(searchLoader);
 
         ScrollToPageListener listener1 = new ScrollToPageListener();
         listener1.setOnScrollToPageListener(postTagAdapter::setCurrentIndex);
@@ -95,14 +97,14 @@ public class DetailFragment extends Fragment {
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
-        Snackbar errorSnackbar = Snackbar.make(imageRecycler, "Could not load more posts", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Retry", v -> postSearch.load());
+        Snackbar errorSnackbar = make(imageRecycler, "Could not load more posts", LENGTH_INDEFINITE)
+                .setAction("Retry", v -> searchLoader.load());
 
-        searchSubscriber = postSearch.makeSubscriber();
-        searchSubscriber.setOnPostAddedListener(postImageAdapter::notifyItemInserted);
-        searchSubscriber.setOnPostUpdatedListener(postImageAdapter::notifyItemChanged);
-        searchSubscriber.setOnResultsClearedListener(postImageAdapter::notifyDataSetChanged);
-        searchSubscriber.setOnErrorListener(errorSnackbar::show);
+        subscriptions = new SubscriptionGroup();
+        searchLoader.addOnPostAddedListener(subscriptions, postImageAdapter::notifyItemInserted);
+        searchLoader.addOnPostUpdatedListener(subscriptions, postImageAdapter::notifyItemChanged);
+        searchLoader.addOnResultsClearedListener(subscriptions, postImageAdapter::notifyDataSetChanged);
+        searchLoader.addOnErrorListener(subscriptions, errorSnackbar::show);
 
         Timber.d("DETAIL FRAGMENT CREATED");
 
@@ -112,7 +114,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        searchSubscriber.unsubscribe();
+        subscriptions.unsubscribe();
 
         Timber.d("DETAIL FRAGMENT DESTROYED");
     }

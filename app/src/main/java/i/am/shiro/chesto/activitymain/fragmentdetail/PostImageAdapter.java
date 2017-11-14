@@ -15,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.engine.PostSearch;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.models.Post;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
@@ -26,10 +26,10 @@ import timber.log.Timber;
 
 final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewHolder> {
 
-    private PostSearch searchResults;
+    private DanbooruSearchLoader searchLoader;
 
-    void setData(PostSearch searchResults) {
-        this.searchResults = searchResults;
+    void setData(DanbooruSearchLoader searchLoader) {
+        this.searchLoader = searchLoader;
     }
 
     @Override
@@ -42,19 +42,19 @@ final class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.ViewH
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (position >= searchResults.size() - 5) {
-            searchResults.load();
+        if (position >= searchLoader.getResultSize() - 5) {
+            searchLoader.load();
         }
 
         Timber.d("Position %s binded", position);
 
-        Post post = searchResults.getPost(position);
+        Post post = searchLoader.getResult(position);
         holder.bind(post);
     }
 
     @Override
     public int getItemCount() {
-        return searchResults.size();
+        return searchLoader.getResultSize();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

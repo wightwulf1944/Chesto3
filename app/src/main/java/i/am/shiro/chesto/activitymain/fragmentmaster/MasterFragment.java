@@ -19,9 +19,12 @@ import com.google.android.flexbox.JustifyContent;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activitymain.MainActivity;
-import i.am.shiro.chesto.engine.PostSearch;
-import i.am.shiro.chesto.engine.SearchSubscriber;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
+import i.am.shiro.chesto.subscription.SubscriptionGroup;
 import timber.log.Timber;
+
+import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
+import static android.support.design.widget.Snackbar.make;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -29,7 +32,7 @@ import timber.log.Timber;
 
 public class MasterFragment extends Fragment {
 
-    private SearchSubscriber searchSubscriber;
+    SubscriptionGroup subscriptions;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +45,11 @@ public class MasterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_master, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        PostSearch postSearch = parentActivity.getPostSearch();
+        DanbooruSearchLoader searchLoader = parentActivity.getSearchLoader();
         int currentIndex = parentActivity.getCurrentIndex();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setSubtitle(postSearch.getSearchString());
+        toolbar.setSubtitle(searchLoader.getSearchQuery());
         parentActivity.setSupportActionBar(toolbar);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
@@ -54,7 +57,7 @@ public class MasterFragment extends Fragment {
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
         MasterAdapter adapter = new MasterAdapter();
-        adapter.setData(postSearch);
+        adapter.setData(searchLoader);
         adapter.setOnItemClickedListener(parentActivity::goToDetail);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -65,18 +68,18 @@ public class MasterFragment extends Fragment {
 
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
-        refreshLayout.setRefreshing(postSearch.isLoading());
-        refreshLayout.setOnRefreshListener(postSearch::refresh);
+        refreshLayout.setRefreshing(searchLoader.isLoading());
+        refreshLayout.setOnRefreshListener(searchLoader::refresh);
 
-        Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Retry", v -> postSearch.load());
+        Snackbar errorSnackbar = make(view, "Check your connection", LENGTH_INDEFINITE)
+                .setAction("Retry", v -> searchLoader.load());
 
-        searchSubscriber = postSearch.makeSubscriber();
-        searchSubscriber.setOnLoadingListener(refreshLayout::setRefreshing);
-        searchSubscriber.setOnErrorListener(errorSnackbar::show);
-        searchSubscriber.setOnPostAddedListener(adapter::notifyItemInserted);
-        searchSubscriber.setOnPostUpdatedListener(adapter::notifyItemChanged);
-        searchSubscriber.setOnResultsClearedListener(adapter::notifyDataSetChanged);
+        subscriptions = new SubscriptionGroup();
+        searchLoader.addOnLoadingListener(subscriptions, refreshLayout::setRefreshing);
+        searchLoader.addOnErrorListener(subscriptions, errorSnackbar::show);
+        searchLoader.addOnPostAddedListener(subscriptions, adapter::notifyItemInserted);
+        searchLoader.addOnPostUpdatedListener(subscriptions, adapter::notifyItemChanged);
+        searchLoader.addOnResultsClearedListener(subscriptions, adapter::notifyDataSetChanged);
 
         Timber.d("MASTER FRAGMENT CREATED");
 
@@ -86,7 +89,7 @@ public class MasterFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        searchSubscriber.unsubscribe();
+        subscriptions.unsubscribe();
 
         Timber.d("MASTER FRAGMENT DESTROYED");
     }

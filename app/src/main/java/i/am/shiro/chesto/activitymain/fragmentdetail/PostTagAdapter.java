@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.listeners.Listener1;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.models.Post;
 import timber.log.Timber;
 
@@ -25,12 +25,12 @@ import timber.log.Timber;
 
 final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolder> {
 
-    private PostSearch postSearch;
+    private DanbooruSearchLoader searchLoader;
     private List<Item> items = new ArrayList<>();
     private Listener1<String> onItemClickListener;
 
-    void setData(PostSearch postSearch) {
-        this.postSearch = postSearch;
+    void setData(DanbooruSearchLoader searchLoader) {
+        this.searchLoader = searchLoader;
     }
 
     void setOnItemClickListener(Listener1<String> listener) {
@@ -38,7 +38,7 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
     }
 
     void setCurrentIndex(int index) {
-        Post post = postSearch.getPost(index);
+        Post post = searchLoader.getResult(index);
         items.clear();
         setCategoryTags("Copyrights:", R.layout.item_post_tag_copyright, post.getTagStringCopyright());
         setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());

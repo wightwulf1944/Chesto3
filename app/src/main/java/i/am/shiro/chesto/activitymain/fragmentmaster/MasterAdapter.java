@@ -12,8 +12,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.engine.PostSearch;
 import i.am.shiro.chesto.listeners.Listener1;
+import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.models.Post;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -23,11 +23,11 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
-    private PostSearch searchResults;
+    private DanbooruSearchLoader searchLoader;
     private Listener1<Integer> onItemClickedListener;
 
-    void setData(PostSearch searchResults) {
-        this.searchResults = searchResults;
+    void setData(DanbooruSearchLoader searchLoader) {
+        this.searchLoader = searchLoader;
     }
 
     void setOnItemClickedListener(Listener1<Integer> listener) {
@@ -49,11 +49,11 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (position >= searchResults.size() - 15) {
-            searchResults.load();
+        if (position >= searchLoader.getResultSize() - 15) {
+            searchLoader.load();
         }
 
-        Post post = searchResults.getPost(position);
+        Post post = searchLoader.getResult(position);
         ImageView imageView = (ImageView) holder.itemView;
         AppCompatActivity parentActivity = (AppCompatActivity) imageView.getContext();
 
@@ -75,7 +75,7 @@ class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return searchResults.size();
+        return searchLoader.getResultSize();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
