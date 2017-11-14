@@ -7,6 +7,7 @@ import i.am.shiro.chesto.models.Danbooru;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
@@ -41,6 +42,11 @@ public class ChestoApplication extends Application {
         }
 
         Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .compactOnLaunch()
+                .build();
+        Realm.setDefaultConfiguration(config);
 
         initDanbooru();
     }
