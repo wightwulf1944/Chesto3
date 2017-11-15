@@ -44,14 +44,13 @@ final class PostTagAdapter extends RecyclerView.Adapter<PostTagAdapter.ViewHolde
         setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());
         setCategoryTags("Artist:", R.layout.item_post_tag_artist, post.getTagStringArtist());
         setCategoryTags("Tags:", R.layout.item_post_tag_general, post.getTagStringGeneral());
+        setCategoryTags("Meta:", R.layout.item_post_tag_meta, post.getTagStringMeta());
         notifyDataSetChanged();
     }
 
     private void setCategoryTags(String categoryLabel, int layout, String tags) {
-        Timber.d(tags);
-        if (tags.trim().isEmpty()) {
-            return;
-        }
+        Timber.d("%s %s", categoryLabel, tags);
+        if (tags.isEmpty()) return;
 
         items.add(new Item(R.layout.item_post_label, categoryLabel));
         for (String tag : tags.split(" ")) {

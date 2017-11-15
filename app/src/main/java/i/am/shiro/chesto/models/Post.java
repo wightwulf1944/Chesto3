@@ -26,6 +26,7 @@ public class Post extends RealmObject {
     private String tagStringCharacter;
     private String tagStringCopyright;
     private String tagStringGeneral;
+    private String tagStringMeta;
 
     private String webUrl;
     private String thumbFileUrl;
@@ -47,6 +48,7 @@ public class Post extends RealmObject {
         tagStringCharacter = postJson.tagStringCharacter;
         tagStringCopyright = postJson.tagStringCopyright;
         tagStringGeneral = postJson.tagStringGeneral;
+        tagStringMeta = postJson.tagStringMeta;
         webUrl = baseUrl + "/posts/" + postJson.id;
         thumbFileUrl = baseUrl + postJson.previewFileUrl;
         previewFileUrl = baseUrl + postJson.largeFileUrl;
@@ -106,6 +108,10 @@ public class Post extends RealmObject {
 
     public String getTagStringGeneral() {
         return tagStringGeneral;
+    }
+
+    public String getTagStringMeta() {
+        return tagStringMeta;
     }
 
     public String getWebUrl() {

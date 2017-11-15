@@ -17,6 +17,7 @@ public class PostJson {
     @Json(name = "tag_string_character") String tagStringCharacter;
     @Json(name = "tag_string_copyright") String tagStringCopyright;
     @Json(name = "tag_string_general") String tagStringGeneral;
+    @Json(name = "tag_string_meta") String tagStringMeta;
     @Json(name = "has_large") boolean hasLarge;
     @Json(name = "preview_file_url") String previewFileUrl;
     @Json(name = "large_file_url") String largeFileUrl;
