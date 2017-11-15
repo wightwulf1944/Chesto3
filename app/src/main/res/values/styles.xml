@@ -25,6 +25,10 @@
         <item name="android:padding">2dp</item>
     </style>
 
+    <style name="BottomSheetItem.Label">
+        <item name="android:textColor">?android:textColorSecondaryInverse</item>
+    </style>
+
     <style name="BottomSheetItem.Tag">
         <item name="android:background">@drawable/bg_item_tag</item>
     </style>
