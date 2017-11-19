@@ -13,8 +13,11 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.TagStore;
 import i.am.shiro.chesto.adapter.SearchAdapter;
+import io.realm.Realm;
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+
+    private final Realm realm = Realm.getDefaultInstance();
 
     private TagStore tagStore;
 
@@ -42,7 +45,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        tagStore = new TagStore(adapter);
+        tagStore = new TagStore(realm);
+        tagStore.setDatasetChangedListener(adapter::setData);
+        tagStore.searchTags("");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override

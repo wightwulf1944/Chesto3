@@ -1,6 +1,8 @@
 package i.am.shiro.chesto;
 
-import i.am.shiro.chesto.adapter.SearchAdapter;
+import java.util.List;
+
+import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Tag;
 import io.reactivex.Observable;
 import io.realm.Case;
@@ -14,28 +16,23 @@ import io.realm.Sort;
 
 public final class TagStore {
 
-    private final SearchAdapter adapter;
+    private final Realm realm;
+
     private RealmResults<Tag> results;
 
-    public TagStore(SearchAdapter adapter) {
-        this.adapter = adapter;
-        results = Realm.getDefaultInstance()
-                .where(Tag.class)
-                .findAllSorted("postCount", Sort.DESCENDING);
-        adapter.setData(results);
+    private Listener1<List<Tag>> onDatasetChangedListener;
+
+    public TagStore(Realm realm) {
+        this.realm = realm;
     }
 
     public void searchTags(String tagSearchString) {
-
         results.removeAllChangeListeners();
-        results = Realm.getDefaultInstance()
-                .where(Tag.class)
+        results = realm.where(Tag.class)
                 .contains("name", tagSearchString, Case.INSENSITIVE)
                 .findAllSorted("postCount", Sort.DESCENDING);
-        results.addChangeListener(tags -> adapter.notifyDataSetChanged());
-
-        adapter.setData(results);
-        adapter.notifyDataSetChanged();
+        onDatasetChangedListener.onEvent(results);
+        results.addChangeListener(onDatasetChangedListener::onEvent);
 
         ChestoApplication.danbooru()
                 .searchTags('*' + tagSearchString + '*')
@@ -43,10 +40,16 @@ public final class TagStore {
                 .map(Tag::new)
                 .toList()
                 .subscribe(
-                        tags -> Realm.getDefaultInstance().executeTransaction(
-                                realm -> realm.insertOrUpdate(tags)
-                        ),
+                        tags -> {
+                            Realm realm = Realm.getDefaultInstance();
+                            realm.executeTransaction(r -> r.insertOrUpdate(tags));
+                            realm.close();
+                        },
                         Throwable::printStackTrace
                 );
+    }
+
+    public void setDatasetChangedListener(Listener1<List<Tag>> listener) {
+        onDatasetChangedListener = listener;
     }
 }

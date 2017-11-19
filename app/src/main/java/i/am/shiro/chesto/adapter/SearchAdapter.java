@@ -23,6 +23,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public void setData(List<Tag> data) {
         items = data;
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(Listener1<String> listener) {
@@ -46,6 +47,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         Tag tag = items.get(position);
         viewHolder.postCount.setText(tag.getPostCountStr());
         viewHolder.name.setText(tag.getName());
+        viewHolder.itemView.setOnClickListener(v -> onItemClickListener.onEvent(tag.getName()));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,10 +59,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             super(view);
             postCount = view.findViewById(R.id.postCount);
             name = view.findViewById(R.id.name);
-            view.setOnClickListener(v -> {
-                String itemName = name.getText().toString();
-                onItemClickListener.onEvent(itemName);
-            });
         }
     }
 }
