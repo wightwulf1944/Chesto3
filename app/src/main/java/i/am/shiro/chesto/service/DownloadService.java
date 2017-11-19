@@ -26,7 +26,7 @@ import timber.log.Timber;
 
 public final class DownloadService extends IntentService {
 
-    private NotificationUtil notificationHelper;
+    private NotificationUtil notificationUtil;
 
     public DownloadService() {
         super("DownloadService");
@@ -45,12 +45,12 @@ public final class DownloadService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        notificationHelper = new NotificationUtil(this);
+        notificationUtil = new NotificationUtil(this);
     }
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        notificationHelper.notifyDownloadQueued();
+        notificationUtil.notifyDownloadQueued();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -67,13 +67,13 @@ public final class DownloadService extends IntentService {
             Intent newImageIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri);
             sendBroadcast(newImageIntent);
 
-            notificationHelper.notifyDownloadSuccess(downloadInfo, targetFile);
+            notificationUtil.notifyDownloadSuccess(downloadInfo, targetFile);
         } catch (Exception e) {
-            notificationHelper.notifyDownloadFailed(downloadInfo);
+            notificationUtil.notifyDownloadFailed(downloadInfo);
             Timber.e(e, "Download error: %s", downloadInfo.url);
         }
 
-        notificationHelper.notifyDownloadDone();
+        notificationUtil.notifyDownloadDone();
     }
 
     private File getSourceFile(DownloadInfo dlInfo) throws Exception {

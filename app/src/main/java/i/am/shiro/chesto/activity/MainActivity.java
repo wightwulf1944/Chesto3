@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
 
-    private Realm realm;
+    private final Realm realm = Realm.getDefaultInstance();
 
     private DanbooruSearchLoader danbooruSearchLoader;
 
@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
-        realm = Realm.getDefaultInstance();
-
         setContentView(R.layout.activity_main);
 
         if (savedState == null) {
@@ -80,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        realm.close();
         super.onDestroy();
+        realm.close();
     }
 
     @Override

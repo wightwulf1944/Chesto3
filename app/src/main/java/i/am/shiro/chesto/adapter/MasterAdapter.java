@@ -70,8 +70,8 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
         flexboxLp.height = post.getThumbHeight();
         flexboxLp.setMaxWidth(post.getThumbMaxWidth());
 
-        RequestOptions requestOptions = RequestOptions
-                .bitmapTransform(new RoundedCornersTransformation(4, 0))
+        RequestOptions requestOptions = new RequestOptions()
+                .transform(new RoundedCornersTransformation(4, 0))
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken);
 
