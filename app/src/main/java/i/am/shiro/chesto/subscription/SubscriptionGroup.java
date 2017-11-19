@@ -3,8 +3,8 @@ package i.am.shiro.chesto.subscription;
 import java.util.LinkedList;
 import java.util.List;
 
-import i.am.shiro.chesto.listeners.Listener;
-import i.am.shiro.chesto.notifiers.AbstractNotifier;
+import i.am.shiro.chesto.listener.Listener;
+import i.am.shiro.chesto.notifier.AbstractNotifier;
 
 /**
  * Created by Shiro on 11/5/2017.

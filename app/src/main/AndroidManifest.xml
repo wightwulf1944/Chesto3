@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activitymain.MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -22,11 +22,11 @@
         </activity>
 
         <activity
-            android:name=".activitysearch.SearchActivity"
+            android:name=".activity.SearchActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
-        <service android:name=".servicedownload.DownloadService"/>
+        <service android:name=".service.DownloadService"/>
     </application>
 
 </manifest>

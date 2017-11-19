@@ -3,7 +3,7 @@ package i.am.shiro.chesto;
 import android.app.Application;
 import android.os.StrictMode;
 
-import i.am.shiro.chesto.models.Danbooru;
+import i.am.shiro.chesto.model.Danbooru;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
