@@ -17,10 +17,13 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.fragment.DetailFragment;
 import i.am.shiro.chesto.fragment.MasterFragment;
 import i.am.shiro.chesto.service.DownloadService;
+import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 import io.realm.Realm;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
+import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private final Realm realm = Realm.getDefaultInstance();
 
     private MainViewModel viewModel;
+
+    private Subscription subscription;
 
     private long lastTimeBackPressed;
 
@@ -53,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
             // fragment state automatically restored by fragment manager
         }
+
+        View view = findViewById(android.R.id.content);
+        Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", LENGTH_INDEFINITE);
+        errorSnackbar.setAction("Retry", v -> viewModel.loadPosts());
+
+        subscription = viewModel.addOnErrorListener(errorSnackbar::show);
     }
 
     @Override
@@ -60,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         String modelId = viewModel.saveState(realm);
         outState.putString("modelId", modelId);
+        subscription.unsubscribe();
     }
 
     @Override
@@ -76,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
             View contentView = findViewById(android.R.id.content);
-            Snackbar.make(contentView, R.string.main_snackbar_exit, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(contentView, R.string.main_snackbar_exit, LENGTH_SHORT).show();
             lastTimeBackPressed = System.currentTimeMillis();
         }
     }
@@ -114,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             invokeDownload();
         } else {
             View contentView = findViewById(android.R.id.content);
-            Snackbar.make(contentView, "Please allow access to save image", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(contentView, "Please allow access to save image", LENGTH_SHORT).show();
         }
     }
 

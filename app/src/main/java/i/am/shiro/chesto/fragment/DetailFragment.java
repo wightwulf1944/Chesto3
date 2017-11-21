@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,8 +29,6 @@ import timber.log.Timber;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
-import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
-import static android.support.design.widget.Snackbar.make;
 
 /**
  * Created by Subaru Tashiro on 8/24/2017.
@@ -96,15 +93,11 @@ public class DetailFragment extends Fragment {
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
-        Snackbar errorSnackbar = make(imageRecycler, "Could not load more posts", LENGTH_INDEFINITE)
-                .setAction("Retry", v -> viewModel.loadPosts());
-
         subscription = Subscription.from(
                 viewModel.addOnCurrentPostChangedListener(detailTagAdapter::setCurrentPost),
                 viewModel.addOnPostAddedListener(detailImageAdapter::notifyItemInserted),
                 viewModel.addOnPostUpdatedListener(detailImageAdapter::notifyItemChanged),
-                viewModel.addOnResultsClearedListener(detailImageAdapter::notifyDataSetChanged),
-                viewModel.addOnErrorListener(errorSnackbar::show)
+                viewModel.addOnResultsClearedListener(detailImageAdapter::notifyDataSetChanged)
         );
 
         Timber.d("DETAIL FRAGMENT CREATED");

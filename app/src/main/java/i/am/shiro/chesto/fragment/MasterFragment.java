@@ -3,7 +3,6 @@ package i.am.shiro.chesto.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,9 +22,6 @@ import i.am.shiro.chesto.adapter.MasterAdapter;
 import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
-
-import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
-import static android.support.design.widget.Snackbar.make;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -74,12 +70,8 @@ public class MasterFragment extends Fragment {
         refreshLayout.setRefreshing(viewModel.isLoading());
         refreshLayout.setOnRefreshListener(viewModel::refreshPosts);
 
-        Snackbar errorSnackbar = make(view, "Check your connection", LENGTH_INDEFINITE)
-                .setAction("Retry", v -> viewModel.loadPosts());
-
         subscription = Subscription.from(
                 viewModel.addOnLoadingListener(refreshLayout::setRefreshing),
-                viewModel.addOnErrorListener(errorSnackbar::show),
                 viewModel.addOnPostAddedListener(adapter::notifyItemInserted),
                 viewModel.addOnPostUpdatedListener(adapter::notifyItemChanged),
                 viewModel.addOnResultsClearedListener(adapter::notifyDataSetChanged)
