@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.listener.Listener1;
@@ -20,11 +19,12 @@ import timber.log.Timber;
 /**
  * Created by Subaru Tashiro on 7/19/2017.
  * TODO: identify why LayoutInflater views ignores some xml attributes such as layout_wrapBefore
+ * TODO: may get free performance gain by using arraylist.ensurecapacity()
  */
 
 public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapter.ViewHolder> {
 
-    private List<Item> items = new ArrayList<>();
+    private final ArrayList<Item> items = new ArrayList<>();
 
     private Listener1<String> onItemClickListener;
 
@@ -98,8 +98,8 @@ public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapte
     }
 
     private static class Item {
-        private int viewType;
-        private String text;
+        private final int viewType;
+        private final String text;
 
         private Item(int viewType, String text) {
             this.viewType = viewType;

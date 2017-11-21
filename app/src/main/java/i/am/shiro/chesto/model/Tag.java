@@ -5,6 +5,7 @@ import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Shiro on 7/29/2016.
+ * TODO: may be optimized
  */
 public class Tag extends RealmObject {
 

@@ -29,6 +29,7 @@ import static android.support.design.widget.Snackbar.make;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
+ * TODO: may benefit from listening to viewModel.currentindexchanged
  */
 
 public class MasterFragment extends Fragment {

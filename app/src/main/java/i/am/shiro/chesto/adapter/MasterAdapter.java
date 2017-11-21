@@ -29,9 +29,9 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
 
     private final Notifier1<Integer> onItemClickedNotifier = new Notifier1<>();
 
-    private Listener0 onScrollToThresholdListener;
+    private final Fragment parentFragment;
 
-    private Fragment parentFragment;
+    private Listener0 onScrollToThresholdListener;
 
     private List<Post> data;
 

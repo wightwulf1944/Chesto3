@@ -12,7 +12,7 @@ import i.am.shiro.chesto.notifier.AbstractNotifier;
 
 public class SubscriptionGroup {
 
-    private List<Subscription> subscriptions = new LinkedList<>();
+    private final List<Subscription> subscriptions = new LinkedList<>();
 
     public void add(AbstractNotifier notifier, Listener listener) {
         subscriptions.add(new Subscription(notifier, listener));
