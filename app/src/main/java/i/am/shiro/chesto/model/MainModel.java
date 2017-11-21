@@ -21,6 +21,8 @@ public class MainModel extends RealmObject {
 
     private int currentIndex;
 
+    private boolean isLoading;
+
     public String getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class MainModel extends RealmObject {
 
     public void setCurrentIndex(int currentIndex) {
         this.currentIndex = currentIndex;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 }

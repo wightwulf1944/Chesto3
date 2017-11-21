@@ -77,9 +77,14 @@ public final class MainViewModel {
         this.posts = mainModel.getResults();
         this.pagesLoaded = mainModel.getPagesLoaded();
         this.currentIndex = mainModel.getCurrentIndex();
+        this.isLoading = mainModel.isLoading();
+
+        if (isLoading) loadPosts();
     }
 
     public String saveState(Realm realm) {
+        disposable.dispose();
+
         MainModel mainModel = new MainModel();
         mainModel.setId(modelId);
         mainModel.setQuery(query);
