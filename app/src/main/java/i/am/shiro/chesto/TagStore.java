@@ -8,7 +8,8 @@ import io.reactivex.Observable;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
+
+import static io.realm.Sort.DESCENDING;
 
 /**
  * Created by Subaru Tashiro on 7/3/2017.
@@ -25,7 +26,7 @@ public final class TagStore {
     public TagStore(Realm realm) {
         this.realm = realm;
         this.results = realm.where(Tag.class)
-                .findAllSorted("postCount");
+                .findAllSorted("postCount", DESCENDING);
     }
 
     public List<Tag> getResults() {
@@ -36,7 +37,7 @@ public final class TagStore {
         results.removeAllChangeListeners();
         results = realm.where(Tag.class)
                 .contains("name", tagSearchString, Case.INSENSITIVE)
-                .findAllSorted("postCount", Sort.DESCENDING);
+                .findAllSorted("postCount", DESCENDING);
         onDatasetChangedListener.onEvent(results);
         results.addChangeListener(onDatasetChangedListener::onEvent);
 
