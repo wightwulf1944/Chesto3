@@ -19,7 +19,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    private TagStore tagStore;
+    private final TagStore tagStore = new TagStore(realm);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         searchView.setOnQueryTextListener(this);
 
         SearchAdapter adapter = new SearchAdapter();
+        adapter.setData(tagStore.getResults());
         adapter.setOnItemClickListener(this::onQueryTextSubmit);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
@@ -45,9 +46,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        tagStore = new TagStore(realm);
         tagStore.setDatasetChangedListener(adapter::setData);
-        tagStore.searchTags("");
     }
 
     @Override

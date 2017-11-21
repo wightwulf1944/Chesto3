@@ -24,6 +24,12 @@ public final class TagStore {
 
     public TagStore(Realm realm) {
         this.realm = realm;
+        this.results = realm.where(Tag.class)
+                .findAllSorted("postCount");
+    }
+
+    public List<Tag> getResults() {
+        return results;
     }
 
     public void searchTags(String tagSearchString) {
