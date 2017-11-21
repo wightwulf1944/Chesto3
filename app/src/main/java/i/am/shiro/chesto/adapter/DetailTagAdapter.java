@@ -14,7 +14,6 @@ import java.util.List;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.listener.Listener1;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.model.Post;
 import timber.log.Timber;
 
@@ -25,20 +24,15 @@ import timber.log.Timber;
 
 public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapter.ViewHolder> {
 
-    private DanbooruSearchLoader searchLoader;
     private List<Item> items = new ArrayList<>();
-    private Listener1<String> onItemClickListener;
 
-    public void setData(DanbooruSearchLoader searchLoader) {
-        this.searchLoader = searchLoader;
-    }
+    private Listener1<String> onItemClickListener;
 
     public void setOnItemClickListener(Listener1<String> listener) {
         onItemClickListener = listener;
     }
 
-    public void setCurrentIndex(int index) {
-        Post post = searchLoader.getResult(index);
+    public void setCurrentPost(Post post) {
         items.clear();
         setCategoryTags("Copyrights:", R.layout.item_post_tag_copyright, post.getTagStringCopyright());
         setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());

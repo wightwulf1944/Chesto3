@@ -16,10 +16,8 @@ import android.view.View;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.fragment.DetailFragment;
 import i.am.shiro.chesto.fragment.MasterFragment;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
-import i.am.shiro.chesto.model.Post;
-import i.am.shiro.chesto.model.SearchResult;
 import i.am.shiro.chesto.service.DownloadService;
+import i.am.shiro.chesto.viewmodel.MainViewModel;
 import io.realm.Realm;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -34,11 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    private DanbooruSearchLoader danbooruSearchLoader;
+    private MainViewModel viewModel;
 
     private long lastTimeBackPressed;
-
-    private int currentIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
@@ -46,34 +42,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedState == null) {
-            // Create searchResult
-            realm.beginTransaction();
-            SearchResult searchResult = realm.createObject(SearchResult.class);
-            searchResult.setQuery(getSearchString());
-            realm.commitTransaction();
+            viewModel = new MainViewModel(getSearchString());
 
-            danbooruSearchLoader = new DanbooruSearchLoader(searchResult);
-            danbooruSearchLoader.load();
-
-            attachMasterFragment();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragmentContainer, new MasterFragment())
+                    .commit();
         } else {
-            // Load searchResult
-            String searchResultId = savedState.getString("searchResultId");
-            SearchResult searchResult = realm.where(SearchResult.class)
-                    .equalTo("id", searchResultId)
-                    .findFirst();
+            String modelId = savedState.getString("modelId");
+            viewModel = new MainViewModel(realm, modelId);
 
-            danbooruSearchLoader = new DanbooruSearchLoader(searchResult);
-
-            currentIndex = savedState.getInt("currentIndex");
+            // fragment state automatically restored by fragment manager
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("searchResultId", danbooruSearchLoader.getResultId());
-        outState.putInt("currentIndex", currentIndex);
+        String modelId = viewModel.saveState(realm);
+        outState.putString("modelId", modelId);
     }
 
     @Override
@@ -132,34 +118,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public DanbooruSearchLoader getSearchLoader() {
-        return danbooruSearchLoader;
-    }
-
-    public int getCurrentIndex() {
-        return currentIndex;
-    }
-
-    public void setCurrentIndex(int i) {
-        currentIndex = i;
+    public MainViewModel getViewModel() {
+        return viewModel;
     }
 
     private void goToMaster() {
         getFragmentManager().popBackStack();
     }
 
-    public void goToDetail(int index) {
-        currentIndex = index;
-
+    public void goToDetail() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, new DetailFragment())
                 .addToBackStack(null)
-                .commit();
-    }
-
-    private void attachMasterFragment() {
-        getFragmentManager().beginTransaction()
-                .add(R.id.fragmentContainer, new MasterFragment())
                 .commit();
     }
 
@@ -171,8 +141,7 @@ public class MainActivity extends AppCompatActivity {
     private void invokeDownload() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck == PERMISSION_GRANTED) {
-            Post post = danbooruSearchLoader.getResult(currentIndex);
-            DownloadService.queue(this, post);
+            DownloadService.queue(this, viewModel.getCurrentPost());
         } else {
             String[] permissionStrings = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
             ActivityCompat.requestPermissions(this, permissionStrings, PERMISSION_REQUEST_CODE);
@@ -180,14 +149,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void invokeOpenInBrowser() {
-        String webUrl = danbooruSearchLoader.getResult(currentIndex).getWebUrl();
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
         Uri webUri = Uri.parse(webUrl);
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
 
     private void invokeShare() {
-        String webUrl = danbooruSearchLoader.getResult(currentIndex).getWebUrl();
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, webUrl);
         intent.setType("text/plain");
@@ -198,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
     private String getSearchString() {
         Intent intent = getIntent();
         String action = intent.getAction();
+
+        if (action == null) {
+            throw new RuntimeException("No action found for intent: " + intent.toString());
+        }
+
         switch (action) {
             case Intent.ACTION_MAIN:
                 return "";

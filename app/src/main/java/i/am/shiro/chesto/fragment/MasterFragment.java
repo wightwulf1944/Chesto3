@@ -20,8 +20,8 @@ import com.google.android.flexbox.JustifyContent;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.MasterAdapter;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.subscription.SubscriptionGroup;
+import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
 
 import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
@@ -46,11 +46,10 @@ public class MasterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_master, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        DanbooruSearchLoader searchLoader = parentActivity.getSearchLoader();
-        int currentIndex = parentActivity.getCurrentIndex();
+        MainViewModel viewModel = parentActivity.getViewModel();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setSubtitle(searchLoader.getSearchQuery());
+        toolbar.setSubtitle(viewModel.getQuery());
         parentActivity.setSupportActionBar(toolbar);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
@@ -58,29 +57,31 @@ public class MasterFragment extends Fragment {
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
         MasterAdapter adapter = new MasterAdapter(this);
-        adapter.setData(searchLoader);
-        adapter.setOnItemClickedListener(parentActivity::goToDetail);
+        adapter.setData(viewModel.getPosts());
+        adapter.setOnScrollToThresholdListener(15, viewModel::loadPosts);
+        adapter.addOnItemClickedListener(viewModel::setCurrentIndex);
+        adapter.addOnItemClickedListener(i -> parentActivity.goToDetail());
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.post(() -> recyclerView.scrollToPosition(currentIndex));
+        recyclerView.post(() -> recyclerView.scrollToPosition(viewModel.getCurrentIndex()));
 
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
-        refreshLayout.setRefreshing(searchLoader.isLoading());
-        refreshLayout.setOnRefreshListener(searchLoader::refresh);
+        refreshLayout.setRefreshing(viewModel.isLoading());
+        refreshLayout.setOnRefreshListener(viewModel::refreshPosts);
 
         Snackbar errorSnackbar = make(view, "Check your connection", LENGTH_INDEFINITE)
-                .setAction("Retry", v -> searchLoader.load());
+                .setAction("Retry", v -> viewModel.loadPosts());
 
         subscriptions = new SubscriptionGroup();
-        searchLoader.addOnLoadingListener(subscriptions, refreshLayout::setRefreshing);
-        searchLoader.addOnErrorListener(subscriptions, errorSnackbar::show);
-        searchLoader.addOnPostAddedListener(subscriptions, adapter::notifyItemInserted);
-        searchLoader.addOnPostUpdatedListener(subscriptions, adapter::notifyItemChanged);
-        searchLoader.addOnResultsClearedListener(subscriptions, adapter::notifyDataSetChanged);
+        viewModel.addOnLoadingListener(subscriptions, refreshLayout::setRefreshing);
+        viewModel.addOnErrorListener(subscriptions, errorSnackbar::show);
+        viewModel.addOnPostAddedListener(subscriptions, adapter::notifyItemInserted);
+        viewModel.addOnPostUpdatedListener(subscriptions, adapter::notifyItemChanged);
+        viewModel.addOnResultsClearedListener(subscriptions, adapter::notifyDataSetChanged);
 
         Timber.d("MASTER FRAGMENT CREATED");
 

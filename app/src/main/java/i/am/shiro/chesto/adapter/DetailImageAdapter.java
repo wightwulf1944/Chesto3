@@ -14,8 +14,10 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.List;
+
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
+import i.am.shiro.chesto.listener.Listener0;
 import i.am.shiro.chesto.model.Post;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
@@ -28,14 +30,23 @@ public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAd
 
     private final Fragment parentFragment;
 
-    private DanbooruSearchLoader searchLoader;
+    private Listener0 onScrollToThresholdListener;
+
+    private List<Post> data;
+
+    private int scrollThreshold;
 
     public DetailImageAdapter(Fragment parentFragment) {
         this.parentFragment = parentFragment;
     }
 
-    public void setData(DanbooruSearchLoader searchLoader) {
-        this.searchLoader = searchLoader;
+    public void setData(List<Post> data) {
+        this.data = data;
+    }
+
+    public void setOnScrollToThresholdListener(int threshold, Listener0 listener) {
+        scrollThreshold = threshold;
+        onScrollToThresholdListener = listener;
     }
 
     @Override
@@ -48,19 +59,19 @@ public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (position >= searchLoader.getResultSize() - 5) {
-            searchLoader.load();
+        if (position >= data.size() - scrollThreshold) {
+            onScrollToThresholdListener.onEvent();
         }
 
         Timber.d("Position %s binded", position);
 
-        Post post = searchLoader.getResult(position);
+        Post post = data.get(position);
         holder.bind(post);
     }
 
     @Override
     public int getItemCount() {
-        return searchLoader.getResultSize();
+        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
