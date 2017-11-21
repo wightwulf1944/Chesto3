@@ -12,10 +12,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
+import java.util.List;
+
 import i.am.shiro.chesto.R;
+import i.am.shiro.chesto.listener.Listener0;
 import i.am.shiro.chesto.listener.Listener1;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.model.Post;
+import i.am.shiro.chesto.notifier.Notifier1;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
@@ -24,22 +27,31 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder> {
 
-    private Fragment parentFragment;
+    private final Notifier1<Integer> onItemClickedNotifier = new Notifier1<>();
 
-    private DanbooruSearchLoader searchLoader;
+    private final Fragment parentFragment;
 
-    private Listener1<Integer> onItemClickedListener;
+    private Listener0 onScrollToThresholdListener;
+
+    private List<Post> data;
+
+    private int scrollThreshold;
 
     public MasterAdapter(Fragment parentFragment) {
         this.parentFragment = parentFragment;
     }
 
-    public void setData(DanbooruSearchLoader searchLoader) {
-        this.searchLoader = searchLoader;
+    public void setData(List<Post> data) {
+        this.data = data;
     }
 
-    public void setOnItemClickedListener(Listener1<Integer> listener) {
-        onItemClickedListener = listener;
+    public void addOnItemClickedListener(Listener1<Integer> listener) {
+        onItemClickedNotifier.addListener(listener);
+    }
+
+    public void setOnScrollToThresholdListener(int threshold, Listener0 listener) {
+        scrollThreshold = threshold;
+        onScrollToThresholdListener = listener;
     }
 
     @Override
@@ -58,11 +70,11 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (position >= searchLoader.getResultSize() - 15) {
-            searchLoader.load();
+        if (position >= data.size() - scrollThreshold) {
+            onScrollToThresholdListener.onEvent();
         }
 
-        Post post = searchLoader.getResult(position);
+        Post post = data.get(position);
         ImageView imageView = (ImageView) holder.itemView;
 
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
@@ -83,14 +95,16 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return searchLoader.getResultSize();
+        return data.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private ViewHolder(View view) {
             super(view);
-            view.setOnClickListener(v -> onItemClickedListener.onEvent(getAdapterPosition()));
+            view.setOnClickListener(v ->
+                    onItemClickedNotifier.notifyListeners(getAdapterPosition())
+            );
         }
     }
 }

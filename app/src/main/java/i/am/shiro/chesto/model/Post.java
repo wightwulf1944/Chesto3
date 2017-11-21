@@ -134,10 +134,6 @@ public class Post extends RealmObject {
         return isPreviewDownsized;
     }
 
-    public boolean hasFileUrl() {
-        return thumbFileUrl != null && previewFileUrl != null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

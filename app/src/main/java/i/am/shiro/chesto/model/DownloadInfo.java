@@ -4,6 +4,7 @@ import android.content.Intent;
 
 /**
  * Created by Subaru Tashiro on 8/1/2017.
+ * TODO: may be parcelable
  */
 
 public final class DownloadInfo {

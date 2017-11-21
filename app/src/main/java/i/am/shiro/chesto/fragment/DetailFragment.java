@@ -24,8 +24,8 @@ import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.DetailImageAdapter;
 import i.am.shiro.chesto.adapter.DetailTagAdapter;
 import i.am.shiro.chesto.listener.ScrollToPageListener;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.subscription.SubscriptionGroup;
+import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
@@ -52,8 +52,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        DanbooruSearchLoader searchLoader = parentActivity.getSearchLoader();
-        int currentIndex = parentActivity.getCurrentIndex();
+        MainViewModel viewModel = parentActivity.getViewModel();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -74,7 +73,7 @@ public class DetailFragment extends Fragment {
         layoutManager.setFlexWrap(FlexWrap.WRAP);
 
         DetailTagAdapter detailTagAdapter = new DetailTagAdapter();
-        detailTagAdapter.setData(searchLoader);
+        detailTagAdapter.setCurrentPost(viewModel.getCurrentPost());
         detailTagAdapter.setOnItemClickListener(this::onTagClicked);
 
         RecyclerView tagRecycler = view.findViewById(R.id.tagRecyclerView);
@@ -82,32 +81,30 @@ public class DetailFragment extends Fragment {
         tagRecycler.setAdapter(detailTagAdapter);
 
         DetailImageAdapter detailImageAdapter = new DetailImageAdapter(this);
-        detailImageAdapter.setData(searchLoader);
+        detailImageAdapter.setData(viewModel.getPosts());
+        detailImageAdapter.setOnScrollToThresholdListener(5, viewModel::loadPosts);
 
-        ScrollToPageListener listener1 = new ScrollToPageListener();
-        listener1.setOnScrollToPageListener(detailTagAdapter::setCurrentIndex);
-
-        ScrollToPageListener listener2 = new ScrollToPageListener();
-        listener2.setOnScrollToPageListener(parentActivity::setCurrentIndex);
+        ScrollToPageListener scrollToPageListener = new ScrollToPageListener();
+        scrollToPageListener.setOnScrollToPageListener(viewModel::setCurrentIndex);
 
         RecyclerView imageRecycler = view.findViewById(R.id.imageRecyclerView);
         imageRecycler.setHasFixedSize(true);
         imageRecycler.setAdapter(detailImageAdapter);
-        imageRecycler.addOnScrollListener(listener1);
-        imageRecycler.addOnScrollListener(listener2);
-        imageRecycler.scrollToPosition(currentIndex);
+        imageRecycler.addOnScrollListener(scrollToPageListener);
+        imageRecycler.scrollToPosition(viewModel.getCurrentIndex());
 
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
         Snackbar errorSnackbar = make(imageRecycler, "Could not load more posts", LENGTH_INDEFINITE)
-                .setAction("Retry", v -> searchLoader.load());
+                .setAction("Retry", v -> viewModel.loadPosts());
 
         subscriptions = new SubscriptionGroup();
-        searchLoader.addOnPostAddedListener(subscriptions, detailImageAdapter::notifyItemInserted);
-        searchLoader.addOnPostUpdatedListener(subscriptions, detailImageAdapter::notifyItemChanged);
-        searchLoader.addOnResultsClearedListener(subscriptions, detailImageAdapter::notifyDataSetChanged);
-        searchLoader.addOnErrorListener(subscriptions, errorSnackbar::show);
+        viewModel.addOnCurrentPostChangedListener(subscriptions, detailTagAdapter::setCurrentPost);
+        viewModel.addOnPostAddedListener(subscriptions, detailImageAdapter::notifyItemInserted);
+        viewModel.addOnPostUpdatedListener(subscriptions, detailImageAdapter::notifyItemChanged);
+        viewModel.addOnResultsClearedListener(subscriptions, detailImageAdapter::notifyDataSetChanged);
+        viewModel.addOnErrorListener(subscriptions, errorSnackbar::show);
 
         Timber.d("DETAIL FRAGMENT CREATED");
 

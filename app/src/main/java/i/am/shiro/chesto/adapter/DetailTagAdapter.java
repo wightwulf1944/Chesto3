@@ -10,35 +10,29 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.listener.Listener1;
-import i.am.shiro.chesto.loader.DanbooruSearchLoader;
 import i.am.shiro.chesto.model.Post;
 import timber.log.Timber;
 
 /**
  * Created by Subaru Tashiro on 7/19/2017.
  * TODO: identify why LayoutInflater views ignores some xml attributes such as layout_wrapBefore
+ * TODO: may get free performance gain by using arraylist.ensurecapacity()
  */
 
 public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapter.ViewHolder> {
 
-    private DanbooruSearchLoader searchLoader;
-    private List<Item> items = new ArrayList<>();
-    private Listener1<String> onItemClickListener;
+    private final ArrayList<Item> items = new ArrayList<>();
 
-    public void setData(DanbooruSearchLoader searchLoader) {
-        this.searchLoader = searchLoader;
-    }
+    private Listener1<String> onItemClickListener;
 
     public void setOnItemClickListener(Listener1<String> listener) {
         onItemClickListener = listener;
     }
 
-    public void setCurrentIndex(int index) {
-        Post post = searchLoader.getResult(index);
+    public void setCurrentPost(Post post) {
         items.clear();
         setCategoryTags("Copyrights:", R.layout.item_post_tag_copyright, post.getTagStringCopyright());
         setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());
@@ -104,8 +98,8 @@ public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapte
     }
 
     private static class Item {
-        private int viewType;
-        private String text;
+        private final int viewType;
+        private final String text;
 
         private Item(int viewType, String text) {
             this.viewType = viewType;
