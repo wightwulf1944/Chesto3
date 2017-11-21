@@ -20,7 +20,7 @@ import com.google.android.flexbox.JustifyContent;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.MasterAdapter;
-import i.am.shiro.chesto.subscription.SubscriptionGroup;
+import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
 
@@ -34,7 +34,7 @@ import static android.support.design.widget.Snackbar.make;
 
 public class MasterFragment extends Fragment {
 
-    private SubscriptionGroup subscriptions;
+    private Subscription subscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,12 +77,13 @@ public class MasterFragment extends Fragment {
         Snackbar errorSnackbar = make(view, "Check your connection", LENGTH_INDEFINITE)
                 .setAction("Retry", v -> viewModel.loadPosts());
 
-        subscriptions = new SubscriptionGroup();
-        viewModel.addOnLoadingListener(subscriptions, refreshLayout::setRefreshing);
-        viewModel.addOnErrorListener(subscriptions, errorSnackbar::show);
-        viewModel.addOnPostAddedListener(subscriptions, adapter::notifyItemInserted);
-        viewModel.addOnPostUpdatedListener(subscriptions, adapter::notifyItemChanged);
-        viewModel.addOnResultsClearedListener(subscriptions, adapter::notifyDataSetChanged);
+        subscription = Subscription.from(
+                viewModel.addOnLoadingListener(refreshLayout::setRefreshing),
+                viewModel.addOnErrorListener(errorSnackbar::show),
+                viewModel.addOnPostAddedListener(adapter::notifyItemInserted),
+                viewModel.addOnPostUpdatedListener(adapter::notifyItemChanged),
+                viewModel.addOnResultsClearedListener(adapter::notifyDataSetChanged)
+        );
 
         Timber.d("MASTER FRAGMENT CREATED");
 
@@ -92,7 +93,7 @@ public class MasterFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscriptions.unsubscribe();
+        subscription.unsubscribe();
 
         Timber.d("MASTER FRAGMENT DESTROYED");
     }

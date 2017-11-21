@@ -103,7 +103,7 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
         private ViewHolder(View view) {
             super(view);
             view.setOnClickListener(v ->
-                    onItemClickedNotifier.notifyListeners(getAdapterPosition())
+                    onItemClickedNotifier.fireEvent(getAdapterPosition())
             );
         }
     }

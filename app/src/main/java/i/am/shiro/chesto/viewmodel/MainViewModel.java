@@ -12,7 +12,7 @@ import i.am.shiro.chesto.model.Post;
 import i.am.shiro.chesto.model.PostJson;
 import i.am.shiro.chesto.notifier.Notifier0;
 import i.am.shiro.chesto.notifier.Notifier1;
-import i.am.shiro.chesto.subscription.SubscriptionGroup;
+import i.am.shiro.chesto.subscription.Subscription;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.realm.Realm;
@@ -120,24 +120,24 @@ public final class MainViewModel {
             if (postSet.contains(newPost)) {
                 int index = posts.lastIndexOf(newPost);
                 posts.set(index, newPost);
-                onPostUpdatedNotifier.notifyListeners(index);
+                onPostUpdatedNotifier.fireEvent(index);
             } else {
                 posts.add(newPost);
-                onPostAddedNotifier.notifyListeners(posts.size());
+                onPostAddedNotifier.fireEvent(posts.size());
             }
         }
     }
 
     private void onLoadError(Throwable throwable) {
         Timber.e(throwable, "Error fetching posts");
-        onErrorNotifier.notifyListeners();
+        onErrorNotifier.fireEvent();
     }
 
     public void refreshPosts() {
         disposable.dispose();
         pagesLoaded = 0;
         posts.clear();
-        onResultsClearedNotifier.notifyListeners();
+        onResultsClearedNotifier.fireEvent();
         loadPosts();
     }
 
@@ -151,8 +151,8 @@ public final class MainViewModel {
 
     public void setCurrentIndex(int currentIndex) {
         this.currentIndex = currentIndex;
-        onCurrentIndexChangedNotifier.notifyListeners(currentIndex);
-        onCurrentPostChangedNotifier.notifyListeners(getCurrentPost());
+        onCurrentIndexChangedNotifier.fireEvent(currentIndex);
+        onCurrentPostChangedNotifier.fireEvent(getCurrentPost());
     }
 
     public Post getCurrentPost() {
@@ -169,42 +169,35 @@ public final class MainViewModel {
 
     private void setLoading(boolean loading) {
         isLoading = loading;
-        onLoadingNotifier.notifyListeners(loading);
+        onLoadingNotifier.fireEvent(loading);
     }
 
-    public void addOnCurrentIndexChangedListener(SubscriptionGroup subscriptionGroup, Listener1<Integer> listener) {
-        onCurrentIndexChangedNotifier.addListener(listener);
-        subscriptionGroup.add(onCurrentIndexChangedNotifier, listener);
+    public Subscription addOnCurrentIndexChangedListener(Listener1<Integer> listener) {
+        return onCurrentIndexChangedNotifier.addListener(listener);
     }
 
-    public void addOnCurrentPostChangedListener(SubscriptionGroup subscriptionGroup, Listener1<Post> listener) {
-        onCurrentPostChangedNotifier.addListener(listener);
-        subscriptionGroup.add(onCurrentPostChangedNotifier, listener);
+    public Subscription addOnCurrentPostChangedListener(Listener1<Post> listener) {
+        return onCurrentPostChangedNotifier.addListener(listener);
     }
 
-    public void addOnLoadingListener(SubscriptionGroup group, Listener1<Boolean> listener) {
-        onLoadingNotifier.addListener(listener);
-        group.add(onLoadingNotifier, listener);
+    public Subscription addOnLoadingListener(Listener1<Boolean> listener) {
+        return onLoadingNotifier.addListener(listener);
     }
 
-    public void addOnErrorListener(SubscriptionGroup group, Listener0 listener) {
-        onErrorNotifier.addListener(listener);
-        group.add(onErrorNotifier, listener);
+    public Subscription addOnErrorListener(Listener0 listener) {
+        return onErrorNotifier.addListener(listener);
     }
 
-    public void addOnPostAddedListener(SubscriptionGroup group, Listener1<Integer> listener) {
-        onPostAddedNotifier.addListener(listener);
-        group.add(onPostUpdatedNotifier, listener);
+    public Subscription addOnPostAddedListener(Listener1<Integer> listener) {
+        return onPostAddedNotifier.addListener(listener);
     }
 
-    public void addOnPostUpdatedListener(SubscriptionGroup group, Listener1<Integer> listener) {
-        onPostUpdatedNotifier.addListener(listener);
-        group.add(onPostUpdatedNotifier, listener);
+    public Subscription addOnPostUpdatedListener(Listener1<Integer> listener) {
+        return onPostUpdatedNotifier.addListener(listener);
     }
 
-    public void addOnResultsClearedListener(SubscriptionGroup group, Listener0 listener) {
-        onResultsClearedNotifier.addListener(listener);
-        group.add(onResultsClearedNotifier, listener);
+    public Subscription addOnResultsClearedListener(Listener0 listener) {
+        return onResultsClearedNotifier.addListener(listener);
     }
 
 }

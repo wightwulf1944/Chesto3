@@ -8,7 +8,7 @@ import i.am.shiro.chesto.listener.Listener0;
 
 public class Notifier0 extends AbstractNotifier<Listener0> {
 
-    public void notifyListeners() {
+    public void fireEvent() {
         for (Listener0 listener : listeners) {
             listener.onEvent();
         }

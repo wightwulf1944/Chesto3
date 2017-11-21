@@ -24,7 +24,7 @@ import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.DetailImageAdapter;
 import i.am.shiro.chesto.adapter.DetailTagAdapter;
 import i.am.shiro.chesto.listener.ScrollToPageListener;
-import i.am.shiro.chesto.subscription.SubscriptionGroup;
+import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
 
@@ -39,7 +39,7 @@ import static android.support.design.widget.Snackbar.make;
 
 public class DetailFragment extends Fragment {
 
-    private SubscriptionGroup subscriptions;
+    private Subscription subscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,12 +99,13 @@ public class DetailFragment extends Fragment {
         Snackbar errorSnackbar = make(imageRecycler, "Could not load more posts", LENGTH_INDEFINITE)
                 .setAction("Retry", v -> viewModel.loadPosts());
 
-        subscriptions = new SubscriptionGroup();
-        viewModel.addOnCurrentPostChangedListener(subscriptions, detailTagAdapter::setCurrentPost);
-        viewModel.addOnPostAddedListener(subscriptions, detailImageAdapter::notifyItemInserted);
-        viewModel.addOnPostUpdatedListener(subscriptions, detailImageAdapter::notifyItemChanged);
-        viewModel.addOnResultsClearedListener(subscriptions, detailImageAdapter::notifyDataSetChanged);
-        viewModel.addOnErrorListener(subscriptions, errorSnackbar::show);
+        subscription = Subscription.from(
+                viewModel.addOnCurrentPostChangedListener(detailTagAdapter::setCurrentPost),
+                viewModel.addOnPostAddedListener(detailImageAdapter::notifyItemInserted),
+                viewModel.addOnPostUpdatedListener(detailImageAdapter::notifyItemChanged),
+                viewModel.addOnResultsClearedListener(detailImageAdapter::notifyDataSetChanged),
+                viewModel.addOnErrorListener(errorSnackbar::show)
+        );
 
         Timber.d("DETAIL FRAGMENT CREATED");
 
@@ -114,7 +115,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        subscriptions.unsubscribe();
+        subscription.unsubscribe();
 
         Timber.d("DETAIL FRAGMENT DESTROYED");
     }
