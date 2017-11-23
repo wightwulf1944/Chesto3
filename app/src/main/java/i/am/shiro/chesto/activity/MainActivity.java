@@ -24,6 +24,8 @@ import io.realm.Realm;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
 import static android.support.design.widget.Snackbar.LENGTH_SHORT;
+import static i.am.shiro.chesto.viewmodel.MainViewModel.DETAIL;
+import static i.am.shiro.chesto.viewmodel.MainViewModel.MASTER;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -63,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
         Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", LENGTH_INDEFINITE);
         errorSnackbar.setAction("Retry", v -> viewModel.loadPosts());
 
-        subscription = viewModel.addOnErrorListener(errorSnackbar::show);
+        subscription = Subscription.from(
+                viewModel.addOnErrorListener(errorSnackbar::show),
+                viewModel.addOnViewStateChangedListener(this::onViewStateChanged)
+        );
     }
 
     @Override
@@ -82,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            goToMaster();
+        if (viewModel.getViewState() == DETAIL) {
+            viewModel.goToMaster();
         } else if (!isTaskRoot() || System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 invokeSearch();
                 return true;
             case android.R.id.home:
-                goToMaster();
+                viewModel.goToMaster();
                 return true;
             case R.id.action_download:
                 invokeDownload();
@@ -132,17 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
     public MainViewModel getViewModel() {
         return viewModel;
-    }
-
-    private void goToMaster() {
-        getFragmentManager().popBackStack();
-    }
-
-    public void goToDetail() {
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, new DetailFragment())
-                .addToBackStack(null)
-                .commit();
     }
 
     private void invokeSearch() {
@@ -191,6 +185,20 @@ public class MainActivity extends AppCompatActivity {
                 return intent.getStringExtra("default");
             default:
                 throw new RuntimeException("Unhandled intent action: " + action);
+        }
+    }
+
+    private void onViewStateChanged(int viewState) {
+        if (viewState == MASTER) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new MasterFragment())
+                    .commit();
+        } else {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new DetailFragment())
+                    .commit();
         }
     }
 }

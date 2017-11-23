@@ -21,7 +21,6 @@ import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.MasterAdapter;
 import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
-import timber.log.Timber;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -57,13 +56,13 @@ public class MasterFragment extends Fragment {
         adapter.setData(viewModel.getPosts());
         adapter.setOnScrollToThresholdListener(15, viewModel::loadPosts);
         adapter.addOnItemClickedListener(viewModel::setCurrentIndex);
-        adapter.addOnItemClickedListener(i -> parentActivity.goToDetail());
+        adapter.addOnItemClickedListener(i -> viewModel.goToDetail());
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.post(() -> recyclerView.scrollToPosition(viewModel.getCurrentIndex()));
+        recyclerView.scrollToPosition(viewModel.getCurrentIndex());
 
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
@@ -77,8 +76,6 @@ public class MasterFragment extends Fragment {
                 viewModel.addOnResultsClearedListener(adapter::notifyDataSetChanged)
         );
 
-        Timber.d("MASTER FRAGMENT CREATED");
-
         return view;
     }
 
@@ -86,8 +83,6 @@ public class MasterFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         subscription.unsubscribe();
-
-        Timber.d("MASTER FRAGMENT DESTROYED");
     }
 
     @Override
