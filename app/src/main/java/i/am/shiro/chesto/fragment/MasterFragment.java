@@ -1,6 +1,8 @@
 package i.am.shiro.chesto.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,6 +21,7 @@ import com.google.android.flexbox.JustifyContent;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.activity.MainActivity;
+import i.am.shiro.chesto.activity.SearchActivity;
 import i.am.shiro.chesto.adapter.MasterAdapter;
 import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
@@ -29,6 +33,8 @@ import i.am.shiro.chesto.viewmodel.MainViewModel;
 
 public class MasterFragment extends Fragment {
 
+    private MainViewModel viewModel;
+
     private Subscription subscription;
 
     @Override
@@ -39,16 +45,16 @@ public class MasterFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_master, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        MainViewModel viewModel = parentActivity.getViewModel();
+        viewModel = parentActivity.getViewModel();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setSubtitle(viewModel.getQuery());
         parentActivity.setSupportActionBar(toolbar);
 
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexWrap(FlexWrap.WRAP);
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
@@ -89,5 +95,21 @@ public class MasterFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.activity_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                invokeSearch();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void invokeSearch() {
+        Intent intent = new Intent(getContext(), SearchActivity.class);
+        startActivity(intent);
     }
 }

@@ -1,9 +1,13 @@
 package i.am.shiro.chesto.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,18 +28,27 @@ import i.am.shiro.chesto.activity.MainActivity;
 import i.am.shiro.chesto.adapter.DetailImageAdapter;
 import i.am.shiro.chesto.adapter.DetailTagAdapter;
 import i.am.shiro.chesto.listener.ScrollToPageListener;
+import i.am.shiro.chesto.service.DownloadService;
 import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 import timber.log.Timber;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
+import static android.support.design.widget.Snackbar.LENGTH_SHORT;
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 /**
  * Created by Subaru Tashiro on 8/24/2017.
  */
 
 public class DetailFragment extends Fragment {
+
+    private static final int PERMISSION_REQUEST_CODE = 0;
+
+    private MainViewModel viewModel;
 
     private Subscription subscription;
 
@@ -46,10 +60,10 @@ public class DetailFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         MainActivity parentActivity = (MainActivity) getActivity();
-        MainViewModel viewModel = parentActivity.getViewModel();
+        viewModel = parentActivity.getViewModel();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -66,7 +80,7 @@ public class DetailFragment extends Fragment {
         ImageButton hideButton = view.findViewById(R.id.hideButton);
         hideButton.setOnClickListener(v -> behavior.setState(STATE_HIDDEN));
 
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(parentActivity);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexWrap(FlexWrap.WRAP);
 
         DetailTagAdapter detailTagAdapter = new DetailTagAdapter();
@@ -114,13 +128,72 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != PERMISSION_REQUEST_CODE || grantResults.length == 0) return;
+
+        if (grantResults[0] == PERMISSION_GRANTED) {
+            invokeDownload();
+        } else {
+            Snackbar.make(getView(), "Please allow access to save image", LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.activity_post, menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                viewModel.goToMaster();
+                return true;
+            case R.id.action_download:
+                invokeDownload();
+                return true;
+            case R.id.action_open_browser:
+                invokeOpenInBrowser();
+                return true;
+            case R.id.action_share:
+                invokeShare();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void invokeDownload() {
+        Context context = getContext();
+        if (context == null) return;
+
+        if (checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            DownloadService.queue(context, viewModel.getCurrentPost());
+        } else {
+            String[] permissionStrings = {WRITE_EXTERNAL_STORAGE};
+            requestPermissions(permissionStrings, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    private void invokeOpenInBrowser() {
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
+        Uri webUri = Uri.parse(webUrl);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
+        startActivity(intent);
+    }
+
+    private void invokeShare() {
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, webUrl);
+        intent.setType("text/plain");
+        Intent chooserIntent = Intent.createChooser(intent, "Share link - " + webUrl);
+        startActivity(chooserIntent);
+    }
+
     private void onTagClicked(String tagString) {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getContext(), MainActivity.class);
         intent.setAction(Intent.ACTION_SEARCH);
         intent.putExtra("default", tagString);
         startActivity(intent);
