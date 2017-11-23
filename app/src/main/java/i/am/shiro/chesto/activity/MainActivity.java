@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedState == null) {
             viewModel = new MainViewModel(getSearchString());
 
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragmentContainer, new MasterFragment())
                     .commit();
         } else {
@@ -190,12 +190,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void onViewStateChanged(int viewState) {
         if (viewState == MASTER) {
-            getFragmentManager()
+            getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, new MasterFragment())
                     .commit();
         } else {
-            getFragmentManager()
+            getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, new DetailFragment())
                     .commit();
