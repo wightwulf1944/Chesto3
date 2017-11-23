@@ -13,8 +13,6 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +50,6 @@ public class DetailFragment extends Fragment {
 
     private Subscription subscription;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -67,8 +59,10 @@ public class DetailFragment extends Fragment {
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        parentActivity.setSupportActionBar(toolbar);
-        parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_nav_back);
+        toolbar.setNavigationOnClickListener(v -> viewModel.goToMaster());
+        toolbar.inflateMenu(R.menu.activity_post);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
         View bottomSheet = view.findViewById(R.id.bottomSheet);
         BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
@@ -138,14 +132,7 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.activity_post, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean onMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 viewModel.goToMaster();

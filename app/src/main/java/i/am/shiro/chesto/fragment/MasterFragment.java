@@ -9,8 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +35,6 @@ public class MasterFragment extends Fragment {
 
     private Subscription subscription;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -51,8 +43,10 @@ public class MasterFragment extends Fragment {
         viewModel = parentActivity.getViewModel();
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
         toolbar.setSubtitle(viewModel.getQuery());
-        parentActivity.setSupportActionBar(toolbar);
+        toolbar.inflateMenu(R.menu.activity_main);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -91,14 +85,7 @@ public class MasterFragment extends Fragment {
         subscription.unsubscribe();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.activity_main, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean onMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
                 invokeSearch();
