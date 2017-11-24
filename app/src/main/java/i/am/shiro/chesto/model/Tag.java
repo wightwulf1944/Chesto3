@@ -5,16 +5,13 @@ import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Shiro on 7/29/2016.
- * TODO: may be optimized
  */
 public class Tag extends RealmObject {
 
     @PrimaryKey
     private int id;
     private String name;
-    private int postCount;
     private String postCountString;
-    private int category;
 
     public Tag() {
         // no arg constructor required by Realm
@@ -23,27 +20,20 @@ public class Tag extends RealmObject {
     public Tag(TagJson tagJson) {
         id = tagJson.id;
         name = tagJson.name;
-        postCount = tagJson.postCount;
-        category = tagJson.category;
-        postCountString = "(" + getNumber() + getSuffix() + ")";
+        postCountString = makePostCountStr(tagJson.postCount);
     }
 
-    private String getNumber() {
-        String s = String.valueOf(postCount);
+    private static String makePostCountStr(int postCount) {
+        String postCountStr = String.valueOf(postCount);
         if (postCount < 1_000) {
-            return s;
+            return postCountStr;
         } else {
-            return s.charAt(0) + "." + s.charAt(1);
-        }
-    }
-
-    private String getSuffix() {
-        if (postCount < 1_000) {
-            return "";
-        } else if (postCount < 1_000_000) {
-            return "k";
-        } else {
-            return "m";
+            postCountStr = postCountStr.charAt(0) + "." + postCountStr.charAt(1);
+            if (postCount < 1_000_000) {
+                return postCountStr + "k";
+            } else {
+                return postCountStr + "m";
+            }
         }
     }
 
@@ -55,15 +45,7 @@ public class Tag extends RealmObject {
         return name;
     }
 
-    public int getPostCount() {
-        return postCount;
-    }
-
     public String getPostCountStr() {
         return postCountString;
-    }
-
-    public int getCategory() {
-        return category;
     }
 }
