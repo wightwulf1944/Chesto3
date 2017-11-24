@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import java.io.File;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.model.DownloadInfo;
 
 import static android.support.v4.app.NotificationCompat.BigPictureStyle;
 import static android.support.v4.app.NotificationCompat.Builder;
@@ -51,12 +50,12 @@ public final class NotificationUtil {
         manager.notify(NOTIFICATION_ID, makeProgressNotification());
     }
 
-    public void notifyDownloadSuccess(DownloadInfo downloadInfo, File file) {
-        manager.notify(downloadInfo.id, makeSuccessNotification(file));
+    public void notifyDownloadSuccess(int id, File file) {
+        manager.notify(id, makeSuccessNotification(file));
     }
 
-    public void notifyDownloadFailed(DownloadInfo downloadInfo) {
-        manager.notify(downloadInfo.id, makeFailedNotification());
+    public void notifyDownloadFailed(int id) {
+        manager.notify(id, makeFailedNotification());
     }
 
     private Notification makeProgressNotification() {
