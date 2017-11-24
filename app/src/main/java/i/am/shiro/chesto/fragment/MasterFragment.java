@@ -25,8 +25,7 @@ import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.MainViewModel;
 
 /**
- * Created by Subaru Tashiro on 8/11/2017.
- * TODO: may benefit from listening to viewModel.currentindexchanged
+ * Created by Subaru Tashiro on 8/11/2017
  */
 
 public class MasterFragment extends Fragment {
