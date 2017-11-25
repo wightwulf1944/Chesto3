@@ -11,8 +11,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -21,6 +19,11 @@ import i.am.shiro.chesto.listener.Listener0;
 import i.am.shiro.chesto.model.Post;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import timber.log.Timber;
+
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.DATA;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
+import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
+import static com.bumptech.glide.request.RequestOptions.errorOf;
 
 /**
  * Created by Subaru Tashiro on 7/11/2017.
@@ -83,13 +86,12 @@ public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAd
         private void bind(Post post) {
             RequestBuilder<Drawable> thumb = Glide.with(parentFragment)
                     .load(post.getThumbFileUrl())
-                    .apply(RequestOptions
-                            .bitmapTransform(new BlurTransformation(1))
-                            .diskCacheStrategy(DiskCacheStrategy.DATA));
+                    .apply(bitmapTransform(new BlurTransformation(1)))
+                    .apply(diskCacheStrategyOf(DATA));
 
             Glide.with(parentFragment)
                     .load(post.getPreviewFileUrl())
-                    .apply(RequestOptions.errorOf(R.drawable.image_broken))
+                    .apply(errorOf(R.drawable.image_broken))
                     .thumbnail(thumb)
                     .into((ImageView) itemView);
         }

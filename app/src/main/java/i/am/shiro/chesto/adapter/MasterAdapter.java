@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.List;
@@ -20,6 +19,14 @@ import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Post;
 import i.am.shiro.chesto.notifier.Notifier1;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.bumptech.glide.load.DecodeFormat.PREFER_RGB_565;
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
+import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
+import static com.bumptech.glide.request.RequestOptions.errorOf;
+import static com.bumptech.glide.request.RequestOptions.formatOf;
+import static com.bumptech.glide.request.RequestOptions.placeholderOf;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -82,14 +89,13 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
         flexboxLp.height = post.getThumbHeight();
         flexboxLp.setMaxWidth(post.getThumbMaxWidth());
 
-        RequestOptions requestOptions = new RequestOptions()
-                .transform(new RoundedCornersTransformation(4, 0))
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_broken);
-
         Glide.with(parentFragment)
                 .load(post.getThumbFileUrl())
-                .apply(requestOptions)
+                .apply(bitmapTransform(new RoundedCornersTransformation(5, 0)))
+                .apply(placeholderOf(R.drawable.image_placeholder))
+                .apply(errorOf(R.drawable.image_broken))
+                .apply(diskCacheStrategyOf(ALL))
+                .apply(formatOf(PREFER_RGB_565))
                 .into(imageView);
     }
 
