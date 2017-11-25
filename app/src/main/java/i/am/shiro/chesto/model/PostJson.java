@@ -13,6 +13,17 @@ public class PostJson {
     @Json(name = "image_width") int width;
     @Json(name = "image_height") int height;
     @Json(name = "file_ext") String fileExt;
+    @Json(name = "is_pending") boolean isPending;
+    @Json(name = "is_deleted") boolean isDeleted;
+    @Json(name = "is_banned") boolean isBanned;
+    @Json(name = "is_flagged") boolean isFlagged;
+    @Json(name = "rating") String rating;
+    @Json(name = "tag_count") int tagCount;
+    @Json(name = "tag_count_artist") int tagCountArtist;
+    @Json(name = "tag_count_character") int tagCountCharacter;
+    @Json(name = "tag_count_copyright") int tagCountCopyright;
+    @Json(name = "tag_count_general") int tagCountGeneral;
+    @Json(name = "tag_count_meta") int tagCountMeta;
     @Json(name = "tag_string_artist") String tagStringArtist;
     @Json(name = "tag_string_character") String tagStringCharacter;
     @Json(name = "tag_string_copyright") String tagStringCopyright;
