@@ -22,6 +22,7 @@ public class Post extends RealmObject {
 
     private String fileName;
 
+    private int tagCount;
     private String tagStringArtist;
     private String tagStringCharacter;
     private String tagStringCopyright;
@@ -33,8 +34,6 @@ public class Post extends RealmObject {
     private String previewFileUrl;
     private String originalFileUrl;
 
-    private boolean isPreviewDownsized;
-
     public Post() {
         // no arg constructor required by Realm
     }
@@ -44,6 +43,7 @@ public class Post extends RealmObject {
         width = postJson.width;
         height = postJson.height;
         fileName = postJson.id + "." + postJson.fileExt;
+        tagCount = postJson.tagCount;
         tagStringArtist = postJson.tagStringArtist;
         tagStringCharacter = postJson.tagStringCharacter;
         tagStringCopyright = postJson.tagStringCopyright;
@@ -53,7 +53,6 @@ public class Post extends RealmObject {
         thumbFileUrl = baseUrl + postJson.previewFileUrl;
         previewFileUrl = baseUrl + postJson.largeFileUrl;
         originalFileUrl = baseUrl + postJson.fileUrl;
-        isPreviewDownsized = postJson.hasLarge;
 
         final int maxMeasure = 200;
         if (width > height) {
@@ -94,6 +93,10 @@ public class Post extends RealmObject {
         return fileName;
     }
 
+    public int getTagCount() {
+        return tagCount;
+    }
+
     public String getTagStringArtist() {
         return tagStringArtist;
     }
@@ -128,10 +131,6 @@ public class Post extends RealmObject {
 
     public String getOriginalFileUrl() {
         return originalFileUrl;
-    }
-
-    public boolean isPreviewDownsized() {
-        return isPreviewDownsized;
     }
 
     @Override
