@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -8,10 +9,13 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Tag extends RealmObject {
 
-    @PrimaryKey
-    private int id;
+    @PrimaryKey private int id;
+
+    @Index private int postCount;
+
     private String name;
-    private String postCountString;
+
+    private String postCountStr;
 
     public Tag() {
         // no arg constructor required by Realm
@@ -19,20 +23,16 @@ public class Tag extends RealmObject {
 
     public Tag(TagJson tagJson) {
         id = tagJson.id;
+        postCount = tagJson.postCount;
         name = tagJson.name;
-        postCountString = makePostCountStr(tagJson.postCount);
-    }
+        postCountStr = String.valueOf(postCount);
 
-    private static String makePostCountStr(int postCount) {
-        String postCountStr = String.valueOf(postCount);
-        if (postCount < 1_000) {
-            return postCountStr;
-        } else {
+        if (postCount >= 1_000) {
             postCountStr = postCountStr.charAt(0) + "." + postCountStr.charAt(1);
             if (postCount < 1_000_000) {
-                return postCountStr + "k";
+                postCountStr += "k";
             } else {
-                return postCountStr + "m";
+                postCountStr += "m";
             }
         }
     }
@@ -46,6 +46,6 @@ public class Tag extends RealmObject {
     }
 
     public String getPostCountStr() {
-        return postCountString;
+        return postCountStr;
     }
 }
