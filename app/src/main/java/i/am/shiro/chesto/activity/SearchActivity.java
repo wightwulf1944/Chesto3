@@ -56,19 +56,19 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     @Override
-    public boolean onQueryTextSubmit(String s) {
+    public boolean onQueryTextSubmit(String query) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_SEARCH);
-        intent.putExtra("default", s);
+        intent.putExtra("default", query);
         startActivity(intent);
         finish();
         return true;
     }
 
     @Override
-    public boolean onQueryTextChange(String s) {
-        int spaceIndex = s.lastIndexOf(" ");
-        String currentQuery = s.substring(spaceIndex + 1);
+    public boolean onQueryTextChange(String newText) {
+        int spaceIndex = newText.lastIndexOf(" ");
+        String currentQuery = newText.substring(spaceIndex + 1);
         tagStore.searchTags(currentQuery);
         return true;
     }

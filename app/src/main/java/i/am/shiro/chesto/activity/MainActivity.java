@@ -21,6 +21,7 @@ import static i.am.shiro.chesto.viewmodel.MainViewModel.MASTER;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
+ * TODO: dismiss error when loading starts
  */
 
 public class MainActivity extends AppCompatActivity {
