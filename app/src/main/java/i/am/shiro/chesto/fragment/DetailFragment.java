@@ -154,6 +154,7 @@ public class DetailFragment extends Fragment {
 
         if (checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
             DownloadService.queue(context, viewModel.getCurrentPost());
+            Snackbar.make(getView(), "Download queued", LENGTH_SHORT).show();
         } else {
             String[] permissionStrings = {WRITE_EXTERNAL_STORAGE};
             requestPermissions(permissionStrings, PERMISSION_REQUEST_CODE);

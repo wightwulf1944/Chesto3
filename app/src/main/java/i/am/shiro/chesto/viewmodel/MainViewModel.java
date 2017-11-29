@@ -31,6 +31,8 @@ public final class MainViewModel {
 
     private final Notifier1<Boolean> onLoadingNotifier = new Notifier1<>();
 
+    private final Notifier0 onSuccessNotifier = new Notifier0();
+
     private final Notifier0 onErrorNotifier = new Notifier0();
 
     private final Notifier1<Integer> onPostAddedNotifier = new Notifier1<>();
@@ -131,6 +133,7 @@ public final class MainViewModel {
                 onPostAddedNotifier.fireEvent(posts.size());
             }
         }
+        onSuccessNotifier.fireEvent();
     }
 
     private void onLoadError(Throwable throwable) {
@@ -182,6 +185,10 @@ public final class MainViewModel {
 
     public Subscription addOnLoadingListener(Listener1<Boolean> listener) {
         return onLoadingNotifier.addListener(listener);
+    }
+
+    public Subscription addOnSuccessListener(Listener0 listener) {
+        return onSuccessNotifier.addListener(listener);
     }
 
     public Subscription addOnErrorListener(Listener0 listener) {

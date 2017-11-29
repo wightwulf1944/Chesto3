@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
         errorSnackbar.setAction("Retry", v -> viewModel.loadPosts());
 
         subscription = Subscription.from(
-                viewModel.addOnErrorListener(errorSnackbar::show),
+                viewModel.addOnSuccessListener(errorSnackbar::dismiss),
+                viewModel.addOnErrorListener(errorSnackbar::show)
         );
     }
 
