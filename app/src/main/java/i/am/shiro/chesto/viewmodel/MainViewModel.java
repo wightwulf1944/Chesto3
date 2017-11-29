@@ -55,8 +55,6 @@ public final class MainViewModel {
 
     private boolean isLoading;
 
-    private int viewState;
-
     private Disposable disposable;
 
     public MainViewModel(String query) {
@@ -87,7 +85,7 @@ public final class MainViewModel {
     }
 
     public String saveState(Realm realm) {
-        disposable.dispose();
+        if (disposable != null) disposable.dispose();
 
         MainModel mainModel = new MainModel();
         mainModel.setId(modelId);

@@ -21,7 +21,6 @@ import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
- * TODO: dismiss error when loading starts
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -67,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         String modelId = viewModel.saveState(realm);
         outState.putString("modelId", modelId);
-        subscription.unsubscribe();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        subscription.unsubscribe();
         realm.close();
     }
 
