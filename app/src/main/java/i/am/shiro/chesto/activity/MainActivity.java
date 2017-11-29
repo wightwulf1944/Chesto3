@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -16,8 +18,6 @@ import io.realm.Realm;
 
 import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
 import static android.support.design.widget.Snackbar.LENGTH_SHORT;
-import static i.am.shiro.chesto.viewmodel.MainViewModel.DETAIL;
-import static i.am.shiro.chesto.viewmodel.MainViewModel.MASTER;
 
 /**
  * Created by Subaru Tashiro on 8/11/2017.
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             viewModel = new MainViewModel(getSearchString());
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragmentContainer, new MasterFragment())
+                    .add(R.id.masterFragmentContainer, new MasterFragment())
                     .commit();
         } else {
             String modelId = savedState.getString("modelId");
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         subscription = Subscription.from(
                 viewModel.addOnErrorListener(errorSnackbar::show),
-                viewModel.addOnViewStateChangedListener(this::onViewStateChanged)
         );
     }
 
@@ -78,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewModel.getViewState() == DETAIL) {
-            viewModel.goToMaster();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else if (!isTaskRoot() || System.currentTimeMillis() < lastTimeBackPressed + 1500) {
             super.onBackPressed();
         } else {
@@ -91,6 +90,21 @@ public class MainActivity extends AppCompatActivity {
 
     public MainViewModel getViewModel() {
         return viewModel;
+    }
+
+    public void goToDetail() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment masterFragment = fragmentManager.findFragmentById(R.id.masterFragmentContainer);
+        fragmentManager
+                .beginTransaction()
+                .hide(masterFragment)
+                .add(R.id.detailFragmentContainer, new DetailFragment())
+                .addToBackStack("detail")
+                .commit();
+    }
+
+    public void goBackFromDetail() {
+        getSupportFragmentManager().popBackStack();
     }
 
     private String getSearchString() {
@@ -108,20 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 return intent.getStringExtra("default");
             default:
                 throw new RuntimeException("Unhandled intent action: " + action);
-        }
-    }
-
-    private void onViewStateChanged(int viewState) {
-        if (viewState == MASTER) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new MasterFragment())
-                    .commit();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new DetailFragment())
-                    .commit();
         }
     }
 }

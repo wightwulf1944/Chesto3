@@ -5,7 +5,12 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+        android:id="@+id/masterFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/detailFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

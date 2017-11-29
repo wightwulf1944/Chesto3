@@ -60,7 +60,7 @@ public class DetailFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
-        toolbar.setNavigationOnClickListener(v -> viewModel.goToMaster());
+        toolbar.setNavigationOnClickListener(v -> parentActivity.goBackFromDetail());
         toolbar.inflateMenu(R.menu.activity_post);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
@@ -134,9 +134,6 @@ public class DetailFragment extends Fragment {
 
     private boolean onMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                viewModel.goToMaster();
-                return true;
             case R.id.action_download:
                 invokeDownload();
                 return true;

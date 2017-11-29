@@ -27,10 +27,6 @@ import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 public final class MainViewModel {
 
-    public static final int MASTER = 0;
-
-    public static final int DETAIL = 1;
-
     private final Notifier1<Post> onCurrentPostChangedNotifier = new Notifier1<>();
 
     private final Notifier1<Boolean> onLoadingNotifier = new Notifier1<>();
@@ -42,8 +38,6 @@ public final class MainViewModel {
     private final Notifier1<Integer> onPostUpdatedNotifier = new Notifier1<>();
 
     private final Notifier0 onResultsClearedNotifier = new Notifier0();
-
-    private final Notifier1<Integer> onViewStateChangedNotifier = new Notifier1<>();
 
     private final String modelId;
 
@@ -152,24 +146,6 @@ public final class MainViewModel {
         loadPosts();
     }
 
-    public void goToMaster() {
-        if (viewState != MASTER) {
-            viewState = MASTER;
-            onViewStateChangedNotifier.fireEvent(viewState);
-        }
-    }
-
-    public void goToDetail() {
-        if (viewState != DETAIL) {
-            viewState = DETAIL;
-            onViewStateChangedNotifier.fireEvent(viewState);
-        }
-    }
-
-    public int getViewState() {
-        return viewState;
-    }
-
     public String getQuery() {
         return query;
     }
@@ -222,9 +198,5 @@ public final class MainViewModel {
 
     public Subscription addOnResultsClearedListener(Listener0 listener) {
         return onResultsClearedNotifier.addListener(listener);
-    }
-
-    public Subscription addOnViewStateChangedListener(Listener1<Integer> listener) {
-        return onViewStateChangedNotifier.addListener(listener);
     }
 }

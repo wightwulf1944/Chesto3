@@ -55,7 +55,7 @@ public class MasterFragment extends Fragment {
         adapter.setData(viewModel.getPosts());
         adapter.setOnScrollToThresholdListener(15, viewModel::loadPosts);
         adapter.addOnItemClickedListener(viewModel::setCurrentIndex);
-        adapter.addOnItemClickedListener(i -> viewModel.goToDetail());
+        adapter.addOnItemClickedListener(i -> parentActivity.goToDetail());
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
