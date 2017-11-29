@@ -54,7 +54,7 @@ public class Post extends RealmObject {
         previewFileUrl = baseUrl + postJson.largeFileUrl;
         originalFileUrl = baseUrl + postJson.fileUrl;
 
-        final int maxMeasure = 200;
+        final int maxMeasure = 220;
         if (width > height) {
             thumbWidth = maxMeasure;
             thumbHeight = (thumbWidth * height) / width;

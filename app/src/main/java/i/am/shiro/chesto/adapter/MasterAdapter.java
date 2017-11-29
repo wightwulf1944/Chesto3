@@ -65,7 +65,7 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_main_thumbs, parent, false);
+        View view = inflater.inflate(R.layout.item_master_thumbs, parent, false);
 
         FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
         layoutParams.setMinWidth(100);

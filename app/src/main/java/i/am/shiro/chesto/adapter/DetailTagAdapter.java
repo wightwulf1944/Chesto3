@@ -34,18 +34,18 @@ public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapte
     public void setCurrentPost(Post post) {
         items.clear();
         items.ensureCapacity(post.getTagCount());
-        setCategoryTags("Copyrights:", R.layout.item_post_tag_copyright, post.getTagStringCopyright());
-        setCategoryTags("Characters:", R.layout.item_post_tag_character, post.getTagStringCharacter());
-        setCategoryTags("Artist:", R.layout.item_post_tag_artist, post.getTagStringArtist());
-        setCategoryTags("Tags:", R.layout.item_post_tag_general, post.getTagStringGeneral());
-        setCategoryTags("Meta:", R.layout.item_post_tag_meta, post.getTagStringMeta());
+        setCategoryTags("Copyrights:", R.layout.item_detail_tag_copyright, post.getTagStringCopyright());
+        setCategoryTags("Characters:", R.layout.item_detail_tag_character, post.getTagStringCharacter());
+        setCategoryTags("Artist:", R.layout.item_detail_tag_artist, post.getTagStringArtist());
+        setCategoryTags("Tags:", R.layout.item_detail_tag_general, post.getTagStringGeneral());
+        setCategoryTags("Meta:", R.layout.item_detail_tag_meta, post.getTagStringMeta());
         notifyDataSetChanged();
     }
 
     private void setCategoryTags(String categoryLabel, int layout, String tags) {
         if (tags.isEmpty()) return;
 
-        items.add(new Pair<>(R.layout.item_post_label, categoryLabel));
+        items.add(new Pair<>(R.layout.item_detail_label, categoryLabel));
         for (String tag : tags.split(" ")) {
             items.add(new Pair<>(layout, tag));
         }
@@ -63,7 +63,7 @@ public final class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapte
         View view = inflater.inflate(viewType, parent, false);
         ViewHolder vh = new ViewHolder(view);
 
-        if (viewType == R.layout.item_post_label) {
+        if (viewType == R.layout.item_detail_label) {
             FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
             layoutParams.setWrapBefore(true);
         } else {
