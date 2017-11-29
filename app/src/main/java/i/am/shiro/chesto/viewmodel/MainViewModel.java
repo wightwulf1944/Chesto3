@@ -27,6 +27,8 @@ import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 public final class MainViewModel {
 
+    private final Notifier1<Integer> onCurrentIndexChangedNotifier = new Notifier1<>();
+
     private final Notifier1<Post> onCurrentPostChangedNotifier = new Notifier1<>();
 
     private final Notifier1<Boolean> onLoadingNotifier = new Notifier1<>();
@@ -157,8 +159,9 @@ public final class MainViewModel {
         return currentIndex;
     }
 
-    public void setCurrentIndex(int currentIndex) {
-        this.currentIndex = currentIndex;
+    public void setCurrentIndex(int i) {
+        currentIndex = i;
+        onCurrentIndexChangedNotifier.fireEvent(i);
         onCurrentPostChangedNotifier.fireEvent(getCurrentPost());
     }
 
@@ -177,6 +180,10 @@ public final class MainViewModel {
     private void setLoading(boolean loading) {
         isLoading = loading;
         onLoadingNotifier.fireEvent(loading);
+    }
+
+    public Subscription addOnCurrentIndexChangedListener(Listener1<Integer> listener) {
+        return onCurrentIndexChangedNotifier.addListener(listener);
     }
 
     public Subscription addOnCurrentPostChangedListener(Listener1<Post> listener) {

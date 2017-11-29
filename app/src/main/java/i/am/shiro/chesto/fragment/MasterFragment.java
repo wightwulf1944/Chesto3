@@ -69,6 +69,7 @@ public class MasterFragment extends Fragment {
         refreshLayout.setOnRefreshListener(viewModel::refreshPosts);
 
         subscription = Subscription.from(
+                viewModel.addOnCurrentIndexChangedListener(recyclerView::scrollToPosition),
                 viewModel.addOnLoadingListener(refreshLayout::setRefreshing),
                 viewModel.addOnPostAddedListener(adapter::notifyItemInserted),
                 viewModel.addOnPostUpdatedListener(adapter::notifyItemChanged),
