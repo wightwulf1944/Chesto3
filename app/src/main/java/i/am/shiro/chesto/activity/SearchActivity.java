@@ -7,9 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.TagStore;
 import i.am.shiro.chesto.adapter.SearchAdapter;
@@ -21,6 +18,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     private final TagStore tagStore = new TagStore(realm);
 
+    private SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,21 +29,22 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
         toolbar.setNavigationOnClickListener(view -> finish());
 
-        SearchView searchView = findViewById(R.id.searchView);
+        searchView = findViewById(R.id.searchView);
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
 
         SearchAdapter adapter = new SearchAdapter();
         adapter.setData(tagStore.getResults());
         adapter.setOnItemClickListener(this::onQueryTextSubmit);
+        adapter.setOnAppendClickListener(this::onAppendClicked);
 
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
-        layoutManager.setFlexWrap(FlexWrap.WRAP);
+//        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+//        layoutManager.setFlexWrap(FlexWrap.WRAP);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setLayoutManager(layoutManager);
 
         tagStore.setDatasetChangedListener(adapter::setData);
     }
@@ -71,5 +71,12 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         String currentQuery = newText.substring(spaceIndex + 1);
         tagStore.searchTags(currentQuery);
         return true;
+    }
+
+    private void onAppendClicked(String tagName) {
+        String query = searchView.getQuery().toString();
+        int spaceIndex = query.lastIndexOf(" ");
+        String newQuery = query.substring(0, spaceIndex + 1) + tagName;
+        searchView.setQuery(newQuery, false);
     }
 }

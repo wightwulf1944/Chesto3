@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
@@ -14,13 +15,19 @@
         android:id="@+id/postCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"/>
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="?android:textColorPrimary" />
+        android:layout_weight="1"
+        android:textColor="?android:textColorPrimary"/>
+
+    <ImageButton
+        android:id="@+id/appendButton"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
