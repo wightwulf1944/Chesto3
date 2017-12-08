@@ -28,6 +28,8 @@
     <ImageButton
         android:id="@+id/appendButton"
         android:layout_width="48dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="48dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_add"/>
 
 </LinearLayout>

@@ -38,13 +38,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         adapter.setOnItemClickListener(this::onQueryTextSubmit);
         adapter.setOnAppendClickListener(this::onAppendClicked);
 
-//        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
-//        layoutManager.setFlexWrap(FlexWrap.WRAP);
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(layoutManager);
 
         tagStore.setDatasetChangedListener(adapter::setData);
     }
