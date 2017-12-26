@@ -37,8 +37,6 @@ import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
 import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
-import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
-import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
 /**
  * Created by Subaru Tashiro on 8/24/2017.
@@ -59,7 +57,6 @@ public class DetailFragment extends Fragment {
         viewModel = parentActivity.getViewModel();
 
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        view.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
