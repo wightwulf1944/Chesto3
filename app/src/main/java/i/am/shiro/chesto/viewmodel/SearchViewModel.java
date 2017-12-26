@@ -1,14 +1,11 @@
 package i.am.shiro.chesto.viewmodel;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import java.util.List;
-
 import i.am.shiro.chesto.ChestoApplication;
-import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Tag;
-import i.am.shiro.chesto.notifier.Notifier1;
-import i.am.shiro.chesto.subscription.Subscription;
 import io.reactivex.Observable;
 import io.realm.Case;
 import io.realm.Realm;
@@ -22,15 +19,15 @@ import static io.realm.Sort.DESCENDING;
 
 public class SearchViewModel extends ViewModel {
 
-    private final Notifier1<List<Tag>> onResultsChangedNotifier = new Notifier1<>();
-
     private final Realm realm = Realm.getDefaultInstance();
 
-    private RealmResults<Tag> results;
+    private final MutableLiveData<RealmResults<Tag>> results = new MutableLiveData<>();
 
     public SearchViewModel() {
-        results = realm.where(Tag.class)
+        RealmResults<Tag> tags = realm.where(Tag.class)
                 .findAllSorted("postCount", DESCENDING);
+
+        results.setValue(tags);
     }
 
     @Override
@@ -38,18 +35,18 @@ public class SearchViewModel extends ViewModel {
         realm.close();
     }
 
-    public List<Tag> getResults() {
+    public LiveData<RealmResults<Tag>> getResults() {
         return results;
     }
 
     public void searchTags(String focus) {
-        results.removeAllChangeListeners();
-        results = realm.where(Tag.class)
+        results.getValue().removeAllChangeListeners();
+        RealmResults<Tag> cachedTags = realm.where(Tag.class)
                 .contains("name", focus, Case.INSENSITIVE)
                 .findAllSorted("postCount", DESCENDING);
-        results.addChangeListener(onResultsChangedNotifier::fireEvent);
+        cachedTags.addChangeListener(results::setValue);
 
-        onResultsChangedNotifier.fireEvent(results);
+        results.setValue(cachedTags);
 
         ChestoApplication.danbooru()
                 .searchTags('*' + focus + '*')
@@ -64,9 +61,5 @@ public class SearchViewModel extends ViewModel {
                         },
                         Throwable::printStackTrace
                 );
-    }
-
-    public Subscription addOnResultsChangedListener(Listener1<List<Tag>> listener) {
-        return onResultsChangedNotifier.addListener(listener);
     }
 }

@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.SearchAdapter;
-import i.am.shiro.chesto.subscription.Subscription;
 import i.am.shiro.chesto.viewmodel.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -18,8 +17,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private SearchViewModel viewModel;
 
     private SearchView searchView;
-
-    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         searchView.setOnQueryTextListener(this);
 
         SearchAdapter adapter = new SearchAdapter();
-        adapter.setData(viewModel.getResults());
         adapter.setOnItemClickListener(this::onQueryTextSubmit);
         adapter.setOnAppendClickListener(this::onAppendClicked);
 
@@ -46,13 +42,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        subscription = viewModel.addOnResultsChangedListener(adapter::setData);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        subscription.unsubscribe();
+        viewModel.getResults().observe(this, adapter::setData);
     }
 
     @Override
