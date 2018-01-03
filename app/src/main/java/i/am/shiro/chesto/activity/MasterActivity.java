@@ -1,5 +1,6 @@
 package i.am.shiro.chesto.activity;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import java.util.UUID;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.MasterAdapter;
+import i.am.shiro.chesto.viewmodel.MainViewModel;
+import i.am.shiro.chesto.viewmodel.MasterViewModel;
 
 import static android.content.Intent.ACTION_SEARCH;
 import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
@@ -53,7 +56,13 @@ public class MasterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: get search string
+        Intent intent = getIntent();
+        String flowId = intent.getStringExtra(FLOW_ID_EXTRA);
+        String query = intent.getStringExtra(QUERY_EXTRA);
+
+        MasterViewModel viewModel = ViewModelProviders.of(this).get(MasterViewModel.class);
+        viewModel.setFlowId(flowId);
+        viewModel.setQuery(query);
 
         setContentView(R.layout.activity_master);
 
@@ -129,23 +138,5 @@ public class MasterActivity extends AppCompatActivity {
     private void invokeDetail(int i) {
         Intent intent = DetailActivity.makeIntent(this, i);
         startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    private String getSearchString() {
-        Intent intent = getIntent();
-        String action = getIntent().getAction();
-
-        if (action == null) {
-            throw new RuntimeException("No action found for intent: " + intent.toString());
-        }
-
-        switch (action) {
-            case Intent.ACTION_MAIN:
-                return "";
-            case ACTION_SEARCH:
-                return intent.getStringExtra(QUERY_EXTRA);
-            default:
-                throw new RuntimeException("Unhandled intent action: " + action);
-        }
     }
 }
