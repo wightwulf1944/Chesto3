@@ -14,16 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MasterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.DetailActivity"/>
+
         <activity
             android:name=".activity.SearchActivity"
-            android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
 
         <service android:name=".service.DownloadService"/>

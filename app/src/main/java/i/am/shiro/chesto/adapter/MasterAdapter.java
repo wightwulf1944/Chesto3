@@ -1,7 +1,7 @@
 package i.am.shiro.chesto.adapter;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +36,7 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
 
     private final Notifier1<Integer> onItemClickedNotifier = new Notifier1<>();
 
-    private final Fragment parentFragment;
+    private final FragmentActivity parent;
 
     private Listener0 onScrollToThresholdListener;
 
@@ -44,8 +44,8 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
 
     private int scrollThreshold;
 
-    public MasterAdapter(Fragment parentFragment) {
-        this.parentFragment = parentFragment;
+    public MasterAdapter(FragmentActivity parent) {
+        this.parent = parent;
     }
 
     public void setData(List<Post> data) {
@@ -89,7 +89,7 @@ public class MasterAdapter extends RecyclerView.Adapter<MasterAdapter.ViewHolder
         flexboxLp.height = post.getThumbHeight();
         flexboxLp.setMaxWidth(post.getThumbMaxWidth());
 
-        Glide.with(parentFragment)
+        Glide.with(parent)
                 .load(post.getThumbFileUrl())
                 .apply(bitmapTransform(new RoundedCornersTransformation(5, 0)))
                 .apply(placeholderOf(R.drawable.image_placeholder))

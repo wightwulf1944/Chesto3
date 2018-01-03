@@ -2,7 +2,7 @@ package i.am.shiro.chesto.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,7 @@ import static com.bumptech.glide.request.RequestOptions.errorOf;
 
 public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.ViewHolder> {
 
-    private final Fragment parentFragment;
+    private final FragmentActivity parent;
 
     private Listener0 onScrollToThresholdListener;
 
@@ -39,8 +39,8 @@ public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAd
 
     private int scrollThreshold;
 
-    public DetailImageAdapter(Fragment parentFragment) {
-        this.parentFragment = parentFragment;
+    public DetailImageAdapter(FragmentActivity parent) {
+        this.parent = parent;
     }
 
     public void setData(List<Post> data) {
@@ -84,12 +84,12 @@ public final class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAd
         }
 
         private void bind(Post post) {
-            RequestBuilder<Drawable> thumb = Glide.with(parentFragment)
+            RequestBuilder<Drawable> thumb = Glide.with(parent)
                     .load(post.getThumbFileUrl())
                     .apply(bitmapTransform(new BlurTransformation(1)))
                     .apply(diskCacheStrategyOf(DATA));
 
-            Glide.with(parentFragment)
+            Glide.with(parent)
                     .load(post.getPreviewFileUrl())
                     .apply(errorOf(R.drawable.image_broken))
                     .thumbnail(thumb)
