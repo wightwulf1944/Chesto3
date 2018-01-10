@@ -4,8 +4,6 @@ import android.app.Application;
 import android.os.StrictMode;
 
 import i.am.shiro.chesto.model.Danbooru;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import retrofit2.Retrofit;
@@ -54,15 +52,10 @@ public class ChestoApplication extends Application {
     private void initDanbooru() {
         String baseUrl = "http://danbooru.donmai.us";
 
-        Scheduler ioScheduler = Schedulers.io();
-        RxJava2CallAdapterFactory callAdapter = RxJava2CallAdapterFactory.createWithScheduler(ioScheduler);
-
-        MoshiConverterFactory converter = MoshiConverterFactory.create();
-
         danbooru = new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addCallAdapterFactory(callAdapter)
-                .addConverterFactory(converter)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+                .addConverterFactory(MoshiConverterFactory.create())
                 .build()
                 .create(Danbooru.class);
     }
