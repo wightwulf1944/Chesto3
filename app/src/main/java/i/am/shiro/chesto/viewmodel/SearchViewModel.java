@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel;
 
 import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.model.Tag;
-import io.reactivex.Observable;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -50,7 +49,7 @@ public class SearchViewModel extends ViewModel {
 
         ChestoApplication.danbooru()
                 .searchTags('*' + focus + '*')
-                .flatMap(Observable::fromIterable)
+                .flattenAsObservable(tagJsons -> tagJsons)
                 .map(Tag::new)
                 .toList()
                 .subscribe(

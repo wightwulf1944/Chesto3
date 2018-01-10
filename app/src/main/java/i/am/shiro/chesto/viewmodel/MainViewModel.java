@@ -13,7 +13,6 @@ import i.am.shiro.chesto.model.PostJson;
 import i.am.shiro.chesto.notifier.Notifier0;
 import i.am.shiro.chesto.notifier.Notifier1;
 import i.am.shiro.chesto.subscription.Subscription;
-import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -109,7 +108,7 @@ public final class MainViewModel {
 
         disposable = ChestoApplication.danbooru()
                 .getPosts(query, pagesLoaded + 1)
-                .flatMap(Observable::fromIterable)
+                .flattenAsObservable(postJsons -> postJsons)
                 .filter(PostJson::hasImageUrls)
                 .map(Post::new)
                 .toList()
