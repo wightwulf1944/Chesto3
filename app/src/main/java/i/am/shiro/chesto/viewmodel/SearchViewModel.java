@@ -4,8 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.model.Tag;
+import i.am.shiro.chesto.retrofit.Danbooru;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -50,8 +50,7 @@ public class SearchViewModel extends ViewModel {
 
         results.setValue(cachedTags);
 
-        ChestoApplication.danbooru()
-                .searchTags('*' + focus + '*')
+        Danbooru.api.searchTags('*' + focus + '*')
                 .flattenAsObservable(tagJsons -> tagJsons)
                 .map(Tag::new)
                 .toList()

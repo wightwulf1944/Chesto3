@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import i.am.shiro.chesto.ChestoApplication;
 import i.am.shiro.chesto.listener.Listener0;
 import i.am.shiro.chesto.listener.Listener1;
+import i.am.shiro.chesto.retrofit.Danbooru;
 import i.am.shiro.chesto.model.MainModel;
 import i.am.shiro.chesto.model.Post;
 import i.am.shiro.chesto.model.PostJson;
@@ -106,8 +106,7 @@ public final class MainViewModel {
         }
         setLoading(true);
 
-        disposable = ChestoApplication.danbooru()
-                .getPosts(query, pagesLoaded + 1)
+        disposable = Danbooru.api.getPosts(query, pagesLoaded + 1)
                 .flattenAsObservable(postJsons -> postJsons)
                 .filter(PostJson::hasImageUrls)
                 .map(Post::new)

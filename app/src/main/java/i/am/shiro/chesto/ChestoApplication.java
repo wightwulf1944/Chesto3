@@ -3,12 +3,8 @@ package i.am.shiro.chesto;
 import android.app.Application;
 import android.os.StrictMode;
 
-import i.am.shiro.chesto.model.Danbooru;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
 
 /**
@@ -16,8 +12,6 @@ import timber.log.Timber;
  */
 
 public class ChestoApplication extends Application {
-
-    private static Danbooru danbooru;
 
     @Override
     public void onCreate() {
@@ -45,22 +39,5 @@ public class ChestoApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
-
-        initDanbooru();
-    }
-
-    private void initDanbooru() {
-        String baseUrl = "http://danbooru.donmai.us";
-
-        danbooru = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-                .create(Danbooru.class);
-    }
-
-    public static Danbooru danbooru() {
-        return danbooru;
     }
 }
