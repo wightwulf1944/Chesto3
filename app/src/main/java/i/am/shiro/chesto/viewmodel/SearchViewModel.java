@@ -24,7 +24,8 @@ public class SearchViewModel extends ViewModel {
 
     public SearchViewModel() {
         RealmResults<Tag> tags = realm.where(Tag.class)
-                .findAllSorted("postCount", DESCENDING);
+                .sort("postCount", DESCENDING)
+                .findAll();
 
         results.setValue(tags);
     }
@@ -42,7 +43,9 @@ public class SearchViewModel extends ViewModel {
         results.getValue().removeAllChangeListeners();
         RealmResults<Tag> cachedTags = realm.where(Tag.class)
                 .contains("name", focus, Case.INSENSITIVE)
-                .findAllSorted("postCount", DESCENDING);
+                .sort("postCount", DESCENDING)
+                .findAll();
+
         cachedTags.addChangeListener(results::setValue);
 
         results.setValue(cachedTags);
