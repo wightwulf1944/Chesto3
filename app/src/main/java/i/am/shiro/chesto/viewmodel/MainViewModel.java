@@ -106,7 +106,7 @@ public final class MainViewModel {
         }
         setLoading(true);
 
-        disposable = Danbooru.api.getPosts(query, pagesLoaded + 1)
+        disposable = Danbooru.API.getPosts(query, pagesLoaded + 1)
                 .flattenAsObservable(postJsons -> postJsons)
                 .filter(PostJson::hasImageUrls)
                 .map(Post::new)

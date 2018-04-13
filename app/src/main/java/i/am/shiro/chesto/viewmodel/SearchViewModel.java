@@ -50,7 +50,7 @@ public class SearchViewModel extends ViewModel {
 
         results.setValue(cachedTags);
 
-        Danbooru.api.searchTags('*' + focus + '*')
+        Danbooru.API.searchTags('*' + focus + '*')
                 .flattenAsObservable(tagJsons -> tagJsons)
                 .map(Tag::new)
                 .toList()
