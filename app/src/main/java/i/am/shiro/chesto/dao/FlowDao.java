@@ -58,8 +58,16 @@ public class FlowDao implements Closeable {
         return flow.getQuery();
     }
 
+    public int getCurrentIndex() {
+        return flow.getCurrentIndex();
+    }
+
     public List<Post> getPosts() {
         return realm.copyFromRealm(flow.getPosts());
+    }
+
+    public Post getCurrentPost() {
+        return realm.copyFromRealm(flow.getCurrentPost());
     }
 
     public int getPostCount() {

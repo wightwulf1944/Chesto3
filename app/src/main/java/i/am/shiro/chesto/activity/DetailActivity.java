@@ -1,5 +1,6 @@
 package i.am.shiro.chesto.activity;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,8 +26,8 @@ import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.DetailImageAdapter;
 import i.am.shiro.chesto.adapter.DetailTagAdapter;
 import i.am.shiro.chesto.listener.ScrollToPageListener;
-import i.am.shiro.chesto.model.Post;
 import i.am.shiro.chesto.service.DownloadService;
+import i.am.shiro.chesto.viewmodel.DetailViewModel;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -40,13 +41,15 @@ import static android.support.design.widget.Snackbar.LENGTH_SHORT;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private static final String FLOW_ID_EXTRA = "flowId";
+
     private static final int PERMISSION_REQUEST_CODE = 0;
 
-    private int currentIndex;
+    private DetailViewModel viewModel;
 
-    public static Intent makeIntent(Context context, int currentIndex) {
+    public static Intent makeIntent(Context context, String flowId) {
         Intent starter = new Intent(context, DetailActivity.class);
-        starter.putExtra("currentIndex", currentIndex);
+        starter.putExtra(FLOW_ID_EXTRA, flowId);
         return starter;
     }
 
@@ -54,13 +57,16 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currentIndex = getIntent().getIntExtra("default", 0);
+        String flowId = getIntent().getStringExtra(FLOW_ID_EXTRA);
+
+        viewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
+        viewModel.loadFlow(flowId);
 
         setContentView(R.layout.activity_detail);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_nav_back);
-        toolbar.setNavigationOnClickListener(v -> finishAndReturnResult());
+        toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.inflateMenu(R.menu.activity_detail);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
@@ -78,7 +84,6 @@ public class DetailActivity extends AppCompatActivity {
         layoutManager.setFlexWrap(FlexWrap.WRAP);
 
         DetailTagAdapter detailTagAdapter = new DetailTagAdapter();
-        detailTagAdapter.setCurrentPost(getCurrentPost());
         detailTagAdapter.setOnItemClickListener(this::invokeMaster);
 
         RecyclerView tagRecycler = findViewById(R.id.tagRecyclerView);
@@ -86,22 +91,22 @@ public class DetailActivity extends AppCompatActivity {
         tagRecycler.setAdapter(detailTagAdapter);
 
         DetailImageAdapter detailImageAdapter = new DetailImageAdapter(this);
-        detailImageAdapter.setData(viewModel.getPosts());
-        detailImageAdapter.setOnScrollToThresholdListener(5, viewModel::loadPosts);
+        detailImageAdapter.setOnItemBindListener(viewModel::onItemBind);
 
         ScrollToPageListener scrollToPageListener = new ScrollToPageListener();
-        scrollToPageListener.setOnScrollToPageListener(i -> currentIndex = i);
+        scrollToPageListener.setOnScrollToPageListener(viewModel::onScrollToPage);
 
         RecyclerView imageRecycler = findViewById(R.id.imageRecyclerView);
         imageRecycler.setHasFixedSize(true);
         imageRecycler.setAdapter(detailImageAdapter);
         imageRecycler.addOnScrollListener(scrollToPageListener);
-        imageRecycler.scrollToPosition(currentIndex);
+        imageRecycler.scrollToPosition(viewModel.getCurrentIndex());
 
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(imageRecycler);
 
-        // TODO: subscribe to data changes
+        viewModel.observeCurrentPost(this, detailTagAdapter::setCurrentPost);
+        viewModel.observePosts(this, detailImageAdapter::submitList);
     }
 
     @Override
@@ -134,21 +139,9 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private Post getCurrentPost() {
-        // todo
-        return null;
-    }
-
-    private void finishAndReturnResult() {
-        Intent intent = new Intent();
-        intent.putExtra("default", currentIndex);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
     private void invokeDownload() {
         if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-            DownloadService.queue(this, getCurrentPost());
+            DownloadService.queue(this, viewModel.getCurrentPost());
             View view = findViewById(android.R.id.content);
             Snackbar.make(view, "Download queued", LENGTH_SHORT).show();
         } else {
@@ -158,14 +151,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void invokeOpenInBrowser() {
-        String webUrl = getCurrentPost().getWebUrl();
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
         Uri webUri = Uri.parse(webUrl);
         Intent intent = new Intent(Intent.ACTION_VIEW, webUri);
         startActivity(intent);
     }
 
     private void invokeShare() {
-        String webUrl = getCurrentPost().getWebUrl();
+        String webUrl = viewModel.getCurrentPost().getWebUrl();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, webUrl);
         intent.setType("text/plain");

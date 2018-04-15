@@ -72,4 +72,8 @@ public class MasterDetailFlow extends RealmObject {
     public void setLoadState(@LoadState int loadState) {
         this.loadState = loadState;
     }
+
+    public Post getCurrentPost() {
+        return posts.get(currentIndex);
+    }
 }
