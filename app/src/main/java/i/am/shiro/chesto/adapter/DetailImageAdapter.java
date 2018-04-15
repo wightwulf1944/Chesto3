@@ -15,14 +15,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 
-import java.util.List;
-
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.listener.Listener0;
 import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Post;
 import jp.wasabeef.glide.transformations.BlurTransformation;
-import timber.log.Timber;
 
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.DATA;
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;

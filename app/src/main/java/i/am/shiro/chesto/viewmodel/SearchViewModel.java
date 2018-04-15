@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 
 import i.am.shiro.chesto.model.Tag;
 import i.am.shiro.chesto.retrofit.Danbooru;
+import io.reactivex.disposables.Disposable;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -22,6 +23,8 @@ public class SearchViewModel extends ViewModel {
 
     private final MutableLiveData<RealmResults<Tag>> results = new MutableLiveData<>();
 
+    private Disposable disposable;
+
     public SearchViewModel() {
         RealmResults<Tag> tags = realm.where(Tag.class)
                 .sort("postCount", DESCENDING)
@@ -32,6 +35,7 @@ public class SearchViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
+        disposable.dispose();
         realm.close();
     }
 
@@ -50,7 +54,7 @@ public class SearchViewModel extends ViewModel {
 
         results.setValue(cachedTags);
 
-        Danbooru.API.searchTags('*' + focus + '*')
+        disposable = Danbooru.API.searchTags('*' + focus + '*')
                 .flattenAsObservable(tagJsons -> tagJsons)
                 .map(Tag::new)
                 .toList()
