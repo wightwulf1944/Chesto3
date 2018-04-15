@@ -6,6 +6,7 @@ package i.am.shiro.chesto.listener;
  * Generic listener with 0 parameters
  */
 
+@FunctionalInterface
 public interface Listener0 extends Listener {
 
     void onEvent();

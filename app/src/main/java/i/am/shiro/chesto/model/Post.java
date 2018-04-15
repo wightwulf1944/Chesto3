@@ -1,5 +1,6 @@
 package i.am.shiro.chesto.model;
 
+import i.am.shiro.chesto.retrofit.Danbooru;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -8,8 +9,6 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Post extends RealmObject {
-
-    private static final String baseUrl = "http://danbooru.donmai.us";
 
     @PrimaryKey
     private int id;
@@ -49,10 +48,10 @@ public class Post extends RealmObject {
         tagStringCopyright = postJson.tagStringCopyright;
         tagStringGeneral = postJson.tagStringGeneral;
         tagStringMeta = postJson.tagStringMeta;
-        webUrl = baseUrl + "/posts/" + postJson.id;
-        thumbFileUrl = baseUrl + postJson.previewFileUrl;
-        previewFileUrl = baseUrl + postJson.largeFileUrl;
-        originalFileUrl = baseUrl + postJson.fileUrl;
+        webUrl = Danbooru.BASE_URL + "/posts/" + postJson.id;
+        thumbFileUrl = postJson.previewFileUrl;
+        previewFileUrl = postJson.largeFileUrl;
+        originalFileUrl = postJson.fileUrl;
 
         final int maxMeasure = 220;
         if (width > height) {

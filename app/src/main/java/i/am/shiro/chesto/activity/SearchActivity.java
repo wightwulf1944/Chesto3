@@ -1,6 +1,7 @@
 package i.am.shiro.chesto.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private SearchViewModel viewModel;
 
     private SearchView searchView;
+
+    public static Intent makeIntent(Context context) {
+        return new Intent(context, SearchActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +52,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setAction(Intent.ACTION_SEARCH);
-        intent.putExtra("default", query);
+        Intent intent = MasterActivity.makeIntent(this, query);
         startActivity(intent);
         finish();
         return true;
