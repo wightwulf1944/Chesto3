@@ -21,33 +21,32 @@ import java.util.UUID;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.MasterAdapter;
-import i.am.shiro.chesto.viewmodel.MainViewModel;
 import i.am.shiro.chesto.viewmodel.MasterViewModel;
 
 import static android.content.Intent.ACTION_SEARCH;
 import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
 import static android.support.design.widget.Snackbar.LENGTH_SHORT;
+import static i.am.shiro.chesto.constant.LoadState.ERROR;
+import static i.am.shiro.chesto.constant.LoadState.LOADING;
+import static i.am.shiro.chesto.constant.LoadState.SUCCESS;
 
 /**
  * Created by Shiro on 12/27/2017.
- * set current index on return
  */
 
 public class MasterActivity extends AppCompatActivity {
 
-    private static int REQUEST_CODE = 0;
+    private static final String FLOW_ID_EXTRA = "flowId";
 
-    private static String FLOW_ID_EXTRA = "flowId";
+    private static final String QUERY_EXTRA = "query";
 
-    private static String QUERY_EXTRA = "query";
+    private MasterViewModel viewModel;
 
     private long lastTimeBackPressed;
 
     public static Intent makeIntent(Context context, String query) {
-        String flowId = UUID.randomUUID().toString();
         Intent starter = new Intent(context, MasterActivity.class);
         starter.setAction(ACTION_SEARCH);
-        starter.putExtra(FLOW_ID_EXTRA, flowId);
         starter.putExtra(QUERY_EXTRA, query);
         return starter;
     }
@@ -56,19 +55,22 @@ public class MasterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        String flowId = intent.getStringExtra(FLOW_ID_EXTRA);
-        String query = intent.getStringExtra(QUERY_EXTRA);
+        String query = getIntent().getStringExtra(QUERY_EXTRA);
 
-        MasterViewModel viewModel = ViewModelProviders.of(this).get(MasterViewModel.class);
-        viewModel.setFlowId(flowId);
-        viewModel.setQuery(query);
+        viewModel = ViewModelProviders.of(this).get(MasterViewModel.class);
+        if (savedInstanceState == null) {
+            String flowId = UUID.randomUUID().toString();
+            viewModel.newFlow(flowId, query);
+        } else {
+            String flowId = savedInstanceState.getString(FLOW_ID_EXTRA);
+            viewModel.loadFlow(flowId);
+        }
 
         setContentView(R.layout.activity_master);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.setSubtitle(viewModel.getQuery());
+        toolbar.setSubtitle(query);
         toolbar.inflateMenu(R.menu.activity_master);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClicked);
 
@@ -77,9 +79,8 @@ public class MasterActivity extends AppCompatActivity {
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
         MasterAdapter adapter = new MasterAdapter(this);
-        adapter.setData(viewModel.getPosts());
-        adapter.setOnScrollToThresholdListener(15, viewModel::loadPosts);
-        adapter.addOnItemClickedListener(this::invokeDetail);
+        adapter.addOnItemBindListener(viewModel::onItemBind);
+        adapter.addOnItemClickListener(this::onItemClick);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -88,14 +89,36 @@ public class MasterActivity extends AppCompatActivity {
 
         SwipeRefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
-        refreshLayout.setRefreshing(viewModel.isLoading());
-        refreshLayout.setOnRefreshListener(viewModel::refreshPosts);
+        refreshLayout.setOnRefreshListener(viewModel::onRefresh);
 
         View view = findViewById(android.R.id.content);
         Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", LENGTH_INDEFINITE);
-        errorSnackbar.setAction("Retry", v -> viewModel.loadPosts());
+        errorSnackbar.setAction("Retry", v -> viewModel.onRetry());
 
-        // TODO: subscribe to data changes
+        viewModel.observePosts(this, adapter::submitList);
+        viewModel.observeLoadStatus(this, loadState -> {
+            if (loadState == null) return;
+            switch (loadState) {
+                case LOADING:
+                    refreshLayout.setRefreshing(true);
+                    errorSnackbar.dismiss();
+                    break;
+                case SUCCESS:
+                    refreshLayout.setRefreshing(false);
+                    errorSnackbar.dismiss();
+                    break;
+                case ERROR:
+                    refreshLayout.setRefreshing(false);
+                    errorSnackbar.show();
+                    break;
+            }
+        });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(FLOW_ID_EXTRA, viewModel.getFlowId());
     }
 
     @Override
@@ -109,17 +132,6 @@ public class MasterActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            int i = data.getIntExtra("default", 0);
-            RecyclerView recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.scrollToPosition(i);
-        }
-    }
-
     private boolean onMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
@@ -130,13 +142,18 @@ public class MasterActivity extends AppCompatActivity {
         }
     }
 
+    private void onItemClick(int position) {
+        viewModel.onItemClick(position);
+        invokeDetail();
+    }
+
     private void invokeSearch() {
         Intent intent = SearchActivity.makeIntent(this);
         startActivity(intent);
     }
 
-    private void invokeDetail(int i) {
-        Intent intent = DetailActivity.makeIntent(this, i);
-        startActivityForResult(intent, REQUEST_CODE);
+    private void invokeDetail() {
+        Intent intent = DetailActivity.makeIntent(this, viewModel.getFlowId());
+        startActivity(intent);
     }
 }
