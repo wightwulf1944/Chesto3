@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "353451922247",
+    "firebase_url": "https://chesto-6ecec.firebaseio.com",
+    "project_id": "chesto-6ecec",
+    "storage_bucket": "chesto-6ecec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353451922247:android:82a4a8b6cf138462",
+        "android_client_info": {
+          "package_name": "i.am.shiro.chesto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353451922247-lo01a5hem0dt7c4d86hqphjamtqoqcfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUwDAW5Vbr1qbgbeIeOR4I-Psz5eXRACU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353451922247:android:70a52cb2ac2f1cb6",
+        "android_client_info": {
+          "package_name": "i.am.shiro.chesto.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353451922247-lo01a5hem0dt7c4d86hqphjamtqoqcfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUwDAW5Vbr1qbgbeIeOR4I-Psz5eXRACU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
