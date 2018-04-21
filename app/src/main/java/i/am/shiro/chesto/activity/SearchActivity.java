@@ -47,7 +47,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        viewModel.getResults().observe(this, adapter::setData);
+        viewModel.observeResults(this, adapter::setData);
     }
 
     @Override

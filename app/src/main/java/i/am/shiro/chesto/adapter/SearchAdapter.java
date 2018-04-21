@@ -1,5 +1,6 @@
 package i.am.shiro.chesto.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +19,14 @@ import i.am.shiro.chesto.model.Tag;
  */
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
+    private List<Tag> data;
+
     private Listener1<String> onItemClickListener;
 
     private Listener1<String> onAppendClickListener;
 
-    private List<Tag> items;
-
     public void setData(List<Tag> data) {
-        items = data;
+        this.data = data;
         notifyDataSetChanged();
     }
 
@@ -37,32 +38,32 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         onAppendClickListener = listener;
     }
 
+    @NonNull
     @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_search_tag, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Tag tag = items.get(position);
-        viewHolder.postCount.setText(tag.getPostCountStr());
-        viewHolder.name.setText(tag.getName());
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        Tag tag = data.get(position);
+        viewHolder.bind(tag);
+    }
+
+    @Override
+    public int getItemCount() {
+        return data.size();
     }
 
     private void onItemClicked(int i) {
-        String name = items.get(i).getName();
+        String name = data.get(i).getName();
         onItemClickListener.onEvent(name);
     }
 
     private void onAppendClicked(int i) {
-        String name = items.get(i).getName();
+        String name = data.get(i).getName();
         onAppendClickListener.onEvent(name);
     }
 
@@ -80,6 +81,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
             itemView.setOnClickListener(v -> onItemClicked(getAdapterPosition()));
             appendButton.setOnClickListener(v -> onAppendClicked(getAdapterPosition()));
+        }
+
+        private void bind(Tag tag) {
+            postCount.setText(tag.getPostCountStr());
+            name.setText(tag.getName());
         }
     }
 }

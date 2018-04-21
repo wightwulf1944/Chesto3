@@ -48,7 +48,7 @@ public class MasterViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        disposable.dispose();
+        if (disposable != null) disposable.dispose();
         flowDao.close();
     }
 

@@ -1,8 +1,11 @@
 package i.am.shiro.chesto.viewmodel;
 
-import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+
+import java.util.List;
 
 import i.am.shiro.chesto.model.Tag;
 import i.am.shiro.chesto.retrofit.Danbooru;
@@ -10,7 +13,9 @@ import io.reactivex.disposables.Disposable;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
+import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 import static io.realm.Sort.DESCENDING;
 
 /**
@@ -21,16 +26,18 @@ public class SearchViewModel extends ViewModel {
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    private final MutableLiveData<RealmResults<Tag>> results = new MutableLiveData<>();
+    private final MutableLiveData<List<Tag>> resultsData = new MutableLiveData<>();
+
+    private RealmResults<Tag> managedResults;
 
     private Disposable disposable;
 
     public SearchViewModel() {
-        RealmResults<Tag> tags = realm.where(Tag.class)
+        managedResults = realm.where(Tag.class)
                 .sort("postCount", DESCENDING)
                 .findAll();
 
-        results.setValue(tags);
+        updateResults();
     }
 
     @Override
@@ -39,32 +46,38 @@ public class SearchViewModel extends ViewModel {
         realm.close();
     }
 
-    public LiveData<RealmResults<Tag>> getResults() {
-        return results;
+    public void observeResults(LifecycleOwner owner, Observer<List<Tag>> observer) {
+        resultsData.observe(owner, observer);
+    }
+
+    private void updateResults() {
+        resultsData.setValue(realm.copyFromRealm(managedResults));
     }
 
     public void searchTags(String focus) {
-        results.getValue().removeAllChangeListeners();
-        RealmResults<Tag> cachedTags = realm.where(Tag.class)
+        managedResults = realm.where(Tag.class)
                 .contains("name", focus, Case.INSENSITIVE)
                 .sort("postCount", DESCENDING)
                 .findAll();
-
-        cachedTags.addChangeListener(results::setValue);
-
-        results.setValue(cachedTags);
+        updateResults();
 
         disposable = Danbooru.API.searchTags('*' + focus + '*')
                 .flattenAsObservable(tagJsons -> tagJsons)
                 .map(Tag::new)
                 .toList()
-                .subscribe(
-                        tags -> {
-                            Realm realm = Realm.getDefaultInstance();
-                            realm.executeTransaction(r -> r.insertOrUpdate(tags));
-                            realm.close();
-                        },
-                        Throwable::printStackTrace
-                );
+                .observeOn(mainThread())
+                .subscribe(this::onSuccess, this::onError);
+    }
+
+    private void onSuccess(List<Tag> results) {
+        realm.beginTransaction();
+        realm.insertOrUpdate(results);
+        realm.commitTransaction();
+
+        updateResults();
+    }
+
+    private void onError(Throwable t) {
+        Timber.e(t, "failed to fetch tags");
     }
 }
