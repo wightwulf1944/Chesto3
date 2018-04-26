@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
@@ -20,13 +21,7 @@ import i.am.shiro.chesto.model.Post;
 import i.am.shiro.chesto.notifier.Notifier1;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-import static com.bumptech.glide.load.DecodeFormat.PREFER_RGB_565;
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
-import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
-import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
-import static com.bumptech.glide.request.RequestOptions.errorOf;
-import static com.bumptech.glide.request.RequestOptions.formatOf;
-import static com.bumptech.glide.request.RequestOptions.placeholderOf;
 
 public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
@@ -36,9 +31,16 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
     private final FragmentActivity parent;
 
+    private final RequestOptions defaultRequestOptions;
+
     public MasterAdapter(FragmentActivity parent) {
         super(new DiffCallback());
         this.parent = parent;
+        defaultRequestOptions = new RequestOptions()
+                .transform(new RoundedCornersTransformation(5, 0))
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_broken)
+                .diskCacheStrategy(ALL);
     }
 
     public void addOnItemClickListener(Listener1<Integer> listener) {
@@ -57,8 +59,6 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
         View view = inflater.inflate(R.layout.item_master_thumbs, parent, false);
 
         FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
-        layoutParams.setMinWidth(100);
-        layoutParams.setMinHeight(150);
         layoutParams.setFlexGrow(1.0f);
 
         return new ViewHolder(view);
@@ -71,6 +71,7 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
         Post post = getItem(position);
         ImageView imageView = (ImageView) holder.itemView;
 
+        // TODO create algorithm, that sets flexGrow here based on how wide the image is
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
         flexboxLp.height = post.getThumbHeight();
@@ -78,11 +79,7 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
         Glide.with(parent)
                 .load(post.getThumbFileUrl())
-                .apply(bitmapTransform(new RoundedCornersTransformation(5, 0)))
-                .apply(placeholderOf(R.drawable.image_placeholder))
-                .apply(errorOf(R.drawable.image_broken))
-                .apply(diskCacheStrategyOf(ALL))
-                .apply(formatOf(PREFER_RGB_565))
+                .apply(defaultRequestOptions)
                 .into(imageView);
     }
 

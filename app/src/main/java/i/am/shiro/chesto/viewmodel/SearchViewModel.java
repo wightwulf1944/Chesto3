@@ -42,7 +42,7 @@ public class SearchViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        disposable.dispose();
+        if (disposable != null) disposable.dispose();
         realm.close();
     }
 
