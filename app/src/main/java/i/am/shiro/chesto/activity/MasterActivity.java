@@ -17,8 +17,6 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 
-import java.util.UUID;
-
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.MasterAdapter;
 import i.am.shiro.chesto.viewmodel.MasterViewModel;
@@ -42,6 +40,8 @@ public class MasterActivity extends AppCompatActivity {
 
     private MasterViewModel viewModel;
 
+    private Snackbar errorSnackbar;
+
     private long lastTimeBackPressed;
 
     public static Intent makeIntent(Context context, String query) {
@@ -59,8 +59,7 @@ public class MasterActivity extends AppCompatActivity {
 
         viewModel = ViewModelProviders.of(this).get(MasterViewModel.class);
         if (savedInstanceState == null) {
-            String flowId = UUID.randomUUID().toString();
-            viewModel.newFlow(flowId, query);
+            viewModel.newFlow(query);
         } else {
             String flowId = savedInstanceState.getString(FLOW_ID_EXTRA);
             viewModel.loadFlow(flowId);
@@ -91,28 +90,34 @@ public class MasterActivity extends AppCompatActivity {
         refreshLayout.setColorSchemeResources(R.color.primaryDark);
         refreshLayout.setOnRefreshListener(viewModel::onRefresh);
 
-        View view = findViewById(android.R.id.content);
-        Snackbar errorSnackbar = Snackbar.make(view, "Check your connection", LENGTH_INDEFINITE);
-        errorSnackbar.setAction("Retry", v -> viewModel.onRetry());
-
         viewModel.observePosts(this, adapter::submitList);
         viewModel.observeLoadStatus(this, loadState -> {
             if (loadState == null) return;
             switch (loadState) {
                 case LOADING:
                     refreshLayout.setRefreshing(true);
-                    errorSnackbar.dismiss();
+                    hideErrorSnackbar();
                     break;
                 case SUCCESS:
                     refreshLayout.setRefreshing(false);
-                    errorSnackbar.dismiss();
                     break;
                 case ERROR:
                     refreshLayout.setRefreshing(false);
-                    errorSnackbar.show();
+                    showErrorSnackbar();
                     break;
             }
         });
+    }
+
+    private void showErrorSnackbar() {
+        View view = findViewById(android.R.id.content);
+        errorSnackbar = Snackbar.make(view, "Check your connection", LENGTH_INDEFINITE);
+        errorSnackbar.setAction("Retry", v -> viewModel.onRetry());
+        errorSnackbar.show();
+    }
+
+    private void hideErrorSnackbar() {
+        if (errorSnackbar != null) errorSnackbar.dismiss();
     }
 
     @Override

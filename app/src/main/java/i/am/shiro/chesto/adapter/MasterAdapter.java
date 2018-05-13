@@ -1,6 +1,5 @@
 package i.am.shiro.chesto.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.recyclerview.extensions.ListAdapter;
@@ -29,13 +28,13 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
     private final Notifier1<Integer> onItemBindNotifier = new Notifier1<>();
 
-    private final FragmentActivity parent;
+    private final FragmentActivity parentActivity;
 
     private final RequestOptions defaultRequestOptions;
 
-    public MasterAdapter(FragmentActivity parent) {
+    public MasterAdapter(FragmentActivity parentActivity) {
         super(new DiffCallback());
-        this.parent = parent;
+        this.parentActivity = parentActivity;
         defaultRequestOptions = new RequestOptions()
                 .transform(new RoundedCornersTransformation(5, 0))
                 .placeholder(R.drawable.image_placeholder)
@@ -54,13 +53,8 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = parentActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.item_master_thumbs, parent, false);
-
-        FlexboxLayoutManager.LayoutParams layoutParams = (FlexboxLayoutManager.LayoutParams) view.getLayoutParams();
-        layoutParams.setFlexGrow(1.0f);
-
         return new ViewHolder(view);
     }
 
@@ -71,13 +65,13 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
         Post post = getItem(position);
         ImageView imageView = (ImageView) holder.itemView;
 
-        // TODO create algorithm, that sets flexGrow here based on how wide the image is
         FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
         flexboxLp.width = post.getThumbWidth();
         flexboxLp.height = post.getThumbHeight();
         flexboxLp.setMaxWidth(post.getThumbMaxWidth());
+        flexboxLp.setFlexGrow(post.getThumbFlexGrow());
 
-        Glide.with(parent)
+        Glide.with(parentActivity)
                 .load(post.getThumbFileUrl())
                 .apply(defaultRequestOptions)
                 .into(imageView);

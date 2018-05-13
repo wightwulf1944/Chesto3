@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 
 import java.util.List;
+import java.util.UUID;
 
 import i.am.shiro.chesto.constant.LoadState;
 import i.am.shiro.chesto.dao.FlowDao;
@@ -27,7 +28,8 @@ public class MasterViewModel extends ViewModel {
 
     private Disposable disposable;
 
-    public void newFlow(String flowId, String query) {
+    public void newFlow(String query) {
+        String flowId = UUID.randomUUID().toString();
         flowDao.newFlow(flowId, query);
         loadPosts();
     }

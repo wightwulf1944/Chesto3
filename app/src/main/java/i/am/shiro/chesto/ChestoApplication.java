@@ -1,7 +1,6 @@
 package i.am.shiro.chesto;
 
 import android.app.Application;
-import android.os.StrictMode;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -17,21 +16,7 @@ public class ChestoApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-
-            StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build();
-            StrictMode.setThreadPolicy(threadPolicy);
-
-            StrictMode.VmPolicy vmPolicy = new StrictMode.VmPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build();
-            StrictMode.setVmPolicy(vmPolicy);
-        }
+        if (BuildConfig.DEBUG) onCreateDebug();
 
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -39,5 +24,9 @@ public class ChestoApplication extends Application {
                 .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
+    }
+
+    private void onCreateDebug() {
+        Timber.plant(new Timber.DebugTree());
     }
 }

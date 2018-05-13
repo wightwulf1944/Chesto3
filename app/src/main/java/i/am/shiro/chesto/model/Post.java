@@ -18,6 +18,7 @@ public class Post extends RealmObject {
     private int thumbWidth;
     private int thumbHeight;
     private int thumbMaxWidth;
+    private float thumbFlexGrow;
 
     private String fileName;
 
@@ -53,15 +54,18 @@ public class Post extends RealmObject {
         previewFileUrl = postJson.largeFileUrl;
         originalFileUrl = postJson.fileUrl;
 
-        final int maxMeasure = 220;
+        final int maxLength = 220;
         if (width > height) {
-            thumbWidth = maxMeasure;
+            thumbWidth = maxLength;
             thumbHeight = (thumbWidth * height) / width;
+            thumbMaxWidth = (maxLength * width) / height;
+            thumbFlexGrow = (float) width / (float) height;
         } else {
-            thumbHeight = maxMeasure;
+            thumbHeight = maxLength;
             thumbWidth = (thumbHeight * width) / height;
+            thumbMaxWidth = thumbWidth;
+            thumbFlexGrow = 0.0f;
         }
-        thumbMaxWidth = (maxMeasure * width) / height;
     }
 
     public int getId() {
@@ -86,6 +90,10 @@ public class Post extends RealmObject {
 
     public int getThumbMaxWidth() {
         return thumbMaxWidth;
+    }
+
+    public float getThumbFlexGrow() {
+        return thumbFlexGrow;
     }
 
     public String getFileName() {

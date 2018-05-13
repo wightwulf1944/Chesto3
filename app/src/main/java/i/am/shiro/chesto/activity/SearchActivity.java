@@ -32,7 +32,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         setContentView(R.layout.activity_search);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_nav_back);
         toolbar.setNavigationOnClickListener(view -> finish());
 
         searchView = findViewById(R.id.searchView);
