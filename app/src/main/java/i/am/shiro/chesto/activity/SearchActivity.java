@@ -15,13 +15,13 @@ import i.am.shiro.chesto.viewmodel.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private SearchViewModel viewModel;
-
-    private SearchView searchView;
-
     public static Intent makeIntent(Context context) {
         return new Intent(context, SearchActivity.class);
     }
+
+    private SearchViewModel viewModel;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         searchView.setOnQueryTextListener(this);
 
         SearchAdapter adapter = new SearchAdapter();
-        adapter.setOnItemClickListener(this::onQueryTextSubmit);
+        adapter.setOnItemClickListener(this::invokeSearch);
         adapter.setOnAppendClickListener(this::onAppendClicked);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -51,9 +51,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Intent intent = MasterActivity.makeIntent(this, query);
-        startActivity(intent);
-        finish();
+        invokeSearch(query);
         return true;
     }
 
@@ -70,5 +68,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         int spaceIndex = query.lastIndexOf(" ");
         String newQuery = query.substring(0, spaceIndex + 1) + tagName;
         searchView.setQuery(newQuery, false);
+    }
+
+    private void invokeSearch(String query) {
+        Intent intent = MasterActivity.makeIntent(this, query);
+        startActivity(intent);
     }
 }
