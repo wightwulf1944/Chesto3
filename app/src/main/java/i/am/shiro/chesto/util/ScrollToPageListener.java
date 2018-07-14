@@ -1,7 +1,9 @@
-package i.am.shiro.chesto.listener;
+package i.am.shiro.chesto.util;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import com.annimon.stream.function.IntConsumer;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
@@ -11,9 +13,9 @@ import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
 public class ScrollToPageListener extends RecyclerView.OnScrollListener {
 
-    private Listener1<Integer> onScrollToPageListener;
+    private IntConsumer onScrollToPageListener;
 
-    public void setOnScrollToPageListener(Listener1<Integer> listener) {
+    public void setOnScrollToPageListener(IntConsumer listener) {
         onScrollToPageListener = listener;
     }
 
@@ -23,7 +25,7 @@ public class ScrollToPageListener extends RecyclerView.OnScrollListener {
         int position = layoutManager.findFirstCompletelyVisibleItemPosition();
 
         if (position != NO_POSITION) {
-            onScrollToPageListener.onEvent(position);
+            onScrollToPageListener.accept(position);
         }
     }
 }

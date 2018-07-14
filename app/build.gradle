@@ -44,6 +44,9 @@ dependencies {
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
 
+//    https://github.com/aNNiMON/Lightweight-Stream-API
+    implementation 'com.annimon:stream:1.2.0'
+
 //    https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.7.0'
 

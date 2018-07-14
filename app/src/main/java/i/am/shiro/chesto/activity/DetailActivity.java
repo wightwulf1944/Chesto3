@@ -25,7 +25,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.DetailImageAdapter;
 import i.am.shiro.chesto.adapter.DetailTagAdapter;
-import i.am.shiro.chesto.listener.ScrollToPageListener;
+import i.am.shiro.chesto.util.ScrollToPageListener;
 import i.am.shiro.chesto.service.DownloadService;
 import i.am.shiro.chesto.viewmodel.DetailViewModel;
 

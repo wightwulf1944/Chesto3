@@ -78,8 +78,8 @@ public class MasterActivity extends AppCompatActivity {
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
 
         MasterAdapter adapter = new MasterAdapter(this);
-        adapter.addOnItemBindListener(viewModel::onItemBind);
-        adapter.addOnItemClickListener(this::onItemClick);
+        adapter.setOnItemBindListener(viewModel::onItemBind);
+        adapter.setOnItemClickListener(this::onItemClick);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

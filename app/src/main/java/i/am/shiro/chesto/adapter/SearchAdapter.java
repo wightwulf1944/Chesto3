@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.annimon.stream.function.Consumer;
+
 import java.util.List;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Tag;
 
 /**
@@ -21,20 +22,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     private List<Tag> data;
 
-    private Listener1<String> onItemClickListener;
+    private Consumer<String> onItemClickListener;
 
-    private Listener1<String> onAppendClickListener;
+    private Consumer<String> onAppendClickListener;
 
     public void setData(List<Tag> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(Listener1<String> listener) {
+    public void setOnItemClickListener(Consumer<String> listener) {
         onItemClickListener = listener;
     }
 
-    public void setOnAppendClickListener(Listener1<String> listener) {
+    public void setOnAppendClickListener(Consumer<String> listener) {
         onAppendClickListener = listener;
     }
 
@@ -59,12 +60,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     private void onItemClicked(int i) {
         String name = data.get(i).getName();
-        onItemClickListener.onEvent(name);
+        onItemClickListener.accept(name);
     }
 
     private void onAppendClicked(int i) {
         String name = data.get(i).getName();
-        onAppendClickListener.onEvent(name);
+        onAppendClickListener.accept(name);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -10,27 +10,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Post;
-import i.am.shiro.chesto.notifier.Notifier1;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
 
 public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
-    private final Notifier1<Integer> onItemClickNotifier = new Notifier1<>();
-
-    private final Notifier1<Integer> onItemBindNotifier = new Notifier1<>();
-
     private final FragmentActivity parentActivity;
 
     private final RequestOptions defaultRequestOptions;
+
+    private IntConsumer onItemClickListener;
+
+    private IntConsumer onItemBindListener;
 
     public MasterAdapter(FragmentActivity parentActivity) {
         super(new DiffCallback());
@@ -42,12 +41,12 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
                 .diskCacheStrategy(ALL);
     }
 
-    public void addOnItemClickListener(Listener1<Integer> listener) {
-        onItemClickNotifier.addListener(listener);
+    public void setOnItemClickListener(IntConsumer listener) {
+        onItemClickListener = listener;
     }
 
-    public void addOnItemBindListener(Listener1<Integer> listener) {
-        onItemBindNotifier.addListener(listener);
+    public void setOnItemBindListener(IntConsumer listener) {
+        onItemBindListener = listener;
     }
 
     @NonNull
@@ -60,7 +59,7 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        onItemBindNotifier.fireEvent(position);
+        onItemBindListener.accept(position);
 
         Post post = getItem(position);
         ImageView imageView = (ImageView) holder.itemView;
@@ -85,7 +84,7 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
         }
 
         private void onItemClick() {
-            onItemClickNotifier.fireEvent(getAdapterPosition());
+            onItemClickListener.accept(getAdapterPosition());
         }
     }
 

@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.annimon.stream.function.Consumer;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Post;
 
 /**
@@ -26,9 +26,9 @@ public class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapter.View
 
     private final ArrayList<Pair<Integer, String>> items = new ArrayList<>();
 
-    private Listener1<String> onItemClickListener;
+    private Consumer<String> onItemClickListener;
 
-    public void setOnItemClickListener(Listener1<String> listener) {
+    public void setOnItemClickListener(Consumer<String> listener) {
         onItemClickListener = listener;
     }
 
@@ -72,7 +72,7 @@ public class DetailTagAdapter extends RecyclerView.Adapter<DetailTagAdapter.View
             view.setOnClickListener(v -> {
                 int adapterPosition = vh.getAdapterPosition();
                 String tagString = items.get(adapterPosition).second;
-                onItemClickListener.onEvent(tagString);
+                onItemClickListener.accept(tagString);
             });
         }
 

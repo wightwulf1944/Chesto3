@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.annimon.stream.function.IntConsumer;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.listener.Listener1;
 import i.am.shiro.chesto.model.Post;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -33,14 +33,14 @@ public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.Vie
 
     private final FragmentActivity parent;
 
-    private Listener1<Integer> onItemBindListener;
+    private IntConsumer onItemBindListener;
 
     public DetailImageAdapter(FragmentActivity parent) {
         super(new DiffCallback());
         this.parent = parent;
     }
 
-    public void setOnItemBindListener(Listener1<Integer> listener) {
+    public void setOnItemBindListener(IntConsumer listener) {
         onItemBindListener = listener;
     }
 
@@ -55,7 +55,7 @@ public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        onItemBindListener.onEvent(position);
+        onItemBindListener.accept(position);
 
         Post post = getItem(position);
         holder.bind(post);
