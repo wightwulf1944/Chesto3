@@ -39,27 +39,27 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         searchView.setOnQueryTextListener(this);
 
         SearchAdapter adapter = new SearchAdapter();
-        adapter.setOnItemClickListener(this::invokeSearch);
+        adapter.setOnItemClickListener(this::invokeMaster);
         adapter.setOnAppendClickListener(this::onAppendClicked);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        viewModel.observeResults(this, adapter::setData);
+        viewModel.observeTagSuggestions(this, adapter::setData);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        invokeSearch(query);
+        invokeMaster(query);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         int spaceIndex = newText.lastIndexOf(" ");
-        String currentQuery = newText.substring(spaceIndex + 1);
-        viewModel.searchTags(currentQuery);
+        String lastWord = newText.substring(spaceIndex + 1);
+        viewModel.fetchSuggestions(lastWord);
         return true;
     }
 
@@ -70,7 +70,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         searchView.setQuery(newQuery, false);
     }
 
-    private void invokeSearch(String query) {
+    private void invokeMaster(String query) {
         Intent intent = MasterActivity.makeIntent(this, query);
         startActivity(intent);
     }

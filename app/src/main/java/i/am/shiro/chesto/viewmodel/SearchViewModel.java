@@ -5,9 +5,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 
+import com.annimon.stream.Stream;
+
 import java.util.List;
 
+import i.am.shiro.chesto.TagSuggestionBuilder;
 import i.am.shiro.chesto.model.Tag;
+import i.am.shiro.chesto.model.TagSuggestion;
 import i.am.shiro.chesto.retrofit.Danbooru;
 import io.reactivex.disposables.Disposable;
 import io.realm.Case;
@@ -15,6 +19,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
+import static com.annimon.stream.Collectors.toList;
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 import static io.realm.Sort.DESCENDING;
 
@@ -26,11 +31,13 @@ public class SearchViewModel extends ViewModel {
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    private final MutableLiveData<List<Tag>> resultsData = new MutableLiveData<>();
+    private final MutableLiveData<List<TagSuggestion>> tagSuggestionsData = new MutableLiveData<>();
 
     private RealmResults<Tag> managedResults;
 
     private Disposable disposable;
+
+    private String searchFocus = "";
 
     public SearchViewModel() {
         managedResults = realm.where(Tag.class)
@@ -46,15 +53,24 @@ public class SearchViewModel extends ViewModel {
         realm.close();
     }
 
-    public void observeResults(LifecycleOwner owner, Observer<List<Tag>> observer) {
-        resultsData.observe(owner, observer);
+    public void observeTagSuggestions(LifecycleOwner owner, Observer<List<TagSuggestion>> observer) {
+        tagSuggestionsData.observe(owner, observer);
     }
 
     private void updateResults() {
-        resultsData.setValue(realm.copyFromRealm(managedResults));
+        TagSuggestionBuilder tagSuggestionBuilder = new TagSuggestionBuilder(searchFocus);
+
+        List<TagSuggestion> tagSuggestions = Stream.of(managedResults)
+                .map(realm::copyFromRealm)
+                .map(tagSuggestionBuilder::makeFrom)
+                .collect(toList());
+
+        tagSuggestionsData.setValue(tagSuggestions);
     }
 
-    public void searchTags(String focus) {
+    public void fetchSuggestions(String focus) {
+        searchFocus = focus;
+
         managedResults = realm.where(Tag.class)
                 .contains("name", focus, Case.INSENSITIVE)
                 .sort("postCount", DESCENDING)

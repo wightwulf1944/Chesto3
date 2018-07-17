@@ -13,22 +13,23 @@ import com.annimon.stream.function.Consumer;
 import java.util.List;
 
 import i.am.shiro.chesto.R;
-import i.am.shiro.chesto.model.Tag;
+import i.am.shiro.chesto.model.TagSuggestion;
 
 /**
  * Created by Shiro on 3/20/2017.
  */
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private List<Tag> data;
+    private List<TagSuggestion> data;
 
     private Consumer<String> onItemClickListener;
 
     private Consumer<String> onAppendClickListener;
 
-    public void setData(List<Tag> data) {
+    public void setData(List<TagSuggestion> data) {
         this.data = data;
         notifyDataSetChanged();
+        // todo use submitList if data is smaller than before
     }
 
     public void setOnItemClickListener(Consumer<String> listener) {
@@ -49,23 +50,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        Tag tag = data.get(position);
-        viewHolder.bind(tag);
+        TagSuggestion suggestion = data.get(position);
+        viewHolder.bind(suggestion);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
     }
 
     @Override
     public int getItemCount() {
         return data.size();
-    }
-
-    private void onItemClicked(int i) {
-        String name = data.get(i).getName();
-        onItemClickListener.accept(name);
-    }
-
-    private void onAppendClicked(int i) {
-        String name = data.get(i).getName();
-        onAppendClickListener.accept(name);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -74,19 +70,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         private final TextView name;
         private final ImageButton appendButton;
 
+        private String nameStr;
+
         ViewHolder(View view) {
             super(view);
             postCount = view.findViewById(R.id.postCount);
             name = view.findViewById(R.id.name);
             appendButton = view.findViewById(R.id.appendButton);
 
-            itemView.setOnClickListener(v -> onItemClicked(getAdapterPosition()));
-            appendButton.setOnClickListener(v -> onAppendClicked(getAdapterPosition()));
+            itemView.setOnClickListener(v -> onItemClickListener.accept(nameStr));
+            appendButton.setOnClickListener(v -> onAppendClickListener.accept(nameStr));
         }
 
-        private void bind(Tag tag) {
-            postCount.setText(tag.getPostCountStr());
-            name.setText(tag.getName());
+        private void bind(TagSuggestion suggestion) {
+            nameStr = suggestion.getName().toString();
+            postCount.setText(suggestion.getPostCount());
+            name.setText(suggestion.getName());
         }
     }
 }

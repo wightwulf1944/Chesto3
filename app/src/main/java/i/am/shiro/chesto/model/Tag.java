@@ -15,8 +15,6 @@ public class Tag extends RealmObject {
 
     private String name;
 
-    private String postCountStr;
-
     public Tag() {
         // no arg constructor required by Realm
     }
@@ -25,27 +23,17 @@ public class Tag extends RealmObject {
         id = tagJson.id;
         postCount = tagJson.postCount;
         name = tagJson.name;
-        postCountStr = String.valueOf(postCount);
-
-        if (postCount >= 1_000) {
-            postCountStr = postCountStr.charAt(0) + "." + postCountStr.charAt(1);
-            if (postCount < 1_000_000) {
-                postCountStr += "k";
-            } else {
-                postCountStr += "m";
-            }
-        }
     }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public int getPostCount() {
+        return postCount;
     }
 
-    public String getPostCountStr() {
-        return postCountStr;
+    public String getName() {
+        return name;
     }
 }
