@@ -142,6 +142,9 @@ public class MasterActivity extends AppCompatActivity {
             case R.id.action_search:
                 invokeSearch();
                 return true;
+            case R.id.action_search2:
+                invokeSearch2();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -154,6 +157,11 @@ public class MasterActivity extends AppCompatActivity {
 
     private void invokeSearch() {
         Intent intent = SearchActivity.makeIntent(this);
+        startActivity(intent);
+    }
+
+    private void invokeSearch2() {
+        Intent intent = SearchActivity2.makeIntent(this);
         startActivity(intent);
     }
 

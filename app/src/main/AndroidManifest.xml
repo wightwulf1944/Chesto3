@@ -29,6 +29,10 @@
             android:name=".activity.SearchActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
 
+        <activity
+            android:name=".activity.SearchActivity2"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+
         <service android:name=".service.DownloadService" />
 
         <provider
