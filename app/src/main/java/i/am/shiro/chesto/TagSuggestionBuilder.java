@@ -26,20 +26,17 @@ public class TagSuggestionBuilder {
     private String postCountFrom(int postCount) {
         String postCountStr = String.valueOf(postCount);
 
-        if (postCount >= 1_000) {
-            postCountStr = postCountStr.charAt(0) + "." + postCountStr.charAt(1);
-            if (postCount < 1_000_000) {
-                postCountStr += "k";
-            } else {
-                postCountStr += "m";
-            }
-        }
-        return postCountStr;
+        if (postCount < 1_000)
+            return postCountStr;
+        else
+            return new StringBuilder(postCountStr)
+                    .insert(1, '.')
+                    .insert(3, postCount < 1_000_000 ? 'k' : 'm')
+                    .substring(0, 3);
     }
 
     private CharSequence nameFrom(String text) {
         if (emphasis.isEmpty()) return text;
-        if (!text.contains(emphasis)) return text;
 
         SpannableString formattedText = new SpannableString(text);
 
