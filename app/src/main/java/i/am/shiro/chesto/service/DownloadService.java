@@ -15,8 +15,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import i.am.shiro.chesto.framework.NotificationManager;
+import i.am.shiro.chesto.framework.ServiceNotificationManager;
 import i.am.shiro.chesto.model.Post;
-import i.am.shiro.chesto.util.NotificationUtil;
+import i.am.shiro.chesto.notification.ErrorNotification;
+import i.am.shiro.chesto.notification.ProgressNotification;
+import i.am.shiro.chesto.notification.SuccessNotification;
 import timber.log.Timber;
 
 import static android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE;
@@ -28,7 +32,11 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 
 public final class DownloadService extends IntentService {
 
-    private NotificationUtil notificationUtil;
+    private static final int NOTIFICATION_ID = 1;
+
+    private ServiceNotificationManager notificationManager;
+
+    private int downloadsRemaining;
 
     public DownloadService() {
         super("DownloadService");
@@ -45,12 +53,13 @@ public final class DownloadService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        notificationUtil = new NotificationUtil(this);
+        notificationManager = new ServiceNotificationManager(this, NOTIFICATION_ID);
+        notificationManager.startForeground(new ProgressNotification(downloadsRemaining));
     }
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        notificationUtil.notifyDownloadQueued();
+        notificationManager.notify(new ProgressNotification(++downloadsRemaining));
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -62,6 +71,7 @@ public final class DownloadService extends IntentService {
         final String url = intent.getStringExtra("url");
         final String filename = intent.getStringExtra("filename");
 
+        NotificationManager uniqueNotificationManager = new NotificationManager(this, id);
         try {
             File sourceFile = getSourceFile(url);
             File targetFile = getTargetFile(filename);
@@ -71,13 +81,13 @@ public final class DownloadService extends IntentService {
             Intent newImageIntent = new Intent(ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri);
             sendBroadcast(newImageIntent);
 
-            notificationUtil.notifyDownloadSuccess(id, targetFile);
+            uniqueNotificationManager.notify(new SuccessNotification(targetFile));
         } catch (Exception e) {
-            notificationUtil.notifyDownloadFailed(id);
+            uniqueNotificationManager.notify(new ErrorNotification());
             Timber.e(e, "Download error: %s", url);
         }
 
-        notificationUtil.notifyDownloadDone();
+        notificationManager.notify(new ProgressNotification(--downloadsRemaining));
     }
 
     private File getSourceFile(String url) throws Exception {
