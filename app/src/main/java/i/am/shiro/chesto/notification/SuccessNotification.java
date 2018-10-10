@@ -9,9 +9,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
+import i.am.shiro.chesto.BuildConfig;
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.framework.Notification;
 
@@ -41,11 +43,15 @@ public final class SuccessNotification implements Notification {
     }
 
     private PendingIntent getContentIntent(Context context) {
-        Uri uri = Uri.fromFile(file);
+        String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+        Uri data = FileProvider.getUriForFile(context, authority, file);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "image/*");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        String type = context.getContentResolver().getType(data);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(data, type)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
     }
