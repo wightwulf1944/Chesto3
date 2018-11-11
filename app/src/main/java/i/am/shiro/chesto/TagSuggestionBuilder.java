@@ -25,14 +25,39 @@ public class TagSuggestionBuilder {
 
     private String postCountFrom(int postCount) {
         String postCountStr = String.valueOf(postCount);
-
-        if (postCount < 1_000)
+        if (postCount < 1_000) {
             return postCountStr;
-        else
+        } else if (postCount < 10_000) {
             return new StringBuilder(postCountStr)
+                    .reverse()
+                    .delete(0, 2)
+                    .reverse()
                     .insert(1, '.')
-                    .insert(3, postCount < 1_000_000 ? 'k' : 'm')
-                    .substring(0, 3);
+                    .append('k')
+                    .toString();
+        } else if (postCount < 1_000_000) {
+            return new StringBuilder(postCountStr)
+                    .reverse()
+                    .delete(0, 3)
+                    .reverse()
+                    .append('k')
+                    .toString();
+        } else if (postCount < 10_000_000) {
+            return new StringBuilder(postCountStr)
+                    .reverse()
+                    .delete(0, 5)
+                    .reverse()
+                    .insert(1, '.')
+                    .append('m')
+                    .toString();
+        } else {
+            return new StringBuilder(postCountStr)
+                    .reverse()
+                    .delete(0, 6)
+                    .reverse()
+                    .append('m')
+                    .toString();
+        }
     }
 
     private CharSequence nameFrom(String text) {
