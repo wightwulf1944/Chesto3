@@ -1,14 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     namespace 'i.am.shiro.chesto'
     compileSdk 34
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 
     defaultConfig {
         applicationId "i.am.shiro.chesto"
@@ -30,6 +26,10 @@ android {
     buildFeatures {
         buildConfig true
     }
+}
+
+kotlin {
+    jvmToolchain 17
 }
 
 repositories {
