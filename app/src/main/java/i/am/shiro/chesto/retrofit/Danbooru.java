@@ -21,7 +21,7 @@ import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
 
 public class Danbooru {
 
-    public static final String BASE_URL = "http://danbooru.donmai.us";
+    public static final String BASE_URL = "https://danbooru.donmai.us";
 
     public static final Api API = buildApi();
 
