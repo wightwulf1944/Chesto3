@@ -1,7 +1,8 @@
 package i.am.shiro.chesto.framework;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Implement this and use {@link NotificationManager#notify(Notification)}

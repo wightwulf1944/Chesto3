@@ -1,32 +1,33 @@
 package i.am.shiro.chesto.activity;
 
-import android.arch.lifecycle.ViewModelProviders;
+import static android.content.Intent.ACTION_SEARCH;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_SHORT;
+import static i.am.shiro.chesto.constant.LoadState.ERROR;
+import static i.am.shiro.chesto.constant.LoadState.LOADING;
+import static i.am.shiro.chesto.constant.LoadState.SUCCESS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.google.android.material.snackbar.Snackbar;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.adapter.MasterAdapter;
 import i.am.shiro.chesto.viewmodel.MasterViewModel;
-
-import static android.content.Intent.ACTION_SEARCH;
-import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
-import static android.support.design.widget.Snackbar.LENGTH_SHORT;
-import static i.am.shiro.chesto.constant.LoadState.ERROR;
-import static i.am.shiro.chesto.constant.LoadState.LOADING;
-import static i.am.shiro.chesto.constant.LoadState.SUCCESS;
 
 /**
  * Created by Shiro on 12/27/2017.

@@ -1,11 +1,15 @@
 package i.am.shiro.chesto.service;
 
+import static android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE;
+import static android.os.Environment.DIRECTORY_PICTURES;
+
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 
@@ -22,9 +26,6 @@ import i.am.shiro.chesto.notification.ErrorNotification;
 import i.am.shiro.chesto.notification.ProgressNotification;
 import i.am.shiro.chesto.notification.SuccessNotification;
 import timber.log.Timber;
-
-import static android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE;
-import static android.os.Environment.DIRECTORY_PICTURES;
 
 /**
  * Created by Subaru Tashiro on 7/28/2017.

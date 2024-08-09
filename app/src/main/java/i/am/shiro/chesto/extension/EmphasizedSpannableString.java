@@ -1,12 +1,12 @@
 package i.am.shiro.chesto.extension;
 
+import static android.graphics.Typeface.BOLD;
+
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.graphics.Typeface.BOLD;
 
 public final class EmphasizedSpannableString extends SpannableString {
 

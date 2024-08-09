@@ -1,11 +1,12 @@
 package i.am.shiro.chesto.util;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-import com.annimon.stream.function.IntConsumer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import static android.support.v7.widget.RecyclerView.NO_POSITION;
+import java.util.function.IntConsumer;
+
 
 /**
  * Created by Subaru Tashiro on 7/24/2017.

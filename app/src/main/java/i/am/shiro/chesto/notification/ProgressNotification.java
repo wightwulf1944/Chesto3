@@ -1,15 +1,16 @@
 package i.am.shiro.chesto.notification;
 
+import static androidx.core.app.NotificationCompat.CATEGORY_SERVICE;
+import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
+
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.framework.Notification;
-
-import static android.support.v4.app.NotificationCompat.CATEGORY_SERVICE;
-import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public final class ProgressNotification implements Notification {
 

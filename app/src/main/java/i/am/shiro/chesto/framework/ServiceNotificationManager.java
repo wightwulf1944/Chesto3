@@ -1,7 +1,8 @@
 package i.am.shiro.chesto.framework;
 
 import android.app.Service;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 public class ServiceNotificationManager extends NotificationManager {
 

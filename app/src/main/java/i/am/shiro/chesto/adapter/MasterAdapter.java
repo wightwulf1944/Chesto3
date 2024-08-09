@@ -1,25 +1,27 @@
 package i.am.shiro.chesto.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.recyclerview.extensions.ListAdapter;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.annimon.stream.function.IntConsumer;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
+import java.util.function.IntConsumer;
+
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.model.Post;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
 
 public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 

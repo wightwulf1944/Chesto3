@@ -1,9 +1,11 @@
 package i.am.shiro.chesto.viewmodel;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
+import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
+
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,8 +17,6 @@ import i.am.shiro.chesto.model.PostJson;
 import i.am.shiro.chesto.retrofit.Danbooru;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
-
-import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 public class MasterViewModel extends ViewModel {
 

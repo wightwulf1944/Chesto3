@@ -1,5 +1,7 @@
 package i.am.shiro.chesto.retrofit;
 
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
+
 import java.util.List;
 
 import i.am.shiro.chesto.model.PostJson;
@@ -12,8 +14,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
 
 /**
  * Created by Shiro on 5/4/2017.

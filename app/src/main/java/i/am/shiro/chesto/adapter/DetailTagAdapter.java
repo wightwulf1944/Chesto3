@@ -1,18 +1,19 @@
 package i.am.shiro.chesto.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.annimon.stream.function.Consumer;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayoutManager;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.model.Post;
