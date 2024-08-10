@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.flexbox.FlexboxLayoutManager;
 
@@ -21,13 +23,12 @@ import java.util.function.IntConsumer;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.model.Post;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
-    private final FragmentActivity parentActivity;
+    private final LayoutInflater inflater;
 
-    private final RequestOptions defaultRequestOptions;
+    private final RequestManager requestManager;
 
     private IntConsumer onItemClickListener;
 
@@ -35,12 +36,16 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
 
     public MasterAdapter(FragmentActivity parentActivity) {
         super(new DiffCallback());
-        this.parentActivity = parentActivity;
-        defaultRequestOptions = new RequestOptions()
-                .transform(new RoundedCornersTransformation(5, 0))
+        inflater = parentActivity.getLayoutInflater();
+
+        RequestOptions requestOptions = new RequestOptions()
+                .transform(new RoundedCorners(6))
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_broken)
                 .diskCacheStrategy(ALL);
+
+        requestManager = Glide.with(parentActivity)
+                .applyDefaultRequestOptions(requestOptions);
     }
 
     public void setOnItemClickListener(IntConsumer listener) {
@@ -54,7 +59,6 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = parentActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.item_master_thumbs, parent, false);
         return new ViewHolder(view);
     }
@@ -72,10 +76,7 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
         flexboxLp.setMaxWidth(post.getThumbMaxWidth());
         flexboxLp.setFlexGrow(post.getThumbFlexGrow());
 
-        Glide.with(parentActivity)
-                .load(post.getThumbFileUrl())
-                .apply(defaultRequestOptions)
-                .into(imageView);
+        requestManager.load(post.getThumbFileUrl()).into(imageView);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -93,12 +94,12 @@ public class MasterAdapter extends ListAdapter<Post, MasterAdapter.ViewHolder> {
     private static class DiffCallback extends DiffUtil.ItemCallback<Post> {
 
         @Override
-        public boolean areItemsTheSame(Post oldItem, Post newItem) {
+        public boolean areItemsTheSame(Post oldItem, @NonNull Post newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        public boolean areContentsTheSame(Post oldItem, Post newItem) {
+        public boolean areContentsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
             return true;
         }
     }

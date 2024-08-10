@@ -1,11 +1,7 @@
 package i.am.shiro.chesto.adapter;
 
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.DATA;
-import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
-import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
-import static com.bumptech.glide.request.RequestOptions.errorOf;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
 
 import java.util.function.IntConsumer;
 
 import i.am.shiro.chesto.R;
 import i.am.shiro.chesto.model.Post;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
  * Created by Subaru Tashiro on 7/11/2017.
@@ -33,13 +29,16 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.ViewHolder> {
 
-    private final FragmentActivity parent;
+    private final RequestManager requestManager;
+
+    private final LayoutInflater inflater;
 
     private IntConsumer onItemBindListener;
 
     public DetailImageAdapter(FragmentActivity parent) {
         super(new DiffCallback());
-        this.parent = parent;
+        requestManager = Glide.with(parent);
+        inflater = parent.getLayoutInflater();
     }
 
     public void setOnItemBindListener(IntConsumer listener) {
@@ -49,8 +48,6 @@ public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.Vie
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_detail_image, parent, false);
         return new ViewHolder(view);
     }
@@ -70,14 +67,13 @@ public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.Vie
         }
 
         private void bind(Post post) {
-            RequestBuilder<Drawable> thumb = Glide.with(parent)
+            RequestBuilder<Drawable> thumb = requestManager
                     .load(post.getThumbFileUrl())
-                    .apply(bitmapTransform(new BlurTransformation(1)))
-                    .apply(diskCacheStrategyOf(DATA));
+                    .diskCacheStrategy(DATA);
 
-            Glide.with(parent)
+            requestManager
                     .load(post.getPreviewFileUrl())
-                    .apply(errorOf(R.drawable.image_broken))
+                    .error(R.drawable.image_broken)
                     .thumbnail(thumb)
                     .into((ImageView) itemView);
         }
@@ -86,12 +82,12 @@ public class DetailImageAdapter extends ListAdapter<Post, DetailImageAdapter.Vie
     private static class DiffCallback extends DiffUtil.ItemCallback<Post> {
 
         @Override
-        public boolean areItemsTheSame(Post oldItem, Post newItem) {
+        public boolean areItemsTheSame(Post oldItem, @NonNull Post newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        public boolean areContentsTheSame(Post oldItem, Post newItem) {
+        public boolean areContentsTheSame(@NonNull Post oldItem, @NonNull Post newItem) {
             return true;
         }
     }
